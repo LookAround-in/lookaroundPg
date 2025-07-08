@@ -237,7 +237,7 @@ const Explore = () => {
         <Label className="text-sm font-semibold mb-3 block text-gray-700 dark:text-gray-300">
           Amenities ({amenities.length} selected)
         </Label>
-        <div className="space-y-3 max-h-48 overflow-y-auto pr-2">
+        <div className="space-y-3 max-h-48 overflow-y-auto pr-2 scrollbar-hide">
           {availableAmenities.map((amenity) => (
             <div key={amenity} className="flex items-center space-x-3">
               <Checkbox
@@ -295,41 +295,6 @@ const Explore = () => {
           <p className="text-lg lg:text-xl text-white/90 mb-6 lg:mb-8 animate-fadeInUp max-w-2xl mx-auto leading-relaxed" style={{animationDelay: '0.2s'}}>
             Discover safe, comfortable, and affordable accommodations tailored to your needs
           </p>
-          
-          {/* Enhanced Search Bar */}
-          <div className="max-w-3xl mx-auto glass-effect rounded-2xl p-4 lg:p-6 animate-scaleIn" style={{animationDelay: '0.4s'}}>
-            <div className="flex flex-col lg:flex-row gap-3 lg:gap-4">
-              <div className="relative flex-1">
-                <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <Input
-                  placeholder="Enter location, area, or landmark..."
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="pl-12 h-12 lg:h-14 bg-white/95 border-0 text-gray-800 placeholder-gray-500 text-base lg:text-lg font-medium"
-                />
-              </div>
-              <div className="flex gap-2">
-                {/* Desktop Filter Button */}
-                <Button 
-                  variant="outline"
-                  className="hidden lg:flex h-12 lg:h-14 px-4 lg:px-6 bg-white/90 border-white/20 hover:bg-white font-semibold"
-                  onClick={() => setShowFilters(!showFilters)}
-                >
-                  <Filter className="h-5 w-5 mr-2" />
-                  Filters
-                  {activeFiltersCount > 0 && (
-                    <Badge className="ml-2 bg-gradient-cool text-white" variant="secondary">
-                      {activeFiltersCount}
-                    </Badge>
-                  )}
-                </Button>
-                <Button className="h-12 lg:h-14 px-6 lg:px-8 bg-white text-gray-800 hover:bg-gray-100 font-semibold text-base">
-                  <Search className="h-5 w-5 mr-2" />
-                  Search
-                </Button>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 

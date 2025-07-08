@@ -47,9 +47,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
 
   const getGenderBadgeColor = (gender: string) => {
     switch (gender) {
-      case 'men': return 'bg-blue-100 text-blue-800';
-      case 'women': return 'bg-pink-100 text-pink-800';
-      case 'co-living': return 'bg-purple-100 text-purple-800';
+      case 'men': return 'bg-blue-100 text-blue-800 hover:text-white';
+      case 'women': return 'bg-pink-100 text-pink-800 hover:text-white';
+      case 'co-living': return 'bg-purple-100 text-purple-800 hover:text-white';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -74,7 +74,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
         
         {/* Virtual Tour Badge */}
         {property.virtualTour && (
-          <Badge className="absolute top-3 left-3 bg-accent text-white">
+          <Badge className="absolute top-3 left-3 bg-accent text-primary hover:text-white">
             360° Tour
           </Badge>
         )}

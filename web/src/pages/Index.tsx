@@ -54,15 +54,15 @@ const Index = () => {
             {/* Quick Stats */}
             <div className="grid grid-cols-3 gap-8 max-w-md mx-auto text-center animate-fadeInUp" style={{animationDelay: '0.6s'}}>
               <div>
-                <div className="text-2xl font-bold text-primary dark:text-primary">500+</div>
+                <div className="text-2xl font-bold text-primary dark:text-white">500+</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">Properties</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-secondary dark:text-secondary">50+</div>
+                <div className="text-2xl font-bold text-primary dark:text-white">50+</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">Locations</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-accent dark:text-accent">1000+</div>
+                <div className="text-2xl font-bold text-primary dark:text-white">1000+</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">Happy Tenants</div>
               </div>
             </div>
@@ -214,7 +214,7 @@ const Index = () => {
               </Button>
             </Link>
             <Link href="/about">
-              <Button size="lg" variant="outline" className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary">
+              <Button size="lg" variant="secondary" className="text-lg px-8 hover:text-primary">
                 Learn More
               </Button>
             </Link>

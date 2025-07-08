@@ -10,6 +10,7 @@ import { ThemeToggle } from '@/components/layout/ThemeToggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { Search, Heart, User, LogOut, Menu, X } from 'lucide-react';
+import Image from 'next/image';
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -38,10 +39,10 @@ export const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-cool rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">PG</span>
+              <div className="w-8 h-8 bg-gradient-cool rounded-full flex items-center justify-center">
+                 <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-6 h-6 object-contain"/>
               </div>
-              <span className="font-bold text-xl text-charcoal dark:text-white">LookaroundPG</span>
+              <span className="font-bold text-xl text-primary dark:text-white">LookaroundPG</span>
             </Link>
           </div>
 
@@ -81,7 +82,7 @@ export const Navbar = () => {
               </Link>
             )}
             
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
 
             {user ? (
               <DropdownMenu>

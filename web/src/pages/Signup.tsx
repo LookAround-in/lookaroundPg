@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import Image from 'next/image';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -46,10 +47,10 @@ const Signup = () => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">PG</span>
+            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+              <Image src='/logo.png' width={32} height={32} alt='LookaroundPG'className="w-6 h-6 object-contain"/>
             </div>
-            <span className="font-bold text-xl text-charcoal dark:text-white">FindMyPG</span>
+            <span className="font-bold text-xl text-primary dark:text-white">LookaroundPG</span>
           </Link>
         </div>
 
