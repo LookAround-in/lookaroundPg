@@ -150,7 +150,7 @@ export const Navbar = () => {
                 </Button>
               </Link>
             )}
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
             <Button
               variant="ghost"
               size="sm"

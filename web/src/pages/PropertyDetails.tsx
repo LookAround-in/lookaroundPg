@@ -448,7 +448,7 @@ const PropertyDetails = () => {
                         )}
                         {property.hostEmail && (
                           <a href={`mailto:${property.hostEmail}`}>
-                            <Button variant="outline" className="w-full dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
+                            <Button variant="outline" className="w-full dark:border-gray-600 dark:text-white dark:hover:bg-gray-700 mt-2">
                               <Mail className="h-4 w-4 mr-2" />
                               Email Host
                             </Button>
@@ -460,7 +460,7 @@ const PropertyDetails = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            <Button className="w-full bg-green-500 hover:bg-green-600">
+                            <Button className="w-full bg-green-500 hover:bg-green-600 mt-2">
                               WhatsApp
                             </Button>
                           </a>
@@ -470,7 +470,7 @@ const PropertyDetails = () => {
                   </div>
 
                   <Link href={`/host/properties/${property.hostId}`}>
-                    <Button variant="ghost" className="w-full dark:text-white dark:hover:bg-gray-700">
+                    <Button variant="ghost" className="w-full dark:text-white dark:hover:bg-gray-700 mt-2">
                       View All Properties by Host
                     </Button>
                   </Link>
