@@ -88,7 +88,7 @@ const Partner = () => {
   const tourPlans = [
     {
       name: 'Standard Virtual Tour',
-      price: 'Free',
+      price: '₹999',
       features: [
         '360° room photography',
         'Basic virtual walkthrough',
@@ -144,7 +144,7 @@ const Partner = () => {
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 animate-fadeInUp">
-            Partner with FindMyPG
+            Partner with LookaroundPG
           </h1>
           <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto animate-fadeInUp" style={{animationDelay: '0.2s'}}>
             Transform your property into a thriving business. Join thousands of successful hosts and maximize your rental income with our premium platform.

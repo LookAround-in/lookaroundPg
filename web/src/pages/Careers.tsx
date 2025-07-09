@@ -103,10 +103,10 @@ const Careers = () => {
             Help us revolutionize the PG accommodation experience
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scaleIn" style={{animationDelay: '0.4s'}}>
-            <Button size="lg" className="bg-white text-gray-800 hover:bg-gray-100">
+            <Button size="lg" variant='secondary' className="text-lg px-8">
               View Open Positions
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-800">
+            <Button size="lg" variant="secondary" className="text-lg px-8 hover:text-primary">
               Learn About Our Culture
             </Button>
           </div>

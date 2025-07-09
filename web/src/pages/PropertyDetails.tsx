@@ -133,7 +133,7 @@ const PropertyDetails = () => {
         <div className="flex justify-between items-center mb-6">
           <Button 
             variant="ghost" 
-            onClick={() => router.push(-1)}
+            onClick={() => router.push('/explore')}
             className="dark:text-white dark:hover:bg-gray-800"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -166,7 +166,7 @@ const PropertyDetails = () => {
                 
                 {/* Virtual Tour Badge */}
                 {property.virtualTour && (
-                  <Badge className="absolute top-4 left-4 bg-accent text-white">
+                  <Badge className="absolute top-3 left-3 bg-accent text-primary hover:text-white">
                     <Eye className="h-3 w-3 mr-1" />
                     360° Tour Available
                   </Badge>
@@ -333,7 +333,7 @@ const PropertyDetails = () => {
                 <div className="space-y-2">
                   {property.houseRules.map((rule, index) => (
                     <div key={index} className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-accent rounded-full"></div>
+                      <div className="w-2 h-2 bg-primary dark:bg-blue-400 rounded-full"></div>
                       <span className="text-gray-700 dark:text-gray-300">{rule}</span>
                     </div>
                   ))}

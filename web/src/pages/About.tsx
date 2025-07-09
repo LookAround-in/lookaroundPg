@@ -62,12 +62,12 @@ const About = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 dark:from-primary/20 dark:via-secondary/20 dark:to-accent/20 py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-charcoal dark:text-white mb-6">
-            About FindMyPG
+      <section className="bg-gradient-cool relative overflow-hidden py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 animate-fadeInUp">
+            About LookaroundPG
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+          <p className="text-xl text-white/90 mb-8 leading-relaxed">
             We're on a mission to make finding safe, comfortable, and affordable 
             PG accommodations as easy as a few clicks. Born from the frustration 
             of endless property searches, we created a platform that puts trust, 
@@ -212,7 +212,7 @@ const About = () => {
             
             <Card className="dark:bg-gray-900 dark:border-gray-700">
               <CardContent className="p-6 text-center">
-                <Search className="h-12 w-12 text-secondary mx-auto mb-4" />
+                <Search className="h-12 w-12 text-primary mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2 dark:text-white">Smart Search</h3>
                 <p className="text-gray-600 dark:text-gray-300">
                   Advanced filters help you find exactly what you're looking for
@@ -222,7 +222,7 @@ const About = () => {
             
             <Card className="dark:bg-gray-900 dark:border-gray-700">
               <CardContent className="p-6 text-center">
-                <MapPin className="h-12 w-12 text-accent mx-auto mb-4" />
+                <MapPin className="h-12 w-12 text-primary mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2 dark:text-white">Local Expertise</h3>
                 <p className="text-gray-600 dark:text-gray-300">
                   Deep knowledge of local areas and neighborhoods in every city
@@ -249,7 +249,7 @@ const About = () => {
               </Button>
             </Link>
             <Link href="/partner">
-              <Button size="lg" variant="outline" className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary">
+              <Button size="lg" variant="secondary" className="text-lg px-8 hover:text-primary">
                 List Your Property
               </Button>
             </Link>
