@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
+import { authClient } from 'lib/auth-client';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -40,13 +41,31 @@ const Login = () => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/"
+      });
+    } catch (error) {
+      toast({
+        title: "Google sign-in failed",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-light-gray dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-6 h-6 object-contain"/>
+              <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-6 h-6 object-contain" />
             </div>
             <span className="font-bold text-xl text-primary dark:text-white">LookaroundPG</span>
           </Link>
@@ -93,6 +112,13 @@ const Login = () => {
                 disabled={isLoading}
               >
                 {isLoading ? 'Signing in...' : 'Sign in'}
+              </Button>
+              <Button
+                className="w-full"
+                disabled={isLoading}
+                onClick={handleGoogleSignIn}
+              >
+                {isLoading ? 'Signing in With Google...' : 'Sign in With Google'}
               </Button>
             </form>
 
