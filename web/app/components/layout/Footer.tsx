@@ -5,7 +5,7 @@ import { Facebook, Twitter, Instagram, Heart } from 'lucide-react';
 
 export const Footer = () => {
   return (
-    <footer className="bg-charcoal dark:bg-gray-900 text-white py-12 transition-colors duration-200">
+    <footer className="bg-gray-200 dark:bg-gray-900 text-white py-12 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           {/* Brand */}
@@ -14,7 +14,7 @@ export const Footer = () => {
               <div className="w-8 h-8 bg-gradient-cool rounded-full flex items-center justify-center">
                 <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-6 h-6 object-contain"/>
               </div>
-              <span className="font-bold md:text-xl text-primary dark:text-white">LookaroundPG</span>
+              <span className="font-bold md:text-xl text-gradient-cool dark:text-white">LookaroundPG</span>
             </div>
             <p className="text-gray-700 dark:text-gray-400">
               Your trusted platform for finding safe, comfortable, and affordable PG accommodations.

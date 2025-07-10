@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { Heart, MapPin, User, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/contexts/AuthContext';
-import { useWishlist } from '@/contexts/WishlistContext';
+import { useAuth } from 'app/contexts/AuthContext';
+import { useWishlist } from 'app/contexts/WishlistContext';
 
 interface Property {
   id: string;

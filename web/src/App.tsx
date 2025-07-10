@@ -2,12 +2,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { WishlistProvider } from "@/contexts/WishlistContext";
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import { PropertyProvider } from "@/contexts/PropertyContext";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import { AuthProvider } from "app/contexts/AuthContext";
+import { WishlistProvider } from "app/contexts/WishlistContext";
+import { ThemeProvider } from "app/contexts/ThemeContext";
+import { PropertyProvider } from "app/contexts/PropertyContext";
 import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 
@@ -40,8 +38,8 @@ const AppContent = () => {
   // Route mapping
   const getPageComponent = () => {
     switch (pathname) {
-      case "/":
-        return <Index />;
+      // case "/":
+      //   return <Index />;
       case "/explore":
         return <Explore />;
       case "/login":
@@ -68,10 +66,10 @@ const AppContent = () => {
         return <SafetyInformation />;
       case "/faq":
         return <FAQ />;
-      case "/host/login":
-        return <HostLogin />;
-      case "/host/dashboard":
-        return <HostDashboard />;
+      // case "/host/login":
+      //   return <HostLogin />;
+      // case "/host/dashboard":
+      //   return <HostDashboard />;
       case "/host/properties":
         return <HostProperties />;
       default:

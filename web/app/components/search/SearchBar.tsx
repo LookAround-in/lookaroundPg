@@ -33,7 +33,7 @@ export const SearchBar = () => {
         </div>
         <Button 
           type="submit"
-          className="h-12 px-6 rounded-r-full"
+          className="h-12 px-6 rounded-r-full bg-gradient-cool"
         >
           <Search className="h-4 w-4 mr-2" />
           Search

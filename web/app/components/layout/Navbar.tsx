@@ -6,9 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { ThemeToggle } from '@/components/layout/ThemeToggle';
-import { useAuth } from '@/contexts/AuthContext';
-import { useWishlist } from '@/contexts/WishlistContext';
+import { ThemeToggle } from './ThemeToggle';
+import { useAuth } from 'app/contexts/AuthContext';
+import { useWishlist } from 'app/contexts/WishlistContext';
 import { Search, Heart, User, LogOut, Menu, X } from 'lucide-react';
 import Image from 'next/image';
 
@@ -42,7 +42,7 @@ export const Navbar = () => {
               <div className="w-8 h-8 bg-gradient-cool rounded-full flex items-center justify-center">
                  <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-6 h-6 object-contain"/>
               </div>
-              <span className="font-bold text-xl text-primary dark:text-white">LookaroundPG</span>
+              <span className="font-bold text-xl text-gradient-cool dark:text-white">LookaroundPG</span>
             </Link>
           </div>
 

@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Home, Users, Star, TrendingUp, CheckCircle, Calendar, Camera, Eye, Crown, Award } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from 'app/hooks/use-toast';
 
 const Partner = () => {
   const [formData, setFormData] = useState({

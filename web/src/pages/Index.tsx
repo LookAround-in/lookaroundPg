@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { SearchBar } from '@/components/search/SearchBar';
-import { PropertyCard } from '@/components/properties/PropertyCard';
+import { SearchBar } from 'app/components/search/SearchBar';
+import { PropertyCard } from 'app/components/properties/PropertyCard';
 import { Shield, Search, Star, Users } from 'lucide-react';
-import { featuredProperties, trendingProperties } from '@/data/mockData';
+import { featuredProperties, trendingProperties } from 'app/data/mockData';
 
 const Index = () => {
   const features = [
