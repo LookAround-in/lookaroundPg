@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "app/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import {
   Home,
   Users,
@@ -25,7 +25,6 @@ import {
   Minus,
   Clock,
 } from "lucide-react";
-import { CircularProgressbar } from 'react-circular-progressbar';
 
 interface UserQuery {
   id: string;

@@ -23,9 +23,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./app/*"],
     },
     "noImplicitAny": false,
     "noUnusedParameters": false,
@@ -38,7 +36,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "next-env.d.ts",
-    "./dist/types/**/*.ts"
+    "./dist/types/**/*.ts",
+    "app/**/*",
+    "src/**/*"
   ],
   "exclude": [
     "node_modules"

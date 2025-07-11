@@ -1,3 +1,4 @@
+'use state'
 import React, { useState } from 'react';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
@@ -6,10 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { MapPin, Heart, User, Star, Phone, Mail, ArrowLeft, Eye, Calendar, Users, Home } from 'lucide-react';
-import { useAuth } from 'app/contexts/AuthContext';
-import { useWishlist } from 'app/contexts/WishlistContext';
-import { mockProperties } from 'app/data/mockData';
-import { useToast } from 'app/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { useWishlist } from '@/contexts/WishlistContext';
+import { mockProperties } from '@/data/mockData';
+import { useToast } from '@/hooks/use-toast';
 
 const PropertyDetails = () => {
   const { propertyId } = usePropertyContext();
