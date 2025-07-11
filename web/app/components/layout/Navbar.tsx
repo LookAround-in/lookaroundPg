@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { Search, Heart, User, LogOut, Menu, X } from 'lucide-react';
 import Image from 'next/image';
+import { authClient } from 'lib/auth-client';
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,6 +19,14 @@ export const Navbar = () => {
   const { user, logout } = useAuth();
   const { wishlist } = useWishlist();
   const router = useRouter();
+  const {
+    data: session,
+    isPending,
+    error,
+    refetch
+  } = authClient.useSession()
+  console.log(session);
+
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,9 +36,16 @@ export const Navbar = () => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    router.push('/');
+  const handleLogout = async () => {
+    // logout();
+    // router.push('/');
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+        },
+      },
+    });
   };
 
   return (
@@ -40,7 +56,7 @@ export const Navbar = () => {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-cool rounded-full flex items-center justify-center">
-                 <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-6 h-6 object-contain"/>
+                <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-6 h-6 object-contain" />
               </div>
               <span className="font-bold text-xl text-gradient-cool dark:text-white">LookaroundPG</span>
             </Link>
@@ -67,9 +83,9 @@ export const Navbar = () => {
                 Explore
               </Button>
             </Link>
-            
+
             {/* Wishlist Icon - Always visible when user is logged in */}
-            {user && (
+            {session && (
               <Link href="/wishlist">
                 <Button variant="ghost" size="sm" className="relative text-charcoal dark:text-white hover:text-primary dark:hover:text-primary">
                   <Heart className="w-5 h-5" />
@@ -81,17 +97,18 @@ export const Navbar = () => {
                 </Button>
               </Link>
             )}
-            
+
             {/* <ThemeToggle /> */}
 
-            {user ? (
+            {session ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.avatar} alt={user.name} />
+                      {/* <AvatarImage src={user.avatar} alt={user.name} />TODO : replace with SESSION.avatar */}
+
                       <AvatarFallback className="bg-gradient-cool text-white">
-                        {user.name.charAt(0).toUpperCase()}
+                        {session.user.name.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -99,9 +116,9 @@ export const Navbar = () => {
                 <DropdownMenuContent className="w-56 bg-white dark:bg-gray-800 border dark:border-gray-700" align="end" forceMount>
                   <div className="flex items-center justify-start gap-2 p-2">
                     <div className="flex flex-col space-y-1 leading-none">
-                      <p className="font-medium dark:text-white">{user.name}</p>
+                      <p className="font-medium dark:text-white">{session.user.name}</p>
                       <p className="w-[200px] truncate text-sm text-muted-foreground dark:text-gray-400">
-                        {user.email}
+                        {session.user.email}
                       </p>
                     </div>
                   </div>
@@ -188,8 +205,8 @@ export const Navbar = () => {
                 <Search className="w-5 h-5 mr-3 text-primary" />
                 Explore Properties
               </Link>
-              
-              {user ? (
+
+              {session.user ? (
                 <>
                   <Link
                     href="/wishlist"
@@ -206,7 +223,7 @@ export const Navbar = () => {
                       </Badge>
                     )}
                   </Link>
-                  
+
                   <Link
                     href="/profile"
                     onClick={() => setIsMenuOpen(false)}
@@ -215,7 +232,7 @@ export const Navbar = () => {
                     <User className="w-5 h-5 mr-3 text-primary" />
                     Profile
                   </Link>
-                  
+
                   <button
                     onClick={() => {
                       handleLogout();
@@ -237,7 +254,7 @@ export const Navbar = () => {
                     <User className="w-5 h-5 mr-3 text-primary" />
                     Log in
                   </Link>
-                  
+
                   <Link
                     href="/signup"
                     onClick={() => setIsMenuOpen(false)}

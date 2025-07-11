@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
+import { authClient } from 'lib/auth-client';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -18,27 +19,79 @@ const Login = () => {
   const { toast } = useToast();
   const router = useRouter();
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+
+  //   try {
+  //     await login(email, password);
+  //     toast({
+  //       title: "Welcome back!",
+  //       description: "You have been successfully logged in.",
+  //     });
+  //     router.push('/');
+  //   } catch (error) {
+  //     toast({
+  //       title: "Login failed",
+  //       description: "Please check your credentials and try again.",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    const { data, error } = await authClient.signIn.email({
+      email,
+      password,
+      callbackURL: `${window.location.origin}/` // TODO : update callback once file based routing is implemented 
+    }, {
+      onRequest: (ctx) => {
+        //show loading
+        toast({
+          title: "Signing In!",
+          description: "Your account is being accessed, please wait...",
+        });
+      },
+      onSuccess: (ctx) => {
+        //hide loading
+        toast({
+          title: "Welcome back!",
+          description: "You have been successfully logged in.",
+        });
+        router.push('/');
+      },
+      onError: (ctx) => {
+        //hide loading
+        toast({
+          title: "Login failed",
+          description: "Please check your credentials and try again.",
+          variant: "destructive",
+        });
+      }
+    })
+  }
 
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
     try {
-      await login(email, password);
-      toast({
-        title: "Welcome back!",
-        description: "You have been successfully logged in.",
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/"
       });
-      router.push('/');
     } catch (error) {
       toast({
-        title: "Login failed",
-        description: "Please check your credentials and try again.",
+        title: "Google sign-in failed",
+        description: "Please try again.",
         variant: "destructive",
       });
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-light-gray dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
@@ -46,7 +99,7 @@ const Login = () => {
         <div className="text-center">
           <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-6 h-6 object-contain"/>
+              <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-6 h-6 object-contain" />
             </div>
             <span className="font-bold text-xl text-primary dark:text-white">LookaroundPG</span>
           </Link>
@@ -93,6 +146,13 @@ const Login = () => {
                 disabled={isLoading}
               >
                 {isLoading ? 'Signing in...' : 'Sign in'}
+              </Button>
+              <Button
+                className="w-full"
+                disabled={isLoading}
+                onClick={handleGoogleSignIn}
+              >
+                {isLoading ? 'Signing in With Google...' : 'Sign in With Google'}
               </Button>
             </form>
 
