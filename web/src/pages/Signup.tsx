@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
+import { authClient } from 'lib/auth-client';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -20,35 +21,64 @@ const Signup = () => {
   const { toast } = useToast();
   const router = useRouter();
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+
+  //   try {
+  //     await signup(email, password, name, phone);
+  //     toast({
+  //       title: "Account created!",
+  //       description: "Welcome to FindMyPG. You can now explore properties.",
+  //     });
+  //     router.push('/');
+  //   } catch (error) {
+  //     toast({
+  //       title: "Signup failed",
+  //       description: "Please try again with different credentials.",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      await signup(email, password, name, phone);
-      toast({
-        title: "Account created!",
-        description: "Welcome to FindMyPG. You can now explore properties.",
-      });
-      router.push('/');
-    } catch (error) {
-      toast({
-        title: "Signup failed",
-        description: "Please try again with different credentials.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+    const { data, error } = await authClient.signUp.email({
+      email,
+      password,
+      name,
+      callbackURL: `${window.location.origin}/login` // TODO : update callback once file based routing is implemented 
+    }, {
+      onRequest: (ctx) => {
+        //show loading
+        toast({
+          title: "Creating Account!",
+          description: "Your Account is being created, please wait...",
+        });
+      },
+      onSuccess: (ctx) => {
+        //redirect to the dashboard or sign in page
+         toast({
+          title: "Account Created!",
+          description: "Your Account has been created successfully. You can now log in.",
+        });
+      },
+      onError: (ctx) => {
+        // display the error message
+        alert(ctx.error.message);
+      },
+    })
+  }
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-light-gray dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <Image src='/logo.png' width={32} height={32} alt='LookaroundPG'className="w-6 h-6 object-contain"/>
+              <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-6 h-6 object-contain" />
             </div>
             <span className="font-bold text-xl text-primary dark:text-white">LookaroundPG</span>
           </Link>

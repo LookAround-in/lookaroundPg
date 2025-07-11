@@ -19,27 +19,61 @@ const Login = () => {
   const { toast } = useToast();
   const router = useRouter();
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+
+  //   try {
+  //     await login(email, password);
+  //     toast({
+  //       title: "Welcome back!",
+  //       description: "You have been successfully logged in.",
+  //     });
+  //     router.push('/');
+  //   } catch (error) {
+  //     toast({
+  //       title: "Login failed",
+  //       description: "Please check your credentials and try again.",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
-    try {
-      await login(email, password);
-      toast({
-        title: "Welcome back!",
-        description: "You have been successfully logged in.",
-      });
-      router.push('/');
-    } catch (error) {
-      toast({
-        title: "Login failed",
-        description: "Please check your credentials and try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    const { data, error } = await authClient.signIn.email({
+      email,
+      password,
+      callbackURL: `${window.location.origin}/` // TODO : update callback once file based routing is implemented 
+    }, {
+      onRequest: (ctx) => {
+        //show loading
+        toast({
+          title: "Signing In!",
+          description: "Your account is being accessed, please wait...",
+        });
+      },
+      onSuccess: (ctx) => {
+        //hide loading
+        toast({
+          title: "Welcome back!",
+          description: "You have been successfully logged in.",
+        });
+        router.push('/');
+      },
+      onError: (ctx) => {
+        //hide loading
+        toast({
+          title: "Login failed",
+          description: "Please check your credentials and try again.",
+          variant: "destructive",
+        });
+      }
+    })
+  }
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
