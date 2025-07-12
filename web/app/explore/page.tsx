@@ -258,7 +258,7 @@ const Explore = () => {
       </div>
 
       {/* Virtual Tour Toggle */}
-      <Card className="bg-gradient-cool dark:bg-gray-700 border-none">
+      <Card className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white dark:bg-gray-700 border-none">
         <CardContent className="p-4">
           <div className="flex items-center space-x-3">
             <Checkbox

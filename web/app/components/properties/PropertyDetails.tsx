@@ -6,7 +6,7 @@ import { usePropertyContext } from 'app/contexts/PropertyContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Heart, User, Star, Phone, Mail, ArrowLeft, Eye, Calendar, Users, Home } from 'lucide-react';
+import { MapPin, Heart, User, Star, Phone, Mail, ArrowLeft, Eye, Calendar, Users, Home, Play, Loader2, Utensils, Sofa, Car, Train, ShoppingBag, Hospital, PencilRuler, PackagePlus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { mockProperties } from '@/data/mockData';
@@ -92,11 +92,34 @@ const PropertyDetails = () => {
 
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
-      case 'available': return 'bg-success text-white';
-      case 'limited': return 'bg-warning text-white';
-      case 'full': return 'bg-destructive text-white';
-      default: return 'bg-gray-500 text-white';
+      case 'available': return 'bg-primary text-white';
+      case 'limited': return 'bg-primary text-white';
+      case 'full': return 'bg-primary text-white';
+      default: return 'bg-primary text-white';
     }
+  };
+
+  //Mock property features data
+  const propertyFeatures = {
+    foodIncluded: true,
+    furnishing: 'Fully Furnished',
+    furniture: [
+      'Single Bed with Mattress',
+      'Study Table & Chair',
+      'Wardrobe',
+      'Side Table',
+      'Mirror',
+      'Ceiling Fan',
+      'Window Curtains'
+    ],
+    nearbyFacilities: [
+      { name: 'Metro Station', distance: '0.5 km', icon: Train },
+      { name: 'Shopping Mall', distance: '2 km', icon: ShoppingBag },
+      { name: 'Hospital', distance: '1.5 km', icon: Hospital },
+      { name: 'Bus Stop', distance: '200 m', icon: Car },
+      { name: 'ATM', distance: '300 m', icon: MapPin },
+      { name: 'Grocery Store', distance: '500 m', icon: ShoppingBag }
+    ]
   };
 
   // Mock reviews data
@@ -241,6 +264,26 @@ const PropertyDetails = () => {
                     </div>
                   </div>
 
+                  {/* Food and furnishing info */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Utensils className="h-5 w-5 text-green-600" />
+                      <div>
+                        <p className="font-semibold text-gray-800">Food Included</p>
+                        <p className="text-sm text-gray-600">
+                          {propertyFeatures.foodIncluded ? 'Yes, meals provided' : 'Not included'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Sofa className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <p className="font-semibold text-gray-800">Furnishing</p>
+                        <p className="text-sm text-gray-600">{propertyFeatures.furnishing}</p>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Price and Status */}
                   <div className="flex items-center justify-between">
                     <div>
@@ -266,6 +309,12 @@ const PropertyDetails = () => {
                     </Badge>
                     {property.virtualTour && (
                       <Badge variant="outline" className="dark:border-gray-600 dark:text-gray-300">Virtual Tour</Badge>
+                    )}
+                    {propertyFeatures.foodIncluded && (
+                      <Badge className="bg-green-100 text-green-800">
+                        <Utensils className="h-3 w-3 mr-1" />
+                        Food Included
+                      </Badge>
                     )}
                   </div>
 
@@ -312,10 +361,55 @@ const PropertyDetails = () => {
               </CardContent>
             </Card>
 
+            {/* Furniture List */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center">
+                  <Sofa className="h-5 w-5 mr-2" />
+                  Furniture & Amenities Included
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {propertyFeatures.furniture.map((item, index) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      <span className="text-gray-700">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Nearby Facilities */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center">
+                  <MapPin className="h-5 w-5 mr-2" />
+                  Nearby Facilities
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {propertyFeatures.nearbyFacilities.map((facility, index) => {
+                    const IconComponent = facility.icon;
+                    return (
+                      <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <IconComponent className="h-5 w-5 text-blue-600" />
+                        <div>
+                          <p className="font-medium text-gray-800">{facility.name}</p>
+                          <p className="text-sm text-gray-600">{facility.distance}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Amenities */}
             <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardContent className="p-6">
-                <h3 className="text-lg font-semibold mb-4 dark:text-white">Amenities</h3>
+                <h3 className="text-lg font-semibold mb-4 flex items-center dark:text-white">
+                  <PackagePlus className="h-5 w-5 mr-2"/>
+                  Additional Amenities
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {property.amenities.map((amenity, index) => (
                     <div key={index} className="flex items-center space-x-2">
@@ -330,7 +424,10 @@ const PropertyDetails = () => {
             {/* House Rules */}
             <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardContent className="p-6">
-                <h3 className="text-lg font-semibold mb-4 dark:text-white">House Rules</h3>
+                <h3 className="text-lg font-semibold mb-4 flex items-center dark:text-white">
+                  <PencilRuler className="h-5 w-5 mr-2"/>
+                  House Rules
+                </h3>
                 <div className="space-y-2">
                   {property.houseRules.map((rule, index) => (
                     <div key={index} className="flex items-center space-x-2">
