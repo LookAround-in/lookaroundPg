@@ -22,7 +22,6 @@ const Explore = () => {
   const [isPending, startTransition] = useTransition();
   
   // Enhanced filter states with updated price range
-  // const [location, setLocation] = useState(searchParams?.get('location') || '');
   const [priceRange, setPriceRange] = useState([8000, 35000]);
   const [debouncedPriceRange, setDebouncedPriceRange] = useState([8000, 35000]);
   const [genderPreference, setGenderPreference] = useState('any');
@@ -67,10 +66,10 @@ const Explore = () => {
       }
       
       // Price filter based on sharing type
-      let propertyPrice = property.price;
-      if (sharingType === 'single') propertyPrice = property.sharingOptions.single;
-      else if (sharingType === 'double') propertyPrice = property.sharingOptions.double;
-      else if (sharingType === 'triple') propertyPrice = property.sharingOptions.triple;
+      let propertyPrice = property.price_triple;
+      if (sharingType === 'single') propertyPrice = property.price_single;
+      else if (sharingType === 'double') propertyPrice = property.price_double;
+      else if (sharingType === 'triple') propertyPrice = property.price_triple;
       
       if (propertyPrice < debouncedPriceRange[0] || propertyPrice > debouncedPriceRange[1]) {
         return false;
@@ -105,10 +104,10 @@ const Explore = () => {
     // Sort properties
     switch (sortBy) {
       case 'price-low':
-        filtered.sort((a, b) => a.price - b.price);
+        filtered.sort((a, b) => a.price_triple - b.price_triple);
         break;
       case 'price-high':
-        filtered.sort((a, b) => b.price - a.price);
+        filtered.sort((a, b) => b.price_triple - a.price_triple);
         break;
       case 'rating':
         filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
