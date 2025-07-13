@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWishlist } from '@/contexts/WishlistContext';
+import Image from 'next/image';
 
 interface Property {
   id: string;
   title: string;
   location: string;
-  price: number;
+  price_triple: number;
   images: string[];
   genderPreference: 'men' | 'women' | 'co-living';
   amenities: string[];
@@ -111,7 +112,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
           {/* Price */}
           <div className="mb-3">
             <span className="text-2xl font-bold text-primary">
-              ₹{property.price.toLocaleString()}
+              ₹{property.price_triple.toLocaleString()}
             </span>
             <span className="text-gray-600 text-sm ml-1">/month</span>
           </div>
@@ -146,7 +147,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
               {property.hostAvatar ? (
-                <img src={property.hostAvatar} alt={property.hostName} className="w-full h-full rounded-full" />
+                <Image src={property.hostAvatar} alt={property.hostName} width={32} height={32} className="w-full h-full rounded-full" />
               ) : (
                 <User className="h-3 w-3 text-white" />
               )}

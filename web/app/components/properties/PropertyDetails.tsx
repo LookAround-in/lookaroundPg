@@ -6,11 +6,15 @@ import { usePropertyContext } from 'app/contexts/PropertyContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MapPin, Heart, User, Star, Phone, Mail, ArrowLeft, Eye, Calendar, Users, Home, Play, Loader2, Utensils, Sofa, Car, Train, ShoppingBag, Hospital, PencilRuler, PackagePlus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { mockProperties } from '@/data/mockData';
 import { useToast } from '@/hooks/use-toast';
+import Image from 'next/image';
 
 const PropertyDetails = () => {
   const { propertyId } = usePropertyContext();
@@ -20,6 +24,10 @@ const PropertyDetails = () => {
   const { toast } = useToast();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showHostInfo, setShowHostInfo] = useState(false);
+  const [selectedSharingType, setSelectedSharingType] = useState<'single' | 'double' | 'triple'>('triple');
+  const [showTermsDialog, setShowTermsDialog] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showVirtualTourModal, setShowVirtualTourModal] = useState(false);
   
   const property = mockProperties.find(p => p.id === propertyId);
   
@@ -74,11 +82,7 @@ const PropertyDetails = () => {
       router.push('/login');
       return;
     }
-    setShowHostInfo(true);
-    toast({
-      title: "Contact information revealed",
-      description: "You can now contact the host directly.",
-    });
+    setShowTermsDialog(true);
   };
 
   const getGenderBadgeColor = (gender: string) => {
@@ -96,6 +100,45 @@ const PropertyDetails = () => {
       case 'limited': return 'bg-primary text-white';
       case 'full': return 'bg-primary text-white';
       default: return 'bg-primary text-white';
+    }
+  };
+
+  const handleTermsAcceptance = () => {
+    if (!termsAccepted) {
+      toast({
+        title: "Terms acceptance required",
+        description: "Please accept the terms and conditions to proceed.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setShowHostInfo(true);
+    setShowTermsDialog(false);
+    toast({
+      title: "Contact information revealed",
+      description: "You can now contact the host directly.",
+    });
+  };
+
+  // Pricing data based on sharing type with refundable deposit
+  const pricingData = {
+    single: {
+      price: property.price_single,
+      deposit: 5000,
+      refundableDeposit: 4000,
+      maintenance: 1000
+    },
+    double: {
+      price: property.price_double,
+      deposit: 4000,
+      refundableDeposit: 3200,
+      maintenance: 800
+    },
+    triple: {
+      price: property.price_triple,
+      deposit: 3000,
+      refundableDeposit: 2500,
+      maintenance: 600
     }
   };
 
@@ -167,6 +210,7 @@ const PropertyDetails = () => {
           {/* Virtual Tour Button - Mobile Top Right */}
           {property.virtualTour && (
             <Button 
+              onClick={() => setShowVirtualTourModal(true)}
               className="md:hidden bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg"
               size="sm"
             >
@@ -284,11 +328,32 @@ const PropertyDetails = () => {
                     </div>
                   </div>
 
+                  {/* Sharing Type Selector */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-3">Select Sharing Type</h3>
+                    <div className="flex flex-wrap gap-3">
+                      {(['single', 'double', 'triple'] as const).map((type) => (
+                        <Button
+                          key={type}
+                          variant={selectedSharingType === type ? 'default' : 'outline'}
+                          onClick={() => {
+                            setSelectedSharingType(type);
+                            setCurrentImageIndex(0);
+                          }}
+                          className={selectedSharingType === type ? 'bg-gradient-cool text-white' : ''}
+                        >
+                          {type === 'single' ? 'Single' : type === 'double' ? 'Double' : 'Triple'} Sharing
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
                   {/* Price and Status */}
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-3xl font-bold text-primary dark:text-blue-400">
-                        ₹{property.price.toLocaleString()}
+                        {/* ₹{property.price.toLocaleString()} */}
+                        ₹{pricingData[selectedSharingType].price.toLocaleString()}
                       </span>
                       <span className="text-gray-600 dark:text-gray-400 ml-2">/month</span>
                     </div>
@@ -300,7 +365,7 @@ const PropertyDetails = () => {
 
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2">
-                    <Badge className={getGenderBadgeColor(property.genderPreference)}>
+                    <Badge variant='outline' className={getGenderBadgeColor(property.genderPreference)}>
                       {property.genderPreference === 'co-living' ? 'Co-living' : 
                        property.genderPreference === 'men' ? 'Men Only' : 'Women Only'}
                     </Badge>
@@ -311,7 +376,7 @@ const PropertyDetails = () => {
                       <Badge variant="outline" className="dark:border-gray-600 dark:text-gray-300">Virtual Tour</Badge>
                     )}
                     {propertyFeatures.foodIncluded && (
-                      <Badge className="bg-green-100 text-green-800">
+                      <Badge variant='outline' className="bg-green-100 text-green-800">
                         <Utensils className="h-3 w-3 mr-1" />
                         Food Included
                       </Badge>
@@ -336,17 +401,61 @@ const PropertyDetails = () => {
                     <div className="text-center p-3 bg-gradient-cool-light dark:bg-gray-700 rounded-lg">
                       <Users className="h-6 w-6 mx-auto mb-2 text-gradient-cool dark:text-blue-400" />
                       <p className="text-sm font-medium dark:text-white">Sharing Type</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 capitalize">{property.propertyType}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 capitalize">{selectedSharingType}</p>
                     </div>
                     <div className="text-center p-3 bg-gradient-cool-light dark:bg-gray-700 rounded-lg">
                       <Home className="h-6 w-6 mx-auto mb-2 text-gradient-cool dark:text-blue-400" />
                       <p className="text-sm font-medium dark:text-white">Property Type</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">PG/Hostel</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">{property.propertyType}</p>
                     </div>
                     <div className="text-center p-3 bg-gradient-cool-light dark:bg-gray-700 rounded-lg">
                       <Calendar className="h-6 w-6 mx-auto mb-2 text-gradient-cool dark:text-blue-400" />
                       <p className="text-sm font-medium dark:text-white">Move-in</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">Immediate</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">{property.move_in}</p>
+                    </div>
+                  </div>
+
+                  {/* Pricing Details with Refundable Deposit */}
+                  <div className="mt-6 p-4 bg-gray-200 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-3">
+                      Pricing Details ({selectedSharingType} sharing)
+                    </h3>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-gray-700">Monthly Rent:</span>
+                        <span className="font-medium">
+                          ₹{pricingData[selectedSharingType].price.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-700">Security Deposit:</span>
+                        <span className="font-medium">
+                          ₹{pricingData[selectedSharingType].deposit.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600 ml-4">- Maintenance:</span>
+                        <span className="text-red-600 font-medium">
+                          - ₹{pricingData[selectedSharingType].maintenance.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600 ml-4">- Refundable Amount:</span>
+                        <span className="text-green-600 font-medium">
+                          + ₹{pricingData[selectedSharingType].refundableDeposit.toLocaleString()}
+                        </span>
+                      </div>
+                      <hr className="my-2" />
+                      <div className="flex justify-between font-semibold text-md">
+                        <span>Total Move-in Cost:</span>
+                        <span className="text-primary">
+                          ₹
+                          {(
+                            pricingData[selectedSharingType].price +
+                            pricingData[selectedSharingType].deposit 
+                          ).toLocaleString()}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -450,7 +559,7 @@ const PropertyDetails = () => {
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
                         <span className="ml-1 font-semibold dark:text-white">{property.rating}</span>
                       </div>
-                      <span className="text-gray-600 dark:text-gray-400">({reviews.length} reviews)</span>
+                      <span className="text-gray-600 dark:text-gray-400">({property.reviewCount} reviews)</span>
                     </div>
                   )}
                 </div>
@@ -501,11 +610,7 @@ const PropertyDetails = () => {
                 <div className="text-center space-y-4">
                   <div className="w-16 h-16 bg-gradient-cool rounded-full flex items-center justify-center mx-auto">
                     {property.hostAvatar ? (
-                      <img 
-                        src={property.hostAvatar} 
-                        alt={property.hostName} 
-                        className="w-full h-full rounded-full object-cover" 
-                      />
+                      <Image src={property.hostAvatar} alt={property.hostName} width={32} height={32} className="w-full h-full rounded-full" />
                     ) : (
                       <User className="h-8 w-8 text-white" />
                     )}
@@ -603,6 +708,7 @@ const PropertyDetails = () => {
               {/* Enhanced Virtual Tour Button */}
               {property.virtualTour && (
                 <Button 
+                  onClick={() => setShowVirtualTourModal(true)}
                   className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg transform transition-all duration-200 hover:scale-105 hidden md:flex items-center justify-center"
                 >
                   <Eye className="h-4 w-4 mr-2" />
@@ -612,6 +718,98 @@ const PropertyDetails = () => {
             </div>
           </div>
         </div>
+
+        {/* Terms and Conditions Dialog */}
+        <Dialog open={showTermsDialog} onOpenChange={setShowTermsDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Terms and Conditions</DialogTitle>
+              <DialogDescription>
+                Please read and accept the terms before proceeding.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                <h4 className="font-semibold mb-2">Important Notice</h4>
+                <p className="text-sm text-gray-600">
+                  LookaroundPG is just a platform that connects users with property hosts.
+                  LookaroundPG is not responsible for any disputes, damages, or issues that may arise
+                  between users and hosts. By proceeding, you acknowledge that any transactions or
+                  agreements are directly between you and the property host.
+                </p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="terms"
+                  checked={termsAccepted}
+                  onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+                />
+                <label htmlFor="terms" className="text-sm">
+                  I agree to the terms and conditions
+                </label>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowTermsDialog(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleTermsAcceptance} disabled={!termsAccepted} className='mb-2 sm:mb-0'>
+                Accept & Continue
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Virtual Tour Modal */}
+        <Dialog open={showVirtualTourModal} onOpenChange={setShowVirtualTourModal}>
+          <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-hidden p-0">
+            <DialogHeader className="p-6 pb-0">
+              <DialogTitle className="flex items-center gap-2">
+                <Play className="h-5 w-5" />
+                Virtual Tour - {property.title}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="p-6">
+              <Tabs defaultValue="single" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="single">Single Sharing</TabsTrigger>
+                  <TabsTrigger value="double">Double Sharing</TabsTrigger>
+                  <TabsTrigger value="triple">Triple Sharing</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="single" className="mt-4">
+                  <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center">
+                    <div className="text-center text-white">
+                      <Play className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                      <h3 className="text-xl font-semibold mb-2">Single Sharing - Virtual Tour</h3>
+                      <p className="text-gray-300">360° view of single occupancy room</p>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="double" className="mt-4">
+                  <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center">
+                    <div className="text-center text-white">
+                      <Play className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                      <h3 className="text-xl font-semibold mb-2">Double Sharing - Virtual Tour</h3>
+                      <p className="text-gray-300">360° view of double occupancy room</p>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="triple" className="mt-4">
+                  <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center">
+                    <div className="text-center text-white">
+                      <Play className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                      <h3 className="text-xl font-semibold mb-2">Triple Sharing - Virtual Tour</h3>
+                      <p className="text-gray-300">360° view of triple occupancy room</p>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
