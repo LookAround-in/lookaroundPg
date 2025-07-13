@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, startTransition, useCallback, useTransition } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { PropertyCard } from '@/components/properties/PropertyCard';
 import { Button } from '@/components/ui/button';
@@ -13,14 +13,18 @@ import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Search, Filter, X, SlidersHorizontal, MapPin, Star, Home, Users } from 'lucide-react';
 import { mockProperties } from '@/data/mockData';
+import { useDebouncedCallback } from 'use-debounce';
 
 const Explore = () => {
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
+  const [isPending, startTransition] = useTransition();
   
   // Enhanced filter states with updated price range
-  const [location, setLocation] = useState(searchParams?.get('location') || '');
+  // const [location, setLocation] = useState(searchParams?.get('location') || '');
   const [priceRange, setPriceRange] = useState([8000, 35000]);
+  const [debouncedPriceRange, setDebouncedPriceRange] = useState([8000, 35000]);
   const [genderPreference, setGenderPreference] = useState('any');
   const [amenities, setAmenities] = useState<string[]>([]);
   const [virtualTour, setVirtualTour] = useState(false);
@@ -28,6 +32,10 @@ const Explore = () => {
   const [propertyType, setPropertyType] = useState('any');
   const [sharingType, setSharingType] = useState('any');
   const [rating, setRating] = useState(0);
+  const [selectedCity, setSelectedCity] = useState('bangalore');
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const properties = mockProperties;
+  const loading = false;
 
   const availableAmenities = [
     'WiFi', 'AC', 'Meals', 'Parking', 'Security', 'Gym', 
@@ -35,10 +43,26 @@ const Explore = () => {
     'Refrigerator', 'Microwave', 'Balcony', 'Study Room'
   ];
 
+  //Debounced price range updatte
+  const debouncedSetPriceRange = useDebouncedCallback(
+    (value: number[]) => {
+      startTransition(()=>{
+        setDebouncedPriceRange(value);
+      })
+    },
+    300 //300ms delay
+  )
+
+  //Handle immediate price range display
+  const handlePriceRangeChange = useCallback((value: number[])=>{
+    setPriceRange(value);
+    debouncedSetPriceRange(value);
+  }, [debouncedSetPriceRange]);
+
   const filteredProperties = useMemo(() => {
     const filtered = mockProperties.filter(property => {
       // Location filter
-      if (location && !property.location.toLowerCase().includes(location.toLowerCase())) {
+      if (selectedLocation && !property.location.toLowerCase().includes(selectedLocation.toLocaleLowerCase())) {
         return false;
       }
       
@@ -48,7 +72,7 @@ const Explore = () => {
       else if (sharingType === 'double') propertyPrice = property.sharingOptions.double;
       else if (sharingType === 'triple') propertyPrice = property.sharingOptions.triple;
       
-      if (propertyPrice < priceRange[0] || propertyPrice > priceRange[1]) {
+      if (propertyPrice < debouncedPriceRange[0] || propertyPrice > debouncedPriceRange[1]) {
         return false;
       }
       
@@ -96,7 +120,7 @@ const Explore = () => {
     }
 
     return filtered;
-  }, [location, priceRange, genderPreference, amenities, virtualTour, sortBy, propertyType, rating, sharingType]);
+  }, [selectedLocation, debouncedPriceRange, genderPreference, amenities, virtualTour, sortBy, propertyType, rating, sharingType]);
 
   const handleAmenityChange = (amenity: string, checked: boolean) => {
     if (checked) {
@@ -107,8 +131,10 @@ const Explore = () => {
   };
 
   const clearFilters = () => {
-    setLocation('');
+    setSelectedCity('bangalore');
+    setSelectedLocation('');
     setPriceRange([8000, 35000]);
+    setDebouncedPriceRange([8000, 35000]);
     setGenderPreference('any');
     setAmenities([]);
     setVirtualTour(false);
@@ -119,33 +145,77 @@ const Explore = () => {
   };
 
   const activeFiltersCount = [
-    location,
+    selectedCity !== 'bangalore',
+    selectedLocation !== '',
     genderPreference !== 'any',
     amenities.length > 0,
     virtualTour,
     propertyType !== 'any',
     sharingType !== 'any',
     rating > 0,
-    priceRange[0] !== 8000 || priceRange[1] !== 35000
+    debouncedPriceRange[0] !== 8000 || debouncedPriceRange[1] !== 35000
   ].filter(Boolean).length;
 
+  const cities = [
+    { value: 'bangalore', label: 'Bangalore', available: true },
+    { value: 'hyderabad', label: 'Hyderabad', available: false },
+    { value: 'chennai', label: 'Chennai', available: false }
+  ];
+
+  const currentCity = cities.find(city => city.value === selectedCity);
+  const locations = [...new Set(properties.map(p => p.location))];
+
   // Filter component for reuse
-  const FilterContent = () => (
+  const FilterContent = useMemo(() => (
     <div className="space-y-6">
-      {/* Location Search */}
+      {/* City Select */}
       <div>
-        <Label className="text-sm font-semibold mb-3 block text-gray-700 dark:text-gray-300">
-          Location
-        </Label>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            placeholder="Search location..."
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="pl-10 border-2 border-gray-200 focus:border-purple-400 dark:border-gray-600 dark:bg-gray-800"
-          />
-        </div>
+        <h4 className="text-sm font-semibold mb-3 block text-gray-700 dark:text-gray-300">City</h4>
+        <Select value={selectedCity} onValueChange={setSelectedCity}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select a city" />
+          </SelectTrigger>
+          <SelectContent>
+            {cities.map((city) => (
+              <SelectItem
+                key={city.value}
+                value={city.value}
+                disabled={!city.available}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span>{city.label}</span>
+                  {!city.available && (
+                    <span className="text-xs text-gray-500 ml-2">
+                      Coming Soon
+                    </span>
+                  )}
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Location Select */}
+      <div>
+        <h4 className="text-sm font-semibold mb-3 block text-gray-700 dark:text-gray-300">Location</h4>
+        <Select
+          value={selectedLocation}
+          onValueChange={setSelectedLocation}
+          disabled={selectedCity !== 'bangalore'}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select a location" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Locations</SelectItem>
+            {locations.map((location) => (
+              <SelectItem key={location} value={location}>
+                {location}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Sharing Type */}
@@ -154,7 +224,7 @@ const Explore = () => {
           Room Sharing
         </Label>
         <Select value={sharingType} onValueChange={setSharingType}>
-          <SelectTrigger className="border-2 border-gray-200 focus:border-purple-400 dark:border-gray-600 dark:bg-gray-800">
+          <SelectTrigger className="dark:bg-gray-800">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -174,7 +244,7 @@ const Explore = () => {
         <div className="px-2">
           <Slider
             value={priceRange}
-            onValueChange={setPriceRange}
+            onValueChange={handlePriceRangeChange}
             min={5000}
             max={50000}
             step={1000}
@@ -188,6 +258,9 @@ const Explore = () => {
               ₹{priceRange[1].toLocaleString()}
             </Badge>
           </div>
+          {isPending && (
+            <div className="text-xs text-gray-500 mt-1">Updating results...</div>
+          )}
         </div>
       </div>
 
@@ -258,7 +331,7 @@ const Explore = () => {
       </div>
 
       {/* Virtual Tour Toggle */}
-      <Card className="bg-gradient-cool dark:bg-gray-700 border-none">
+      <Card className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white dark:bg-gray-700 border-none">
         <CardContent className="p-4">
           <div className="flex items-center space-x-3">
             <Checkbox
@@ -282,7 +355,7 @@ const Explore = () => {
         </Button>
       )}
     </div>
-  );
+  ), [selectedLocation, priceRange, sharingType, genderPreference, rating, amenities, virtualTour, activeFiltersCount, handleAmenityChange, clearFilters, isPending]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
@@ -347,7 +420,7 @@ const Explore = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <FilterContent />
+                {FilterContent}
               </CardContent>
             </Card>
           </div>
@@ -411,7 +484,7 @@ const Explore = () => {
               </SheetTitle>
             </SheetHeader>
             <div className="py-6">
-              <FilterContent />
+              {FilterContent }
             </div>
           </SheetContent>
         </Sheet>
