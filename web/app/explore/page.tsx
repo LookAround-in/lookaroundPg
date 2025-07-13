@@ -143,7 +143,7 @@ const Explore = () => {
             placeholder="Search location..."
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="pl-10 border-2 border-gray-200 focus:border-purple-400 dark:border-gray-600 dark:bg-gray-800"
+            className="pl-10 border-none dark:border-gray-600 dark:bg-gray-800"
           />
         </div>
       </div>
@@ -154,7 +154,7 @@ const Explore = () => {
           Room Sharing
         </Label>
         <Select value={sharingType} onValueChange={setSharingType}>
-          <SelectTrigger className="border-2 border-gray-200 focus:border-purple-400 dark:border-gray-600 dark:bg-gray-800">
+          <SelectTrigger className="dark:bg-gray-800">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
