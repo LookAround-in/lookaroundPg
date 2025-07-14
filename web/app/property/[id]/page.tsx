@@ -1,7 +1,7 @@
 'use client'
 import { use } from "react";
-import { PropertyProvider } from "@/contexts/PropertyContext";
-import PropertyDetails from "@/components/properties/PropertyDetails";
+import { PropertyProvider } from "contexts/PropertyContext";
+import PropertyDetails from "components/properties/PropertyDetails";
 
 interface PropertyPageProps {
   params: Promise<{

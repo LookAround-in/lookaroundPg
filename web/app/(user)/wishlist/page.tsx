@@ -2,12 +2,12 @@
 import React from 'react';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { PropertyCard } from '@/components/properties/PropertyCard';
+import { Button } from 'components/ui/button';
+import { PropertyCard } from 'components/properties/PropertyCard';
 import { Heart, Search } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useWishlist } from '@/contexts/WishlistContext';
-import { mockProperties } from '@/data/mockData';
+import { useAuth } from 'contexts/AuthContext';
+import { useWishlist } from 'contexts/WishlistContext';
+import { mockProperties } from 'data/mockData';
 
 const Wishlist = () => {
   const { user } = useAuth();

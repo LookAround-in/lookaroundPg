@@ -39,7 +39,7 @@
     "./dist/types/**/*.ts",
     "app/**/*",
     "src/**/*"
-  ],
+, "hooks", "data", "utils", "components", "contexts"  ],
   "exclude": [
     "node_modules"
   ]

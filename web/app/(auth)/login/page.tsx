@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
+import { Button } from 'components/ui/button';
+import { Input } from 'components/ui/input';
+import { Label } from 'components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
+import { useAuth } from 'contexts/AuthContext';
+import { useToast } from 'hooks/use-toast';
 import Image from 'next/image';
 import { authClient } from 'lib/auth-client';
 

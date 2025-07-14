@@ -1,17 +1,17 @@
 'use client'
 import React, { useState, useMemo, startTransition, useCallback, useTransition } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { PropertyCard } from '@/components/properties/PropertyCard';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Slider } from '@/components/ui/slider';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { PropertyCard } from 'components/properties/PropertyCard';
+import { Button } from 'components/ui/button';
+import { Label } from 'components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
+import { Checkbox } from 'components/ui/checkbox';
+import { Slider } from 'components/ui/slider';
+import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
+import { Badge } from 'components/ui/badge';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from 'components/ui/sheet';
 import { Search, Filter, X, SlidersHorizontal, MapPin, Star, Home, Users } from 'lucide-react';
-import { mockProperties } from '@/data/mockData';
+import { mockProperties } from 'data/mockData';
 import { useDebouncedCallback } from 'use-debounce';
 
 const availableAmenities = [

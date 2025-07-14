@@ -4,7 +4,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation';
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "components/ui/button";
 import { Home, Search, ArrowLeft } from "lucide-react";
 
 const NotFound = () => {

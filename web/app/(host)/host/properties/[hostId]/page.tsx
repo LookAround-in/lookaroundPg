@@ -1,16 +1,16 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { PropertyCard } from '@/components/properties/PropertyCard';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
+import { PropertyCard } from 'components/properties/PropertyCard';
+import { Button } from 'components/ui/button';
+import { Badge } from 'components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
+import { Progress } from 'components/ui/progress';
 import { ArrowLeft, User, Star, Phone, Mail, MapPin, Home, Calendar, TrendingUp, Users, Shield, Award, MessageSquareDot } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { mockProperties } from 'app/data/mockData';
+import { mockProperties } from 'data/mockData';
 
 const HostProperties = () => {
   const { hostId } = useParams();

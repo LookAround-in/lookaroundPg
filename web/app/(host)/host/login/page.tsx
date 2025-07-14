@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
+import { Button } from 'components/ui/button';
+import { Input } from 'components/ui/input';
+import { Label } from 'components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
+import { useToast } from 'hooks/use-toast';
 import Image from 'next/image';
 
 const HostLogin = () => {
@@ -21,7 +21,7 @@ const HostLogin = () => {
     setIsLoading(true);
 
     try {
-      // Simulate API call
+      //TODO : Replace with actual login logic once backend is ready
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast({

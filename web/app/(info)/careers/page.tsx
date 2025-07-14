@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from 'components/ui/button';
+import { Badge } from 'components/ui/badge';
 import { MapPin, Clock, Users, Briefcase, Heart, Star, ArrowRight } from 'lucide-react';
 
 const Careers = () => {

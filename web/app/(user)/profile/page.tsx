@@ -1,14 +1,14 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from 'components/ui/button';
+import { Input } from 'components/ui/input';
+import { Label } from 'components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
 import { User, Mail, Phone, Settings, Heart, LogOut } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useWishlist } from '@/contexts/WishlistContext';
-import { useToast } from '@/hooks/use-toast';
+import { useAuth } from 'contexts/AuthContext';
+import { useWishlist } from 'contexts/WishlistContext';
+import { useToast } from 'hooks/use-toast';
 
 const Profile = () => {
   const { user, logout, isLoading } = useAuth();

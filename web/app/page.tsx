@@ -1,11 +1,11 @@
 'use client'
 import React from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { SearchBar } from '@/components/search/SearchBar';
-import { PropertyCard } from '@/components/properties/PropertyCard';
+import { Button } from 'components/ui/button';
+import { SearchBar } from 'components/search/SearchBar';
+import { PropertyCard } from 'components/properties/PropertyCard';
 import { Shield, Search, Star, Users } from 'lucide-react';
-import { featuredProperties, trendingProperties } from '@/data/mockData';
+import { featuredProperties, trendingProperties } from 'data/mockData';
 
 const Index = () => {
   const features = [
@@ -76,7 +76,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-charcoa mb-4">
-              Why Choose FindMyPG?
+              Why Choose LookaroundPG?
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               We make finding the perfect PG accommodation simple, safe, and reliable

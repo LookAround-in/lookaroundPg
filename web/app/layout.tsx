@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css"
 import { Providers } from "./providers";
-import { metadata as baseMetadata } from "./utils/metadata";
+import { metadata as baseMetadata } from "../utils/metadata";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const metadata: Metadata = {
