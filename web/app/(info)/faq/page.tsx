@@ -134,7 +134,7 @@ const FAQ = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 dark:bg-gray-900 transition-colors duration-200">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white transition-colors duration-200">
       {/* Hero Section */}
       <div className="bg-gradient-cool relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -154,7 +154,7 @@ const FAQ = () => {
                 placeholder="Search FAQs..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-12 bg-white/90 dark:bg-gray-800/90 border-0 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                className="pl-12 h-12 bg-white/90 border-0 text-gray-800 placeholder-gray-500"
               />
             </div>
           </div>
@@ -164,7 +164,7 @@ const FAQ = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Category Filter */}
         <div className="mb-12">
-          <h2 className="text-xl font-semibold text-charcoal dark:text-white mb-4 text-center">
+          <h2 className="text-xl font-semibold text-charcoal mb-4 text-center">
             Browse by Category
           </h2>
           <div className="flex flex-wrap gap-2 justify-center">
@@ -173,7 +173,7 @@ const FAQ = () => {
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
                 className={`px-4 py-2 cursor-pointer hover:bg-gradient-cool hover:text-white transition-all duration-200 ${
-                  selectedCategory === category ? 'bg-gradient-cool text-white' : 'dark:border-gray-600 dark:text-gray-300 dark:hover:text-white'
+                  selectedCategory === category ? 'bg-gradient-cool text-white' : ''
                 }`}
                 onClick={() => setSelectedCategory(category)}
               >
@@ -189,33 +189,33 @@ const FAQ = () => {
             filteredFaqs.map((faq, index) => (
               <div
                 key={faq.id}
-                className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 animate-fadeInUp"
+                className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 animate-fadeInUp"
                 style={{animationDelay: `${index * 0.05}s`}}
               >
                 <button
                   onClick={() => toggleFaq(faq.id)}
-                  className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors rounded-xl"
+                  className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors rounded-xl"
                 >
                   <div className="flex-1 pr-4">
                     <div className="flex items-center mb-2">
-                      <Badge variant="outline" className="mr-3 text-xs dark:border-gray-600 dark:text-gray-300">
+                      <Badge variant="outline" className="mr-3 text-xs ">
                         {faq.category}
                       </Badge>
                     </div>
-                    <h3 className="text-lg font-medium text-charcoal dark:text-white">
+                    <h3 className="text-lg font-medium text-charcoal">
                       {faq.question}
                     </h3>
                   </div>
                   {expandedFaq === faq.id ? (
-                    <ChevronDown className="h-5 w-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                    <ChevronDown className="h-5 w-5 text-gray-500 flex-shrink-0" />
                   ) : (
-                    <ChevronRight className="h-5 w-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                    <ChevronRight className="h-5 w-5 text-gray-500 flex-shrink-0" />
                   )}
                 </button>
                 {expandedFaq === faq.id && (
                   <div className="px-6 pb-6">
-                    <div className="pt-4 border-t border-gray-100 dark:border-gray-600">
-                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <div className="pt-4 border-t border-gray-100 ">
+                      <p className="text-gray-600 leading-relaxed">
                         {faq.answer}
                       </p>
                     </div>
@@ -225,11 +225,11 @@ const FAQ = () => {
             ))
           ) : (
             <div className="text-center py-12">
-              <HelpCircle className="h-16 w-16 text-gray-300 dark:text-gray-500 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-500 dark:text-gray-400 mb-2">
+              <HelpCircle className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-500 mb-2">
                 No FAQs found
               </h3>
-              <p className="text-gray-400 dark:text-gray-500">
+              <p className="text-gray-400">
                 Try adjusting your search terms or category filter
               </p>
             </div>
@@ -237,18 +237,18 @@ const FAQ = () => {
         </div>
 
         {/* Still Need Help */}
-        <div className="mt-16 bg-gradient-cool-light dark:bg-gray-800 rounded-2xl p-8 text-center">
-          <h3 className="text-2xl font-bold text-charcoal dark:text-white mb-4">
+        <div className="mt-16 bg-gradient-cool-light rounded-2xl p-8 text-center">
+          <h3 className="text-2xl font-bold text-charcoal mb-4">
             Still have questions?
           </h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
+          <p className="text-gray-600 mb-6">
             Can't find what you're looking for? Our support team is here to help.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="px-6 py-3 bg-gradient-cool text-white rounded-lg hover:opacity-90 transition-opacity">
               Contact Support
             </button>
-            <button className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:border-gray-400 dark:hover:border-gray-500 transition-colors">
+            <button className="px-6 py-3 border border-gray-300  text-gray-700 rounded-lg hover:border-gray-400 transition-colors">
               Submit a Question
             </button>
           </div>

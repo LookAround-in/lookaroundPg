@@ -14,29 +14,29 @@ export const Footer = () => {
               <div className="w-8 h-8 rounded-full flex items-center justify-center">
                 <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-full h-full object-contain"/>
               </div>
-              <span className="font-bold md:text-xl text-gradient-cool dark:text-white">LookaroundPG</span>
+              <span className="font-bold md:text-xl text-gradient-cool">LookaroundPG</span>
             </div>
-            <p className="text-gray-50 dark:text-gray-400">
+            <p className="text-gray-50">
               Your trusted platform for finding safe, comfortable, and affordable PG accommodations.
             </p>
             <div className="flex space-x-4">
               <a
                 href="#"
-                className="w-8 h-8 bg-gray-600 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors"
+                className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center hover:bg-primary transition-colors"
                 aria-label="Facebook"
               >
                 <Facebook className="w-4 h-4" />
               </a>
               <a
                 href="#"
-                className="w-8 h-8 bg-gray-600 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors"
+                className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center hover:bg-primary transition-colors"
                 aria-label="Twitter"
               >
                 <Twitter className="w-4 h-4" />
               </a>
               <a
                 href="#"
-                className="w-8 h-8 bg-gray-600 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors"
+                className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center hover:bg-primary transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram className="w-4 h-4" />
@@ -46,30 +46,30 @@ export const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold text-lg text-gray-50 dark:text-gray-200 mb-4">Quick Links</h3>
+            <h3 className="font-semibold text-lg text-gray-50 mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/explore" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <Link href="/explore" className="text-gray-50 hover:text-primary transition-colors">
                   Find PG
                 </Link>
               </li>
               <li>
-                <Link href="/partner" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <Link href="/partner" className="text-gray-50 hover:text-primary transition-colors">
                   List Property
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <Link href="/about" className="text-gray-50 hover:text-primary transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <Link href="/blog" className="text-gray-50 hover:text-primary transition-colors">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link href="/careers" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <Link href="/careers" className="text-gray-50 hover:text-primary transition-colors">
                   Careers
                 </Link>
               </li>
@@ -78,25 +78,25 @@ export const Footer = () => {
 
           {/* Support */}
           <div>
-            <h3 className="font-semibold text-lg text-gray-50 dark:text-gray-200 mb-4">Support</h3>
+            <h3 className="font-semibold text-lg text-gray-50 mb-4">Support</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/help" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <Link href="/help" className="text-gray-50 hover:text-primary transition-colors">
                   Help Center
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <Link href="/contact" className="text-gray-50 hover:text-primary transition-colors">
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <Link href="/faq" className="text-gray-50 hover:text-primary transition-colors">
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link href="/safety" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <Link href="/safety" className="text-gray-50 hover:text-primary transition-colors">
                   Safety Information
                 </Link>
               </li>
@@ -105,20 +105,20 @@ export const Footer = () => {
 
           {/* Legal */}
           <div>
-            <h3 className="font-semibold text-lg text-gray-50 dark:text-gray-200 mb-4">Legal</h3>
+            <h3 className="font-semibold text-lg text-gray-50 mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <a href="#" className="text-gray-50 hover:text-primary transition-colors">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="/terms" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <a href="/terms" className="text-gray-50 hover:text-primary transition-colors">
                   Terms of Service
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <a href="#" className="text-gray-50 hover:text-primary transition-colors">
                   Cookie Policy
                 </a>
               </li>
@@ -127,15 +127,15 @@ export const Footer = () => {
 
           {/* Admin */}
           <div>
-            <h3 className="font-semibold text-lg text-gray-50 dark:text-gray-200 mb-4">Host</h3>
+            <h3 className="font-semibold text-lg text-gray-50 mb-4">Host</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/host/login" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <Link href="/host/login" className="text-gray-50 hover:text-primary transition-colors">
                   Login
                 </Link>
               </li>
               <li>
-                <Link href="/host/dashboard" className="text-gray-50 dark:text-gray-400 hover:text-primary transition-colors">
+                <Link href="/host/dashboard" className="text-gray-50 hover:text-primary transition-colors">
                   Dashboard
                 </Link>
               </li>
@@ -144,8 +144,8 @@ export const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-700 dark:border-gray-800 mt-8 pt-8 text-center">
-          <p className="text-gray-50 dark:text-gray-400">
+        <div className="border-t border-gray-700 mt-8 pt-8 text-center">
+          <p className="text-gray-50">
             © 2024 LookaroundPG. Made with <Heart className="inline w-4 h-4 text-red-500 mx-1" /> for better living.
           </p>
         </div>

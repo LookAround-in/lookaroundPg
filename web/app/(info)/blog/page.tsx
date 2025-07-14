@@ -73,7 +73,7 @@ const Blog = () => {
   const categories = ["All", "Guide", "Safety", "Lifestyle", "Finance", "Technology", "Legal"];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 dark:bg-gray-900 transition-colors duration-200">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white transition-colors duration-200">
       {/* Hero Section */}
       <div className="bg-gradient-cool relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -94,7 +94,7 @@ const Blog = () => {
             <Badge
               key={category}
               variant="outline"
-              className="px-4 py-2 cursor-pointer hover:bg-gradient-cool hover:text-white transition-all duration-200 dark:border-gray-600 dark:text-gray-300 dark:hover:text-white"
+              className="px-4 py-2 cursor-pointer hover:bg-gradient-cool hover:text-white transition-all duration-200"
             >
               {category}
             </Badge>
@@ -104,17 +104,17 @@ const Blog = () => {
         {/* Featured Post */}
         {blogPosts.find(post => post.featured) && (
           <div className="mb-12">
-            <div className="gradient-border p-8 rounded-2xl dark:bg-gray-800">
+            <div className="gradient-border p-8 rounded-2xl">
               <Badge className="bg-gradient-cool text-white mb-4">Featured</Badge>
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h2 className="text-3xl font-bold text-charcoal dark:text-white mb-4">
+                  <h2 className="text-3xl font-bold text-charcoal mb-4">
                     {blogPosts.find(post => post.featured)?.title}
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  <p className="text-gray-600 mb-6">
                     {blogPosts.find(post => post.featured)?.excerpt}
                   </p>
-                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-6">
+                  <div className="flex items-center text-sm text-gray-500 mb-6">
                     <User className="h-4 w-4 mr-2" />
                     <span className="mr-4">{blogPosts.find(post => post.featured)?.author}</span>
                     <Calendar className="h-4 w-4 mr-2" />
@@ -144,7 +144,7 @@ const Blog = () => {
           {blogPosts.filter(post => !post.featured).map((post, index) => (
             <article
               key={post.id}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all duration-300 animate-fadeInUp"
+              className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 animate-fadeInUp"
               style={{animationDelay: `${index * 0.1}s`}}
             >
               <img
@@ -153,22 +153,22 @@ const Blog = () => {
                 className="w-full h-48 object-cover"
               />
               <div className="p-6">
-                <Badge variant="outline" className="mb-3 dark:border-gray-600 dark:text-gray-300">
+                <Badge variant="outline" className="mb-3">
                   {post.category}
                 </Badge>
-                <h3 className="text-xl font-semibold text-charcoal dark:text-white mb-3 line-clamp-2">
+                <h3 className="text-xl font-semibold text-charcoal mb-3 line-clamp-2">
                   {post.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                <p className="text-gray-600 mb-4 line-clamp-3">
                   {post.excerpt}
                 </p>
-                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+                <div className="flex items-center text-sm text-gray-500 mb-4">
                   <User className="h-4 w-4 mr-2" />
                   <span className="mr-4">{post.author}</span>
                   <Clock className="h-4 w-4 mr-2" />
                   <span>{post.readTime}</span>
                 </div>
-                <Link href={`/blog/${post.id}`} className="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-medium flex items-center">
+                <Link href={`/blog/${post.id}`} className="text-gradient-cool hover:text-primary font-medium flex items-center">
                   Read More
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
@@ -178,18 +178,18 @@ const Blog = () => {
         </div>
 
         {/* Newsletter Signup */}
-        <div className="mt-16 bg-gradient-cool-light dark:bg-gray-800 rounded-2xl p-8 text-center">
-          <h3 className="text-2xl font-bold text-charcoal dark:text-white mb-4">
+        <div className="mt-16 bg-gradient-cool-light rounded-2xl p-8 text-center">
+          <h3 className="text-2xl font-bold text-charcoal mb-4">
             Stay Updated
           </h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
+          <p className="text-gray-600 mb-6">
             Subscribe to our newsletter for the latest tips and insights about PG living.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <input
               type="email"
               placeholder="Enter your email"
-              className="flex-1 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              className="flex-1 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <Button className="bg-gradient-cool text-white hover:opacity-90">
               Subscribe

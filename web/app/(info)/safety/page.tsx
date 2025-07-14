@@ -94,7 +94,7 @@ const SafetyInformation = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 dark:bg-gray-900 transition-colors duration-200">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white transition-colors duration-200">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-red-500 to-pink-600 relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -113,25 +113,25 @@ const SafetyInformation = () => {
         {/* Safety Features */}
         <div className="mb-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-charcoal dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-charcoal mb-4">
               Our Safety Features
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Multiple layers of security and verification to ensure your peace of mind
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {safetyFeatures.map((feature, index) => (
-              <Card key={index} className="text-center h-full dark:bg-gray-800 dark:border-gray-700 animate-fadeInUp" style={{animationDelay: `${index * 0.1}s`}}>
+              <Card key={index} className="text-center h-full animate-fadeInUp" style={{animationDelay: `${index * 0.1}s`}}>
                 <CardContent className="p-6">
                   <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <feature.icon className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold text-charcoal dark:text-white mb-2">
+                  <h3 className="text-xl font-semibold text-charcoal mb-2">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                  <p className="text-gray-600 text-sm leading-relaxed">
                     {feature.description}
                   </p>
                 </CardContent>
@@ -143,19 +143,19 @@ const SafetyInformation = () => {
         {/* Safety Tips */}
         <div className="mb-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-charcoal dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-charcoal mb-4">
               Safety Guidelines
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Essential tips to ensure your safety throughout your PG journey
             </p>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
             {safetyTips.map((section, index) => (
-              <Card key={index} className="h-full dark:bg-gray-800 dark:border-gray-700 animate-fadeInUp" style={{animationDelay: `${index * 0.2}s`}}>
+              <Card key={index} className="h-full animate-fadeInUp" style={{animationDelay: `${index * 0.2}s`}}>
                 <CardHeader>
-                  <CardTitle className="text-xl font-semibold text-charcoal dark:text-white flex items-center">
+                  <CardTitle className="text-xl font-semibold text-charcoal flex items-center">
                     <CheckCircle className="h-6 w-6 text-green-500 mr-2" />
                     {section.category}
                   </CardTitle>
@@ -165,7 +165,7 @@ const SafetyInformation = () => {
                     {section.tips.map((tip, tipIndex) => (
                       <li key={tipIndex} className="flex items-start">
                         <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                        <span className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                        <span className="text-gray-600 text-sm leading-relaxed">
                           {tip}
                         </span>
                       </li>
@@ -180,23 +180,23 @@ const SafetyInformation = () => {
         {/* Emergency Contacts */}
         <div className="grid lg:grid-cols-2 gap-12 mb-16">
           <div>
-            <h2 className="text-2xl font-bold text-charcoal dark:text-white mb-6">
+            <h2 className="text-2xl font-bold text-charcoal mb-6">
               Emergency Contacts
             </h2>
             <div className="space-y-4">
               {emergencyContacts.map((contact, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 animate-fadeInUp"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 animate-fadeInUp"
                   style={{animationDelay: `${index * 0.1}s`}}
                 >
                   <div className="flex items-center">
                     <Phone className="h-5 w-5 text-red-500 mr-3" />
                     <div>
-                      <div className="font-semibold text-charcoal dark:text-white">
+                      <div className="font-semibold text-charcoal">
                         {contact.service}
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="text-sm text-gray-600">
                         Available {contact.available}
                       </div>
                     </div>
@@ -210,7 +210,7 @@ const SafetyInformation = () => {
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold text-charcoal dark:text-white mb-6">
+            <h2 className="text-2xl font-bold text-charcoal mb-6">
               How to Report Safety Issues
             </h2>
             <div className="space-y-4">
@@ -220,10 +220,10 @@ const SafetyInformation = () => {
                     {item.step}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-charcoal dark:text-white mb-1">
+                    <h3 className="font-semibold text-charcoal mb-1">
                       {item.title}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    <p className="text-gray-600 text-sm">
                       {item.description}
                     </p>
                   </div>
@@ -234,12 +234,12 @@ const SafetyInformation = () => {
         </div>
 
         {/* Safety Resources */}
-        <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 text-center">
+        <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl p-8 text-center">
           <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-2xl font-bold text-charcoal dark:text-white mb-4">
+          <h3 className="text-2xl font-bold text-charcoal mb-4">
             Need Immediate Help?
           </h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
             If you're facing an emergency or immediate safety concern, don't hesitate to contact us or local authorities.
             Your safety is our top priority.
           </p>
@@ -248,7 +248,7 @@ const SafetyInformation = () => {
               <Phone className="h-4 w-4 mr-2" />
               Call Safety Hotline
             </Button>
-            <Button variant="outline" className="border-red-500 text-red-500 hover:bg-red-50 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-900/20">
+            <Button variant="outline" className="border-red-500 text-red-500 hover:bg-red-50">
               <AlertTriangle className="h-4 w-4 mr-2" />
               Report an Issue
             </Button>

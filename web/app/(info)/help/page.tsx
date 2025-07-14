@@ -14,25 +14,25 @@ const HelpCenter = () => {
       title: "Getting Started",
       icon: HelpCircle,
       articles: 12,
-      color: "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
+      color: "bg-blue-100 text-blue-600"
     },
     {
       title: "Property Search",
       icon: Search,
       articles: 8,
-      color: "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300"
+      color: "bg-green-100 text-green-600"
     },
     {
       title: "Booking & Payments",
       icon: MessageCircle,
       articles: 15,
-      color: "bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300"
+      color: "bg-purple-100 text-purple-600"
     },
     {
       title: "Safety & Security",
       icon: HelpCircle,
       articles: 6,
-      color: "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300"
+      color: "bg-red-100 text-red-600"
     }
   ];
 
@@ -84,7 +84,7 @@ const HelpCenter = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 dark:bg-gray-900 transition-colors duration-200">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white transition-colors duration-200">
       {/* Hero Section */}
       <div className="bg-gradient-cool relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -104,7 +104,7 @@ const HelpCenter = () => {
                 placeholder="Search for help articles, FAQs, or topics..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-12 bg-white/90 dark:bg-gray-800/90 border-0 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                className="pl-12 h-12 bg-white/90 border-0 text-gray-800 placeholder-gray-500"
               />
             </div>
           </div>
@@ -114,23 +114,23 @@ const HelpCenter = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Help Categories */}
         <div className="mb-16">
-          <h2 className="text-2xl font-bold text-charcoal dark:text-white mb-8 text-center">
+          <h2 className="text-2xl font-bold text-charcoal mb-8 text-center">
             Browse by Category
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {categories.map((category, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 cursor-pointer animate-fadeInUp"
+                className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 cursor-pointer animate-fadeInUp"
                 style={{animationDelay: `${index * 0.1}s`}}
               >
                 <div className={`w-12 h-12 rounded-lg ${category.color} flex items-center justify-center mb-4`}>
                   <category.icon className="h-6 w-6" />
                 </div>
-                <h3 className="text-lg font-semibold text-charcoal dark:text-white mb-2">
+                <h3 className="text-lg font-semibold text-charcoal mb-2">
                   {category.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                <p className="text-gray-600 text-sm">
                   {category.articles} articles
                 </p>
               </div>
@@ -140,33 +140,33 @@ const HelpCenter = () => {
 
         {/* FAQ Section */}
         <div className="mb-16">
-          <h2 className="text-2xl font-bold text-charcoal dark:text-white mb-8 text-center">
+          <h2 className="text-2xl font-bold text-charcoal mb-8 text-center">
             Frequently Asked Questions
           </h2>
           <div className="max-w-4xl mx-auto space-y-4">
             {faqs.map((faq, index) => (
               <div
                 key={faq.id}
-                className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm animate-fadeInUp"
+                className="bg-white rounded-xl border border-gray-200 shadow-sm animate-fadeInUp"
                 style={{animationDelay: `${index * 0.1}s`}}
               >
                 <button
                   onClick={() => toggleFaq(faq.id)}
-                  className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors rounded-xl"
+                  className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors rounded-xl"
                 >
-                  <h3 className="text-lg font-medium text-charcoal dark:text-white pr-4">
+                  <h3 className="text-lg font-medium text-charcoal pr-4">
                     {faq.question}
                   </h3>
                   {expandedFaq === faq.id ? (
-                    <ChevronDown className="h-5 w-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                    <ChevronDown className="h-5 w-5 text-gray-500 flex-shrink-0" />
                   ) : (
-                    <ChevronRight className="h-5 w-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                    <ChevronRight className="h-5 w-5 text-gray-500 flex-shrink-0" />
                   )}
                 </button>
                 {expandedFaq === faq.id && (
                   <div className="px-6 pb-6">
-                    <div className="pt-4 border-t border-gray-100 dark:border-gray-600">
-                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <div className="pt-4 border-t border-gray-100">
+                      <p className="text-gray-600 leading-relaxed">
                         {faq.answer}
                       </p>
                     </div>
@@ -178,58 +178,58 @@ const HelpCenter = () => {
         </div>
 
         {/* Contact Support */}
-        <div className="bg-gradient-cool-light dark:bg-gray-800 rounded-2xl p-8">
+        <div className="bg-gradient-cool-light rounded-2xl p-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-charcoal dark:text-white mb-4">
+            <h2 className="text-2xl font-bold text-charcoal mb-4">
               Still need help?
             </h2>
-            <p className="text-gray-600 dark:text-gray-300">
+            <p className="text-gray-600">
               Our support team is here to help you with any questions or concerns
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-white dark:bg-gray-700 rounded-xl shadow-sm">
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="h-6 w-6 text-blue-600 dark:text-blue-300" />
+            <div className="text-center p-6 bg-white rounded-xl shadow-sm">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MessageCircle className="h-6 w-6 text-blue-600" />
               </div>
-              <h3 className="text-lg font-semibold text-charcoal dark:text-white mb-2">
+              <h3 className="text-lg font-semibold text-charcoal mb-2">
                 Live Chat
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+              <p className="text-gray-600 mb-4 text-sm">
                 Chat with our support team
               </p>
-              <Button variant="outline" className="w-full dark:border-gray-500 dark:text-white dark:hover:bg-gray-600">
+              <Button variant="outline" className="w-full">
                 Start Chat
               </Button>
             </div>
 
-            <div className="text-center p-6 bg-white dark:bg-gray-700 rounded-xl shadow-sm">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Mail className="h-6 w-6 text-green-600 dark:text-green-300" />
+            <div className="text-center p-6 bg-white rounded-xl shadow-sm">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="h-6 w-6 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-charcoal dark:text-white mb-2">
+              <h3 className="text-lg font-semibold text-charcoal mb-2">
                 Email Support
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+              <p className="text-gray-600 mb-4 text-sm">
                 Get help via email
               </p>
-              <Button variant="outline" className="w-full dark:border-gray-500 dark:text-white dark:hover:bg-gray-600">
+              <Button variant="outline" className="w-full">
                 Send Email
               </Button>
             </div>
 
-            <div className="text-center p-6 bg-white dark:bg-gray-700 rounded-xl shadow-sm">
-              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Phone className="h-6 w-6 text-purple-600 dark:text-purple-300" />
+            <div className="text-center p-6 bg-white rounded-xl shadow-sm">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Phone className="h-6 w-6 text-purple-600" />
               </div>
-              <h3 className="text-lg font-semibold text-charcoal dark:text-white mb-2">
+              <h3 className="text-lg font-semibold text-charcoal mb-2">
                 Phone Support
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+              <p className="text-gray-600 mb-4 text-sm">
                 Call us for immediate help
               </p>
-              <Button variant="outline" className="w-full dark:border-gray-500 dark:text-white dark:hover:bg-gray-600">
+              <Button variant="outline" className="w-full">
                 Call Now
               </Button>
             </div>
