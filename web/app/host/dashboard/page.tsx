@@ -1,6 +1,5 @@
 'use client'
 import React, { useState } from "react";
-import Link from "next/link";
 import { Button } from "components/ui/button";
 import {
   Card,
@@ -205,12 +204,6 @@ const HostDashboard = () => {
               Welcome back! Manage your properties and guest queries.
             </p>
           </div>
-          <Link href={`/host/properties/host-2`}>
-            <Button className="bg-gradient-cool hover:opacity-90">
-              <Home className="w-4 h-4 mr-2" />
-              View All Properties
-            </Button>
-          </Link>
         </div>
 
         {/* Stats Cards */}

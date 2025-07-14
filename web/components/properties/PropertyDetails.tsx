@@ -670,7 +670,7 @@ const PropertyDetails = () => {
                     )}
                   </div>
 
-                  <Link href={`/host/properties/${property.hostId}`}>
+                  <Link href={`/properties/${property.hostId}`}>
                     <Button variant="ghost" className="w-full mt-2">
                       View All Properties by Host
                     </Button>
