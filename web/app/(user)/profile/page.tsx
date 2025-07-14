@@ -9,13 +9,14 @@ import { User, Mail, Phone, Settings, Heart, LogOut } from 'lucide-react';
 import { useAuth } from 'contexts/AuthContext';
 import { useWishlist } from 'contexts/WishlistContext';
 import { useToast } from 'hooks/use-toast';
+import { authClient } from 'lib/auth-client';
 
 const Profile = () => {
   const { user, logout, isLoading } = useAuth();
   const { wishlist } = useWishlist();
   const { toast } = useToast();
   const router = useRouter();
-  
+
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -71,9 +72,17 @@ const Profile = () => {
     });
   };
 
-  const handleLogout = () => {
-    logout();
-    router.push('/');
+  const handleLogout = async () => {
+    // logout();
+    // router.push('/');
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+        },
+      },
+    });
+
     toast({
       title: "Logged out",
       description: "You have been successfully logged out.",
@@ -119,28 +128,28 @@ const Profile = () => {
                     <Input
                       id="name"
                       value={formData.name}
-                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       disabled={!isEditing}
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       disabled={!isEditing}
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="phone">Phone Number</Label>
                     <Input
                       id="phone"
                       value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       disabled={!isEditing}
                     />
                   </div>
@@ -152,8 +161,8 @@ const Profile = () => {
                       <Button onClick={handleSave}>
                         Save Changes
                       </Button>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         onClick={() => setIsEditing(false)}
                       >
                         Cancel
@@ -184,7 +193,7 @@ const Profile = () => {
                   </div>
                   <span className="font-semibold">{wishlist.length}</span>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Mail className="h-4 w-4 text-blue-500" />
@@ -194,7 +203,7 @@ const Profile = () => {
                     Verified
                   </span>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Phone className="h-4 w-4 text-orange-500" />
@@ -213,26 +222,26 @@ const Profile = () => {
                 <CardTitle className="text-lg">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full justify-start"
                   onClick={() => router.push('/wishlist')}
                 >
                   <Heart className="h-4 w-4 mr-2" />
                   View Wishlist
                 </Button>
-                
-                <Button 
-                  variant="outline" 
+
+                <Button
+                  variant="outline"
                   className="w-full justify-start"
                   onClick={() => router.push('/settings')}
                 >
                   <Settings className="h-4 w-4 mr-2" />
                   Account Settings
                 </Button>
-                
-                <Button 
-                  variant="outline" 
+
+                <Button
+                  variant="outline"
                   className="w-full justify-start text-red-600 hover:text-red-700"
                   onClick={handleLogout}
                 >

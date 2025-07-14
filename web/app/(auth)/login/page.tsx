@@ -24,7 +24,7 @@ const Login = () => {
     const { data, error } = await authClient.signIn.email({
       email,
       password,
-      callbackURL: `${window.location.origin}/` // TODO : update callback once file based routing is implemented 
+      callbackURL: `/`
     }, {
       onRequest: (ctx) => {
         //show loading
@@ -52,23 +52,23 @@ const Login = () => {
     })
   }
 
-  const handleGoogleSignIn = async () => {
-    setIsLoading(true);
-    try {
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/"
-      });
-    } catch (error) {
-      toast({
-        title: "Google sign-in failed",
-        description: "Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  // const handleGoogleSignIn = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     await authClient.signIn.social({
+  //       provider: "google",
+  //       callbackURL: "/"
+  //     });
+  //   } catch (error) {
+  //     toast({
+  //       title: "Google sign-in failed",
+  //       description: "Please try again.",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-light-gray py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
@@ -122,13 +122,13 @@ const Login = () => {
               >
                 {isLoading ? 'Signing in...' : 'Sign in'}
               </Button>
-              <Button
+              {/* <Button
                 className="w-full"
                 disabled={isLoading}
                 onClick={handleGoogleSignIn}
               >
                 {isLoading ? 'Signing in With Google...' : 'Sign in With Google'}
-              </Button>
+              </Button> */}
             </form>
 
             <div className="mt-6 text-center">
