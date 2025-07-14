@@ -17,7 +17,6 @@ const Signup = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signup } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -27,7 +26,7 @@ const Signup = () => {
       email,
       password,
       name,
-      callbackURL: `${window.location.origin}/login` // TODO : update callback once file based routing is implemented 
+      callbackURL: `/`
     }, {
       onRequest: (ctx) => {
         //show loading
@@ -42,6 +41,7 @@ const Signup = () => {
           title: "Account Created!",
           description: "Your Account has been created successfully. You can now log in.",
         });
+        router.push('/');
       },
       onError: (ctx) => {
         // display the error message
