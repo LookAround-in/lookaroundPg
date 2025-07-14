@@ -205,7 +205,7 @@ const HostDashboard = () => {
               Welcome back! Manage your properties and guest queries.
             </p>
           </div>
-          <Link href="/host/properties">
+          <Link href={`/host/properties/host-2`}>
             <Button className="bg-gradient-cool hover:opacity-90">
               <Home className="w-4 h-4 mr-2" />
               View All Properties
@@ -410,7 +410,7 @@ const HostDashboard = () => {
                   {properties.map((property) => (
                     <div
                       key={property.id}
-                      className="border dark:border-gray-700 rounded-lg p-4 dark:bg-gray-900"
+                      className="border rounded-lg p-4"
                     >
                       <h4 className="font-semibold text-charcoal dark:text-white mb-4">
                         {property.title}

@@ -709,7 +709,7 @@ const PropertyDetails = () => {
               {property.virtualTour && (
                 <Button 
                   onClick={() => setShowVirtualTourModal(true)}
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg transform transition-all duration-200 hover:scale-105 hidden md:flex items-center justify-center"
+                  className="w-full bg-gradient-cool text-white shadow-lg transform transition-all duration-200 hover:scale-105 hidden md:flex items-center justify-center"
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   Take Virtual Tour - 360°

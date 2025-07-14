@@ -1,6 +1,5 @@
 'use client'
-import React, { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
 import { PropertyCard } from '@/components/properties/PropertyCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,17 +8,27 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, User, Star, Phone, Mail, MapPin, Home, Calendar, TrendingUp, Users, Shield, Award } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { mockProperties } from 'app/data/mockData';
 
 const HostProperties = () => {
   const { hostId } = useParams();
-  const router = useRouter();
+  const router = useRouter()
+  const [hostProperties, setHostProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
   
-  // Find host properties (in real app, this would be an API call)
-  const hostProperties = mockProperties.filter(p => p.hostId === hostId);
-  const hostInfo = hostProperties[0]; // Get host info from first property
-  
-  if (!hostInfo) {
+  useEffect(() => {
+    async function loadHostProperties() {
+      setLoading(true);
+      const data = mockProperties.filter(p => p.hostId === hostId);
+      setHostProperties(data)
+      setLoading(false);
+    }
+    if (hostId) loadHostProperties();
+  }, [hostId]);
+
+  if (!hostProperties.length && !loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
         <Card className="text-center p-8 dark:bg-gray-800">
@@ -72,10 +81,10 @@ const HostProperties = () => {
                 <div className="relative">
                   <div className="w-24 h-24 bg-gradient-cool rounded-full flex items-center justify-center flex-shrink-0 p-1">
                     <div className="w-full h-full bg-white dark:bg-gray-800 rounded-full flex items-center justify-center">
-                      {hostInfo.hostAvatar ? (
+                      {hostProperties.length > 0 && hostProperties[0].host_avatar ? (
                         <img 
-                          src={hostInfo.hostAvatar} 
-                          alt={hostInfo.hostName} 
+                          src={hostProperties[0].host_avatar} 
+                          alt={hostProperties[0].host_name} 
                           className="w-20 h-20 rounded-full object-cover" 
                         />
                       ) : (
@@ -94,7 +103,7 @@ const HostProperties = () => {
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4">
                     <div>
                       <h1 className="text-2xl lg:text-3xl font-bold text-charcoal dark:text-white mb-2 tracking-tight">
-                        {hostInfo.hostName}
+                        {hostProperties.length > 0 ? hostProperties[0].host_name : 'Loading...'}
                       </h1>
                       <div className="flex items-center space-x-2 mb-3">
                         <Badge variant="outline" className="bg-gradient-cool-light text-gradient-cool font-medium">
@@ -121,7 +130,7 @@ const HostProperties = () => {
                       </div>
                     </div>
                     
-                    {hostInfo.rating && (
+                    {hostProperties.length > 0 && hostProperties[0].rating && (
                       <div className="flex items-center space-x-2 mt-4 sm:mt-0 bg-yellow-50 dark:bg-yellow-900/20 px-3 py-2 rounded-lg">
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
                         <span className="text-lg font-bold dark:text-white">{hostStats.averageRating}</span>
@@ -209,7 +218,7 @@ const HostProperties = () => {
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-xl lg:text-2xl font-bold text-charcoal dark:text-white mb-2 tracking-tight">
-                  All Properties by {hostInfo.hostName}
+                  All Properties by {hostProperties.length > 0 ? hostProperties[0].host_name : 'Loading...'}
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400 font-medium">
                   {hostProperties.length} properties available for booking
@@ -252,10 +261,10 @@ const HostProperties = () => {
           <TabsContent value="about" className="space-y-6">
             <Card className="dark:bg-gray-800">
               <CardContent className="p-6 lg:p-8">
-                <h3 className="text-xl font-bold text-charcoal dark:text-white mb-4">About {hostInfo.hostName}</h3>
+                <h3 className="text-xl font-bold text-charcoal dark:text-white mb-4">About {hostProperties.length > 0 ? hostProperties[0].host_name : 'Loading...'}</h3>
                 <div className="prose dark:prose-invert max-w-none">
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-                    Welcome! I'm {hostInfo.hostName}, a dedicated property host with over {hostStats.yearsHosting} years of experience 
+                    Welcome! I'm {hostProperties.length > 0 ? hostProperties[0].host_name : 'Loading...'}, a dedicated property host with over {hostStats.yearsHosting} years of experience 
                     in providing comfortable and safe accommodations in Bangalore. I take pride in maintaining high-quality 
                     properties and ensuring all my guests have a pleasant stay.
                   </p>
