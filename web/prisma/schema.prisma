@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -15,7 +9,8 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String    @id @default(uuid())
+  role          UserRole  @default(USER)
   name          String
   email         String
   emailVerified Boolean
@@ -24,6 +19,7 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  PgData        PgData[]
 
   @@unique([email])
   @@map("user")
@@ -72,4 +68,145 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model PgData {
+  id             String         @id @default(uuid())
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  title          String
+  hostId         String
+  Host           User           @relation(fields: [hostId], references: [id])
+  description    String?
+  propertyType   PropertyType
+  foodIncluded   Boolean        @default(false)
+  furnishing     FurnishingType
+  address        String
+  latitude       Float
+  longitude      Float
+  furnitures     Furniture[]
+  amenities      Amenity[]
+  sharingTypes   SharingType[]
+  pgRules        String?
+  moveInStatus   MoveInStatus
+  virtualTourUrl String?
+  images         String[]       @default([])
+  hostName       String?
+  hostContact    String?
+  rating         Float          @default(0)
+  reviews        String[]       @default([])
+}
+
+model SharingType {
+  id                  String          @id @default(uuid())
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  type                SharingTypeEnum
+  description         String?
+  price               Float
+  availability        Int             @default(0)
+  pgDataId            String
+  pgData              PgData          @relation(fields: [pgDataId], references: [id], onDelete: Cascade)
+  pricePerMonth       Float
+  pricePerDay         Float?
+  deposit             Float
+  refundableDeposit   Boolean         @default(true)
+  refundableAmount    Float
+  maintainanceCharges Float?
+  electricityCharges  Float?
+  waterCharges        Float?
+  maintenanceIncluded Boolean         @default(false)
+
+  @@map("sharing_type")
+}
+
+model Furniture {
+  id       String        @id @default(uuid())
+  type     FurnitureType
+  pgDataId String
+  pgData   PgData        @relation(fields: [pgDataId], references: [id], onDelete: Cascade)
+
+  @@map("furniture")
+}
+
+model Amenity {
+  id       String      @id @default(uuid())
+  type     AmenityType
+  pgDataId String
+  pgData   PgData      @relation(fields: [pgDataId], references: [id], onDelete: Cascade)
+
+  @@map("amenity")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  USER
+  HOST
+}
+
+enum MoveInStatus {
+  IMMEDIATE
+  WITHIN_ONE_WEEK
+  WITHIN_TWO_WEEKS
+  WITHIN_ONE_MONTH
+}
+
+enum SharingTypeEnum {
+  SINGLE
+  DOUBLE
+  TRIPLE
+  QUAD
+}
+
+enum FurnitureType {
+  BED
+  SOFA
+  TABLE
+  CHAIR
+  WARDROBE
+  FRIDGE
+  WASHING_MACHINE
+  AIR_CONDITIONER
+  MICROWAVE
+  TELEVISION
+  WATER_PURIFIER
+  GAS_STOVE
+  KITCHEN_APPLIANCES
+  FURNITURE_OTHER
+  NONE
+}
+
+enum AmenityType {
+  PARKING
+  WIFI
+  GYM
+  SWIMMING_POOL
+  SECURITY
+  POWER_BACKUP
+  LIFT
+  PET_FRIENDLY
+  GARDEN
+  PLAY_AREA
+  CLUBHOUSE
+  HOUSEKEEPING
+  MAINTENANCE
+  CCTV
+  COMMON_AREA
+  LAUNDRY
+  GARBAGE_DISPOSAL
+  COMMUNITY_EVENTS
+  AMENITIES_OTHER
+}
+
+enum FurnishingType {
+  FURNISHED
+  SEMI_FURNISHED
+  UNFURNISHED
+}
+
+enum PropertyType {
+  MEN
+  WOMEN
+  COLIVE
 }
