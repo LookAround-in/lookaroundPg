@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { ThemeToggle } from './ThemeToggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { Search, Heart, User, LogOut, Menu, X } from 'lucide-react';
@@ -25,7 +24,6 @@ export const Navbar = () => {
     error,
     refetch
   } = authClient.useSession()
-  console.log(session);
 
 
   const handleSearch = (e: React.FormEvent) => {
@@ -98,7 +96,6 @@ export const Navbar = () => {
               </Link>
             )}
 
-            {/* <ThemeToggle /> */}
 
             {session ? (
               <DropdownMenu>
@@ -206,7 +203,7 @@ export const Navbar = () => {
                 Explore Properties
               </Link>
 
-              {session.user ? (
+              {session?.user ? (
                 <>
                   <Link
                     href="/wishlist"
