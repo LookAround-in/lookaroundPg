@@ -134,7 +134,7 @@ const Careers = () => {
                 style={{animationDelay: `${index * 0.1}s`}}
               >
                 <div className="w-16 h-16 bg-gradient-cool-light rounded-full flex items-center justify-center mx-auto mb-4">
-                  <benefit.icon className="h-8 w-8 text-purple-600" />
+                  <benefit.icon className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-charcoal mb-2">
                   {benefit.title}

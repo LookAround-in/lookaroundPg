@@ -1,4 +1,4 @@
-'use state'
+'use client'
 import React, { useState } from 'react';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
@@ -15,6 +15,56 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import { mockProperties } from '@/data/mockData';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
+
+//Mock property features data
+  const propertyFeatures = {
+    foodIncluded: true,
+    furnishing: 'Fully Furnished',
+    furniture: [
+      'Single Bed with Mattress',
+      'Study Table & Chair',
+      'Wardrobe',
+      'Side Table',
+      'Mirror',
+      'Ceiling Fan',
+      'Window Curtains'
+    ],
+    nearbyFacilities: [
+      { name: 'Metro Station', distance: '0.5 km', icon: Train },
+      { name: 'Shopping Mall', distance: '2 km', icon: ShoppingBag },
+      { name: 'Hospital', distance: '1.5 km', icon: Hospital },
+      { name: 'Bus Stop', distance: '200 m', icon: Car },
+      { name: 'ATM', distance: '300 m', icon: MapPin },
+      { name: 'Grocery Store', distance: '500 m', icon: ShoppingBag }
+    ]
+  };
+// Mock reviews data
+  const reviews = [
+    {
+      id: 1,
+      name: "Priya Sharma",
+      rating: 5,
+      date: "2 weeks ago",
+      comment: "Excellent PG with all amenities. The host is very responsive and the location is perfect for my office commute.",
+      avatar: "/placeholder.svg"
+    },
+    {
+      id: 2,
+      name: "Rahul Kumar",
+      rating: 4,
+      date: "1 month ago", 
+      comment: "Good facilities and clean rooms. WiFi speed could be better but overall satisfied with the stay.",
+      avatar: "/placeholder.svg"
+    },
+    {
+      id: 3,
+      name: "Sneha Patel",
+      rating: 5,
+      date: "2 months ago",
+      comment: "Amazing place! Feels like home. The food is delicious and the common areas are well maintained.",
+      avatar: "/placeholder.svg"
+    }
+  ];
 
 const PropertyDetails = () => {
   const { propertyId } = usePropertyContext();
@@ -142,64 +192,13 @@ const PropertyDetails = () => {
     }
   };
 
-  //Mock property features data
-  const propertyFeatures = {
-    foodIncluded: true,
-    furnishing: 'Fully Furnished',
-    furniture: [
-      'Single Bed with Mattress',
-      'Study Table & Chair',
-      'Wardrobe',
-      'Side Table',
-      'Mirror',
-      'Ceiling Fan',
-      'Window Curtains'
-    ],
-    nearbyFacilities: [
-      { name: 'Metro Station', distance: '0.5 km', icon: Train },
-      { name: 'Shopping Mall', distance: '2 km', icon: ShoppingBag },
-      { name: 'Hospital', distance: '1.5 km', icon: Hospital },
-      { name: 'Bus Stop', distance: '200 m', icon: Car },
-      { name: 'ATM', distance: '300 m', icon: MapPin },
-      { name: 'Grocery Store', distance: '500 m', icon: ShoppingBag }
-    ]
-  };
-
-  // Mock reviews data
-  const reviews = [
-    {
-      id: 1,
-      name: "Priya Sharma",
-      rating: 5,
-      date: "2 weeks ago",
-      comment: "Excellent PG with all amenities. The host is very responsive and the location is perfect for my office commute.",
-      avatar: "/placeholder.svg"
-    },
-    {
-      id: 2,
-      name: "Rahul Kumar",
-      rating: 4,
-      date: "1 month ago", 
-      comment: "Good facilities and clean rooms. WiFi speed could be better but overall satisfied with the stay.",
-      avatar: "/placeholder.svg"
-    },
-    {
-      id: 3,
-      name: "Sneha Patel",
-      rating: 5,
-      date: "2 months ago",
-      comment: "Amazing place! Feels like home. The food is delicious and the common areas are well maintained.",
-      avatar: "/placeholder.svg"
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-light-gray transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back button and Virtual Tour button for mobile */}
         <div className="flex justify-between items-center mb-6">
           <Button 
-            variant="ghost" 
+            variant="outline" 
             onClick={() => router.push('/explore')}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />

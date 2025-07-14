@@ -3,7 +3,6 @@ import React, { useState, useMemo, startTransition, useCallback, useTransition }
 import { useSearchParams } from 'next/navigation';
 import { PropertyCard } from '@/components/properties/PropertyCard';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -46,7 +45,6 @@ const Explore = () => {
   const [selectedLocation, setSelectedLocation] = useState('');
   const properties = mockProperties;
 
-
   //Debounced price range updatte
   const debouncedSetPriceRange = useDebouncedCallback(
     (value: number[]) => {
@@ -66,7 +64,7 @@ const Explore = () => {
   const filteredProperties = useMemo(() => {
     const filtered = mockProperties.filter(property => {
       // Location filter
-      if (selectedLocation && !property.location.toLowerCase().includes(selectedLocation.toLocaleLowerCase())) {
+      if (selectedLocation && !property.location.toLowerCase().includes(selectedLocation.toLowerCase())) {
         return false;
       }
       
