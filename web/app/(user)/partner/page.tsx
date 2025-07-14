@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Home, Users, Star, TrendingUp, CheckCircle, Calendar, Camera, Eye, Crown, Award } from 'lucide-react';
+import { Home, Users, Star, TrendingUp, CheckCircle, Calendar, Camera, Eye, Crown, Award, PhoneOutgoing } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Partner = () => {
@@ -139,7 +139,7 @@ const Partner = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light-gray dark:bg-gray-900">
+    <div className="min-h-screen bg-light-gray">
       {/* Enhanced Hero Section */}
       <section className="bg-gradient-cool relative overflow-hidden py-20">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -177,10 +177,10 @@ const Partner = () => {
         {/* Partnership Roadmap */}
         <section className="mb-16">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-charcoal dark:text-white mb-4">
+            <h2 className="text-4xl font-bold text-charcoal mb-4">
               Your Journey to Success
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               From application to earning, we'll guide you every step of the way
             </p>
           </div>
@@ -188,13 +188,13 @@ const Partner = () => {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             {roadmapSteps.map((step, index) => (
               <div key={step.step} className="relative">
-                <Card className="h-full gradient-border dark:bg-gray-800">
+                <Card className="h-full gradient-border">
                   <CardContent className="p-6 text-center">
                     <div className="w-12 h-12 bg-gradient-cool rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-lg">
                       {step.step}
                     </div>
-                    <h3 className="font-semibold text-lg mb-2 dark:text-white">{step.title}</h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">{step.description}</p>
+                    <h3 className="font-semibold text-lg mb-2">{step.title}</h3>
+                    <p className="text-gray-600 text-sm mb-3">{step.description}</p>
                     <Badge variant="outline" className="text-xs bg-gradient-cool-light">
                       {step.duration}
                     </Badge>
@@ -211,17 +211,17 @@ const Partner = () => {
         {/* Virtual Tour Plans */}
         <section className="mb-16">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-charcoal dark:text-white mb-4">
+            <h2 className="text-4xl font-bold text-charcoal mb-4">
               Virtual Tour Options
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl text-gray-600">
               Showcase your property with stunning virtual tours
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {tourPlans.map((plan, index) => (
-              <Card key={index} className={`relative ${plan.recommended ? 'gradient-border' : ''} dark:bg-gray-800`}>
+              <Card key={index} className={`relative ${plan.recommended ? 'gradient-border' : ''}`}>
                 {plan.recommended && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <Badge className="bg-gradient-cool text-white px-4 py-1">
@@ -231,7 +231,7 @@ const Partner = () => {
                   </div>
                 )}
                 <CardHeader className="text-center pb-4">
-                  <CardTitle className="text-2xl dark:text-white">{plan.name}</CardTitle>
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
                   <div className="text-3xl font-bold text-gradient-cool">{plan.price}</div>
                 </CardHeader>
                 <CardContent>
@@ -239,7 +239,7 @@ const Partner = () => {
                     {plan.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-center text-sm">
                         <CheckCircle className="h-4 w-4 text-success mr-3 flex-shrink-0" />
-                        <span className="dark:text-gray-300">{feature}</span>
+                        <span >{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -257,20 +257,20 @@ const Partner = () => {
           {/* Enhanced Benefits Section */}
           <div className="space-y-8">
             <div>
-              <h2 className="text-3xl font-bold text-charcoal dark:text-white mb-6">
+              <h2 className="text-3xl font-bold text-charcoal mb-6">
                 Why Choose FindMyPG?
               </h2>
               <div className="space-y-6">
                 {benefits.map((benefit, index) => (
-                  <div key={index} className="flex items-start space-x-4 p-4 rounded-xl bg-gradient-cool-light dark:bg-gray-800">
+                  <div key={index} className="flex items-start space-x-4 p-4 rounded-xl bg-gradient-cool-light">
                     <div className="w-12 h-12 bg-gradient-cool rounded-xl flex items-center justify-center flex-shrink-0">
                       <benefit.icon className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-charcoal dark:text-white mb-2">
+                      <h3 className="font-semibold text-charcoal mb-2">
                         {benefit.title}
                       </h3>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm">
+                      <p className="text-gray-600 text-sm">
                         {benefit.description}
                       </p>
                     </div>
@@ -326,10 +326,10 @@ const Partner = () => {
 
           {/* Enhanced Application Form */}
           <div>
-            <Card className="sticky top-8 gradient-border dark:bg-gray-800">
+            <Card className="sticky top-8 gradient-border">
               <CardHeader>
                 <CardTitle className="text-gradient-cool">Start Your Partnership Journey</CardTitle>
-                <CardDescription className="dark:text-gray-300">
+                <CardDescription >
                   Join thousands of successful property owners earning with FindMyPG
                 </CardDescription>
               </CardHeader>
@@ -409,16 +409,17 @@ const Partner = () => {
                 </form>
 
                 <div className="mt-6 text-center">
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                  <p className="text-sm text-gray-600 mb-3">
                     Questions? We're here to help!
                   </p>
                   <div className="flex justify-center space-x-4">
-                    <Button variant="outline" size="sm" className="dark:border-gray-600 dark:text-white">
+                    <Button variant="outline" size="sm" >
                       <Camera className="h-4 w-4 mr-2" />
                       Schedule Demo
                     </Button>
                     <a href="tel:+919876543210">
-                      <Button variant="outline" size="sm" className="dark:border-gray-600 dark:text-white">
+                      <Button variant="outline" size="sm">
+                        <PhoneOutgoing className='h-4 w-4 mr-2'/>
                         Call Us
                       </Button>
                     </a>

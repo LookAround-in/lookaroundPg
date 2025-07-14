@@ -33,55 +33,6 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
   }
-
-  .dark {
-    --background: 222 84% 5%;
-    --foreground: 280 100% 95%;
-
-    --card: 240 20% 12%;
-    --card-foreground: 280 100% 95%;
-
-    --popover: 240 20% 10%;
-    --popover-foreground: 280 100% 95%;
-
-    --primary: 280 100% 70%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 0 70% 55%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 240 20% 15%;
-    --muted-foreground: 280 20% 70%;
-
-    --accent: 84 100% 60%;
-    --accent-foreground: 240 20% 10%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 240 20% 20%;
-    --input: 240 20% 15%;
-    --ring: 280 100% 70%;
-
-    --radius: 0.75rem;
-
-    --sidebar-background: 240 20% 8%;
-    --sidebar-foreground: 280 100% 95%;
-    --sidebar-primary: 280 100% 70%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 20% 12%;
-    --sidebar-accent-foreground: 280 100% 95%;
-    --sidebar-border: 240 20% 20%;
-    --sidebar-ring: 280 100% 70%;
-
-    /* Keep existing chart colors */
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
-
 }
 
 @layer base {
@@ -94,10 +45,6 @@
     min-height: 100vh;
     font-size: 16px;
     line-height: 1.6;
-  }
-
-  html.dark body {
-    background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 50%, #2d1b69 100%);
   }
 
   html {
@@ -167,19 +114,6 @@
 
 .hover\:bg-gradient-primary:hover {
   background: linear-gradient(135deg, #ec4899 0%, #ef4444 100%);
-}
-
-/* Dark mode gradient adjustments */
-.dark .bg-gradient-cool {
-  background: linear-gradient(135deg, #ec4899 0%, #ef4444 100%);
-}
-
-.dark .bg-gradient-cool-light {
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
-}
-
-.dark .gradient-border {
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.2) 0%, rgba(239, 68, 68, 0.2) 100%);
 }
 
 /* Additional utility classes for better gradient support */

@@ -41,14 +41,14 @@ const HostLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-light-gray dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-light-gray py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
             <div className="w-8 h-8 rounded-full flex items-center justify-center">
               <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-full h-full object-contain"/>
             </div>
-            <span className="font-bold text-xl text-primary dark:text-white">LookaroundPG</span>
+            <span className="font-bold text-xl text-primary">LookaroundPG</span>
           </Link>
           <div className="bg-gradient-cool text-white p-4 rounded-lg mb-6">
             <h2 className="text-lg font-semibold">Host Portal</h2>
@@ -99,7 +99,7 @@ const HostLogin = () => {
             </form>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600">
                 New host?{' '}
                 <Link href="/partner" className="font-medium text-primary hover:text-primary/80">
                   Partner with us

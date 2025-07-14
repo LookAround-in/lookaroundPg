@@ -1,6 +1,5 @@
 'use client'
-import React, { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
 import { PropertyCard } from '@/components/properties/PropertyCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,27 +7,37 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, User, Star, Phone, Mail, MapPin, Home, Calendar, TrendingUp, Users, Shield, Award } from 'lucide-react';
+import { ArrowLeft, User, Star, Phone, Mail, MapPin, Home, Calendar, TrendingUp, Users, Shield, Award, MessageSquareDot } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { mockProperties } from 'app/data/mockData';
 
 const HostProperties = () => {
   const { hostId } = useParams();
-  const router = useRouter();
+  const router = useRouter()
+  const [hostProperties, setHostProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
   
-  // Find host properties (in real app, this would be an API call)
-  const hostProperties = mockProperties.filter(p => p.hostId === hostId);
-  const hostInfo = hostProperties[0]; // Get host info from first property
-  
-  if (!hostInfo) {
+  useEffect(() => {
+    async function loadHostProperties() {
+      setLoading(true);
+      const data = mockProperties.filter(p => p.hostId === hostId);
+      setHostProperties(data)
+      setLoading(false);
+    }
+    if (hostId) loadHostProperties();
+  }, [hostId]);
+
+  if (!hostProperties.length && !loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-        <Card className="text-center p-8 dark:bg-gray-800">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-whit">
+        <Card className="text-center p-8">
           <CardContent>
             <div className="w-20 h-20 bg-gradient-cool-light rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
               <User className="h-10 w-10 text-gray-400" />
             </div>
-            <h1 className="text-2xl font-bold mb-4 dark:text-white">Host not found</h1>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">The host you're looking for doesn't exist or has been removed.</p>
+            <h1 className="text-2xl font-bold mb-4">Host not found</h1>
+            <p className="text-gray-600 mb-6">The host you're looking for doesn't exist or has been removed.</p>
             <Button onClick={() => router.push('/explore')} className="bg-gradient-cool text-white hover:opacity-90">
               Explore Properties
             </Button>
@@ -50,13 +59,13 @@ const HostProperties = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Back button */}
         <Button 
-          variant="ghost" 
+          variant="outline" 
           onClick={() => router.back()}
-          className="mb-6 dark:text-white dark:hover:bg-gray-800 font-medium"
+          className="mb-6 font-medium"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Previous Page
@@ -65,17 +74,17 @@ const HostProperties = () => {
         {/* Enhanced Host Profile Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-8">
           {/* Main Profile Card */}
-          <Card className="lg:col-span-2 dark:bg-gray-800 dark:border-gray-700 gradient-border">
+          <Card className="lg:col-span-2 gradient-border">
             <CardContent className="p-6 lg:p-8">
               <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-6 sm:space-y-0 sm:space-x-6">
                 {/* Host Avatar */}
                 <div className="relative">
                   <div className="w-24 h-24 bg-gradient-cool rounded-full flex items-center justify-center flex-shrink-0 p-1">
-                    <div className="w-full h-full bg-white dark:bg-gray-800 rounded-full flex items-center justify-center">
-                      {hostInfo.hostAvatar ? (
+                    <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
+                      {hostProperties.length > 0 && hostProperties[0].host_avatar ? (
                         <img 
-                          src={hostInfo.hostAvatar} 
-                          alt={hostInfo.hostName} 
+                          src={hostProperties[0].host_avatar} 
+                          alt={hostProperties[0].host_name} 
                           className="w-20 h-20 rounded-full object-cover" 
                         />
                       ) : (
@@ -83,7 +92,7 @@ const HostProperties = () => {
                       )}
                     </div>
                   </div>
-                  <Badge className="absolute -bottom-2 -right-2 bg-green-500 text-white border-2 border-white dark:border-gray-800">
+                  <Badge className="absolute -bottom-2 -right-2 bg-green-500 text-white border-2 border-white">
                     <Shield className="h-3 w-3 mr-1" />
                     Verified
                   </Badge>
@@ -93,19 +102,19 @@ const HostProperties = () => {
                 <div className="flex-1">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4">
                     <div>
-                      <h1 className="text-2xl lg:text-3xl font-bold text-charcoal dark:text-white mb-2 tracking-tight">
-                        {hostInfo.hostName}
+                      <h1 className="text-2xl lg:text-3xl font-bold text-charcoal mb-2 tracking-tight">
+                        {hostProperties.length > 0 ? hostProperties[0].host_name : 'Loading...'}
                       </h1>
                       <div className="flex items-center space-x-2 mb-3">
-                        <Badge variant="outline" className="bg-gradient-cool-light text-gradient-cool font-medium">
+                        <Badge variant="outline" className="border-gray-600 bg-gradient-cool text-white font-medium">
                           <Award className="h-3 w-3 mr-1" />
                           Superhost
                         </Badge>
-                        <Badge variant="outline" className="dark:border-gray-600 dark:text-gray-300">
+                        <Badge variant="outline" className="border-gray-600 text-gray-900">
                           Property Host
                         </Badge>
                       </div>
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                         <div className="flex items-center">
                           <Home className="h-4 w-4 mr-1" />
                           <span className="font-medium">{hostStats.totalProperties} Properties</span>
@@ -121,11 +130,11 @@ const HostProperties = () => {
                       </div>
                     </div>
                     
-                    {hostInfo.rating && (
-                      <div className="flex items-center space-x-2 mt-4 sm:mt-0 bg-yellow-50 dark:bg-yellow-900/20 px-3 py-2 rounded-lg">
+                    {hostProperties.length > 0 && hostProperties[0].rating && (
+                      <div className="flex items-center space-x-2 mt-4 sm:mt-0 bg-yellow-50 px-3 py-2 rounded-lg">
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
-                        <span className="text-lg font-bold dark:text-white">{hostStats.averageRating}</span>
-                        <span className="text-gray-600 dark:text-gray-400 text-sm">
+                        <span className="text-lg font-bold">{hostStats.averageRating}</span>
+                        <span className="text-gray-600 text-sm">
                           ({hostStats.totalReviews} reviews)
                         </span>
                       </div>
@@ -138,11 +147,12 @@ const HostProperties = () => {
                       <Phone className="h-4 w-4 mr-2" />
                       Call Host
                     </Button>
-                    <Button variant="outline" className="dark:border-gray-600 dark:text-white dark:hover:bg-gray-700 font-medium">
+                    <Button variant="outline" className="font-medium">
                       <Mail className="h-4 w-4 mr-2" />
                       Send Message
                     </Button>
                     <Button className="bg-green-500 text-white hover:bg-green-600 border-green-500 font-medium">
+                      <MessageSquareDot className="h-4 w-4 mr-2" />
                       WhatsApp
                     </Button>
                   </div>
@@ -152,7 +162,7 @@ const HostProperties = () => {
           </Card>
 
           {/* Quick Stats Card */}
-          <Card className="dark:bg-gray-800 dark:border-gray-700">
+          <Card>
             <CardHeader>
               <CardTitle className="text-lg font-bold text-gradient-cool flex items-center">
                 <TrendingUp className="h-5 w-5 mr-2" />
@@ -162,28 +172,28 @@ const HostProperties = () => {
             <CardContent className="space-y-4">
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Response Rate</span>
+                  <span className="text-sm font-medium text-gray-600">Response Rate</span>
                   <span className="text-sm font-bold text-green-600">{hostStats.responseRate}%</span>
                 </div>
                 <Progress value={hostStats.responseRate} className="h-2" />
               </div>
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Occupancy Rate</span>
+                  <span className="text-sm font-medium text-gray-600">Occupancy Rate</span>
                   <span className="text-sm font-bold text-blue-600">{hostStats.occupancyRate}%</span>
                 </div>
                 <Progress value={hostStats.occupancyRate} className="h-2" />
               </div>
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Repeat Guests</span>
+                  <span className="text-sm font-medium text-gray-600">Repeat Guests</span>
                   <span className="text-sm font-bold text-purple-600">{hostStats.repeatGuests}%</span>
                 </div>
                 <Progress value={hostStats.repeatGuests} className="h-2" />
               </div>
-              <div className="pt-2 border-t dark:border-gray-700">
+              <div className="pt-2 border-t :border-gray-700">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Response Time</span>
+                  <span className="text-sm font-medium text-gray-600">Response Time</span>
                   <span className="text-sm font-bold text-gradient-cool">{hostStats.responseTime}</span>
                 </div>
               </div>
@@ -193,14 +203,14 @@ const HostProperties = () => {
 
         {/* Enhanced Tabs Section */}
         <Tabs defaultValue="properties" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6 lg:mb-8 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
-            <TabsTrigger value="properties" className="font-semibold data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">
+          <TabsList className="grid w-full grid-cols-3 mb-6 lg:mb-8 bg-gray-100 p-1 rounded-xl">
+            <TabsTrigger value="properties" className="font-semibold data-[state=active]">
               All Properties ({hostStats.totalProperties})
             </TabsTrigger>
-            <TabsTrigger value="reviews" className="font-semibold data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">
+            <TabsTrigger value="reviews" className="font-semibold data-[state=active]">
               Reviews ({hostStats.totalReviews})
             </TabsTrigger>
-            <TabsTrigger value="about" className="font-semibold data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">
+            <TabsTrigger value="about" className="font-semibold data-[state=active]">
               About Host
             </TabsTrigger>
           </TabsList>
@@ -208,10 +218,10 @@ const HostProperties = () => {
           <TabsContent value="properties" className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-xl lg:text-2xl font-bold text-charcoal dark:text-white mb-2 tracking-tight">
-                  All Properties by {hostInfo.hostName}
+                <h2 className="text-xl lg:text-2xl font-bold text-charcoal mb-2 tracking-tight">
+                  All Properties by {hostProperties.length > 0 ? hostProperties[0].host_name : 'Loading...'}
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400 font-medium">
+                <p className="text-gray-600 font-medium">
                   {hostProperties.length} properties available for booking
                 </p>
               </div>
@@ -236,13 +246,13 @@ const HostProperties = () => {
           </TabsContent>
 
           <TabsContent value="reviews" className="space-y-6">
-            <Card className="dark:bg-gray-800">
+            <Card >
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-gradient-cool-light rounded-full flex items-center justify-center mx-auto mb-4">
                   <Star className="h-8 w-8 text-gradient-cool" />
                 </div>
-                <h3 className="text-xl font-bold text-charcoal dark:text-white mb-2">Reviews Coming Soon</h3>
-                <p className="text-gray-600 dark:text-gray-400">
+                <h3 className="text-xl font-bold text-charcoal mb-2">Reviews Coming Soon</h3>
+                <p className="text-gray-600">
                   Guest reviews and ratings will be displayed here once available.
                 </p>
               </CardContent>
@@ -250,28 +260,28 @@ const HostProperties = () => {
           </TabsContent>
 
           <TabsContent value="about" className="space-y-6">
-            <Card className="dark:bg-gray-800">
+            <Card>
               <CardContent className="p-6 lg:p-8">
-                <h3 className="text-xl font-bold text-charcoal dark:text-white mb-4">About {hostInfo.hostName}</h3>
-                <div className="prose dark:prose-invert max-w-none">
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-                    Welcome! I'm {hostInfo.hostName}, a dedicated property host with over {hostStats.yearsHosting} years of experience 
+                <h3 className="text-xl font-bold text-charcoal mb-4">About {hostProperties.length > 0 ? hostProperties[0].host_name : 'Loading...'}</h3>
+                <div className="prose max-w-none">
+                  <p className="text-gray-600 leading-relaxed mb-4">
+                    Welcome! I'm {hostProperties.length > 0 ? hostProperties[0].host_name : 'Loading...'}, a dedicated property host with over {hostStats.yearsHosting} years of experience 
                     in providing comfortable and safe accommodations in Bangalore. I take pride in maintaining high-quality 
                     properties and ensuring all my guests have a pleasant stay.
                   </p>
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+                  <p className="text-gray-600 leading-relaxed mb-4">
                     My properties are carefully selected and maintained to provide the best living experience for students 
                     and working professionals. I believe in creating a home-like environment where guests can focus on 
                     their goals while enjoying comfortable amenities.
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                    <div className="bg-gradient-cool-light dark:bg-gray-700 p-4 rounded-lg">
-                      <h4 className="font-semibold text-gradient-cool dark:text-white mb-2">Languages</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">English, Hindi, Kannada</p>
+                    <div className="bg-gradient-cool-light p-4 rounded-lg">
+                      <h4 className="font-semibold text-gradient-cool mb-2">Languages</h4>
+                      <p className="text-sm text-gray-600">English, Hindi, Kannada</p>
                     </div>
-                    <div className="bg-gradient-cool-light dark:bg-gray-700 p-4 rounded-lg">
-                      <h4 className="font-semibold text-gradient-cool dark:text-white mb-2">Response Time</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Usually within {hostStats.responseTime}</p>
+                    <div className="bg-gradient-cool-light p-4 rounded-lg">
+                      <h4 className="font-semibold text-gradient-cool mb-2">Response Time</h4>
+                      <p className="text-sm text-gray-600">Usually within {hostStats.responseTime}</p>
                     </div>
                   </div>
                 </div>

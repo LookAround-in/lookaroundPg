@@ -92,7 +92,7 @@ const Careers = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 dark:bg-gray-900 transition-colors duration-200">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white transition-colors duration-200">
       {/* Hero Section */}
       <div className="bg-gradient-cool relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -118,10 +118,10 @@ const Careers = () => {
         {/* Company Culture Section */}
         <div className="mb-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-charcoal dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-charcoal mb-4">
               Why Work With Us?
             </h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-gray-600 max-w-2xl mx-auto">
               We're building the future of PG accommodations, and we want passionate individuals to join us on this journey.
             </p>
           </div>
@@ -130,16 +130,16 @@ const Careers = () => {
             {benefits.map((benefit, index) => (
               <div
                 key={index}
-                className="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fadeInUp"
+                className="text-center p-6 bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 animate-fadeInUp"
                 style={{animationDelay: `${index * 0.1}s`}}
               >
-                <div className="w-16 h-16 bg-gradient-cool-light dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <benefit.icon className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+                <div className="w-16 h-16 bg-gradient-cool-light rounded-full flex items-center justify-center mx-auto mb-4">
+                  <benefit.icon className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold text-charcoal dark:text-white mb-2">
+                <h3 className="text-lg font-semibold text-charcoal mb-2">
                   {benefit.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300">
+                <p className="text-gray-600">
                   {benefit.description}
                 </p>
               </div>
@@ -150,10 +150,10 @@ const Careers = () => {
         {/* Job Openings Section */}
         <div className="mb-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-charcoal dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-charcoal mb-4">
               Open Positions
             </h2>
-            <p className="text-gray-600 dark:text-gray-300">
+            <p className="text-gray-600">
               Find your next career opportunity with us
             </p>
           </div>
@@ -162,13 +162,13 @@ const Careers = () => {
             {jobOpenings.map((job, index) => (
               <div
                 key={job.id}
-                className="gradient-border p-6 rounded-xl hover:shadow-lg transition-all duration-300 animate-fadeInUp dark:bg-gray-800"
+                className="gradient-border p-6 rounded-xl hover:shadow-lg transition-all duration-300 animate-fadeInUp"
                 style={{animationDelay: `${index * 0.1}s`}}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between">
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-2 mb-3">
-                      <h3 className="text-xl font-semibold text-charcoal dark:text-white">
+                      <h3 className="text-xl font-semibold text-charcoal">
                         {job.title}
                       </h3>
                       <Badge className="bg-gradient-cool text-white">
@@ -176,11 +176,11 @@ const Careers = () => {
                       </Badge>
                     </div>
                     
-                    <p className="text-gray-600 dark:text-gray-300 mb-4">
+                    <p className="text-gray-600 mb-4">
                       {job.description}
                     </p>
 
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-4">
                       <div className="flex items-center">
                         <MapPin className="h-4 w-4 mr-1" />
                         {job.location}
@@ -197,7 +197,7 @@ const Careers = () => {
 
                     <div className="flex flex-wrap gap-2">
                       {job.skills.map((skill, skillIndex) => (
-                        <Badge key={skillIndex} variant="outline" className="dark:border-gray-600 dark:text-gray-300">
+                        <Badge key={skillIndex} variant="outline">
                           {skill}
                         </Badge>
                       ))}
@@ -217,11 +217,11 @@ const Careers = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="bg-gradient-cool-light dark:bg-gray-800 rounded-2xl p-8 text-center">
-          <h3 className="text-2xl font-bold text-charcoal dark:text-white mb-4">
+        <div className="bg-gradient-cool-light rounded-2xl p-8 text-center">
+          <h3 className="text-2xl font-bold text-charcoal mb-4">
             Don't See a Perfect Match?
           </h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
             We're always looking for talented individuals to join our team. Send us your resume and tell us how you'd like to contribute to our mission.
           </p>
           <Button className="bg-gradient-cool text-white hover:opacity-90">
