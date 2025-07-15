@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { PgController } from "../pgController";
+import { PgController } from "../../pgController";
 const pgController = new PgController();
 
 export async function GET(request: Request, response: Response, next) {

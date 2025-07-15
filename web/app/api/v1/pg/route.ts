@@ -6,3 +6,7 @@ export async function GET(request: Request) {
         message: "This is a protected route",
     }, { status: 200 });
 }
+
+export async function POST(request: Request) {
+    
+}

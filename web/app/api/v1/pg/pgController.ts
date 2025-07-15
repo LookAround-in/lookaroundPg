@@ -1,12 +1,12 @@
 import { PrismaClient } from "generated/prisma";
 import { NextResponse } from "next/server";
-const prismaClient = new PrismaClient(); // TODO : initialize prisma once and reuse everywhere
+import prisma from "lib/Prisma";
 
 export class PgController {
     // initialize pgservice
 
     constructor() {
-        const prisma = prismaClient;
+        const PrismaClient = prisma;
         // this.pgService = new PgService(prisma);
     }
 
