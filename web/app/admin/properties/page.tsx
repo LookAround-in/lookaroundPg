@@ -153,11 +153,11 @@ const HostAllProperties = () => {
               <PropertyCard property={property} />
 
               {/* Management Overlay */}
-              <div className="absolute top-3 right-12 flex space-x-1 opacity-100 group-hover:opacity-100 transition-opacity">
-                <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
+              <div className="absolute top-3 right-12 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button size="sm" variant="outline" className="h-8 w-8 p-0">
                   <Eye className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
+                <Button size="sm" variant="outline" className="h-8 w-8 p-0">
                   <Edit className="h-4 w-4" />
                 </Button>
                 <Button size="sm" variant="destructive" className="h-8 w-8 p-0">
