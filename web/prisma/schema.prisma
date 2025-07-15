@@ -9,17 +9,21 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  role          UserRole  @default(USER)
+  id            String   @id @default(uuid())
+  role          UserRole @default(USER)
   name          String
   email         String
   emailVerified Boolean
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
-  PgData        PgData[]
+
+  // Relations related to authentication
+  sessions Session[]
+  accounts Account[]
+
+  // Relations related to host
+  HostProfile HostProfile?
 
   @@unique([email])
   @@map("user")
@@ -70,13 +74,35 @@ model Verification {
   @@map("verification")
 }
 
+// model related to host
+model HostProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+
+  contactNumber    String
+  alternateContact String?
+  whatsApp         String?
+  Address          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation with PgData
+  PgData PgData[]
+
+  // Relation with actual user table
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("host_profile")
+}
+
 model PgData {
   id             String         @id @default(uuid())
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   title          String
   hostId         String
-  Host           User           @relation(fields: [hostId], references: [id])
+  Host           HostProfile    @relation(fields: [hostId], references: [id])
   description    String?
   propertyType   PropertyType
   foodIncluded   Boolean        @default(false)
