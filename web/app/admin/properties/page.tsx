@@ -56,8 +56,8 @@ const HostAllProperties = () => {
               <p className="text-gray-600">Manage your property listings</p>
             </div>
           </div>
-          <Link href={"/AddProperty"} className="w-full sm:w-auto">
-            <Button className="w-full sm:w-auto bg-gradient-to-r from-[#BF67D6] to-[#DF2C2C] text-white hover:opacity-90">
+          <Link href={"/admin/addproperty"} className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto bg-gradient-cool text-white hover:opacity-90">
               <Plus className="h-4 w-4 mr-2" />
               Add New Property
             </Button>
@@ -153,11 +153,11 @@ const HostAllProperties = () => {
               <PropertyCard property={property} />
 
               {/* Management Overlay */}
-              <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
+              <div className="absolute top-3 right-12 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button size="sm" variant="outline" className="h-8 w-8 p-0">
                   <Eye className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
+                <Button size="sm" variant="outline" className="h-8 w-8 p-0">
                   <Edit className="h-4 w-4" />
                 </Button>
                 <Button size="sm" variant="destructive" className="h-8 w-8 p-0">
@@ -166,7 +166,7 @@ const HostAllProperties = () => {
               </div>
 
               {/* Status Badge */}
-              <div className="absolute top-2 left-2">
+              <div className="absolute top-2.5 left-24">
                 <Badge variant={property.availabilityStatus ? "default" : "secondary"}>
                   {property.availabilityStatus ? "Active" : "Inactive"}
                 </Badge>
