@@ -226,7 +226,7 @@ export default function AddProperty() {
         {/* Submit Button & Message */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+          className="w-full bg-gradient-cool text-white py-2 px-4 rounded-md hover:bg-primary transition disabled:opacity-50"
           disabled={loading}
         >
           {loading ? 'Adding...' : 'Add Property'}

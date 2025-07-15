@@ -57,7 +57,7 @@ const HostAllProperties = () => {
             </div>
           </div>
           <Link href={"/admin/addproperty"} className="w-full sm:w-auto">
-            <Button className="w-full sm:w-auto bg-gradient-to-r from-[#BF67D6] to-[#DF2C2C] text-white hover:opacity-90">
+            <Button className="w-full sm:w-auto bg-gradient-cool text-white hover:opacity-90">
               <Plus className="h-4 w-4 mr-2" />
               Add New Property
             </Button>
