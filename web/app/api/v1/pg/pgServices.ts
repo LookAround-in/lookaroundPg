@@ -9,7 +9,6 @@ export class PgServices {
 
     async createPg(pgData: any) {
         try {
-            console.log("Creating PG with data:", pgData);
 
             // Create the PG data with related models
             const newPg = await this.prismaClient.pgData.create({
@@ -31,21 +30,21 @@ export class PgServices {
                     hostContact: pgData.hostContact,
                     rating: pgData.rating ?? 0,
                     reviews: pgData.reviews ?? [],
-                    
+
                     // Create related furniture records
                     furnitures: {
                         create: pgData.furnitures?.map((furnitureType: string) => ({
                             type: furnitureType
                         })) ?? []
                     },
-                    
+
                     // Create related amenity records
                     amenities: {
                         create: pgData.amenities?.map((amenityType: string) => ({
                             type: amenityType
                         })) ?? []
                     },
-                    
+
                     // Create related sharing type records
                     sharingTypes: {
                         create: pgData.sharingTypes?.map((sharingType: any) => ({
@@ -72,7 +71,7 @@ export class PgServices {
                     sharingTypes: true
                 }
             });
-            
+
             return newPg;
         } catch (error) {
             console.error("Detailed error creating Pg:", error);
