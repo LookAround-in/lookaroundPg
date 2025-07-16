@@ -1,104 +1,91 @@
 // Enums (define these based on your Prisma schema)
 export enum PropertyType {
-  PG = "PG",
-  HOSTEL = "HOSTEL",
-  APARTMENT = "APARTMENT"
+  MEN = "MEN",
+  WOMEN = "WOMEN",
+  COLIVE = "COLIVE"
 }
 
 export enum FurnishingType {
-  FULLY_FURNISHED = "FULLY_FURNISHED",
+  FURNISHED = "FURNISHED",
   SEMI_FURNISHED = "SEMI_FURNISHED",
   UNFURNISHED = "UNFURNISHED"
 }
 
-export enum Furniture {
+export enum FurnitureType {
   BED = "BED",
-  WARDROBE = "WARDROBE",
-  STUDY_TABLE = "STUDY_TABLE",
+  SOFA = "SOFA",
+  TABLE = "TABLE",
   CHAIR = "CHAIR",
-  AC = "AC",
-  FAN = "FAN"
+  WARDROBE = "WARDROBE",
+  FRIDGE = "FRIDGE",
+  WASHING_MACHINE = "WASHING_MACHINE",
+  AIR_CONDITIONER = "AIR_CONDITIONER",
+  MICROWAVE = "MICROWAVE",
+  TELEVISION = "TELEVISION",
+  WATER_PURIFIER = "WATER_PURIFIER",
+  GAS_STOVE = "GAS_STOVE",
+  KITCHEN_APPLIANCES = "KITCHEN_APPLIANCES",
+  FURNITURE_OTHER = "FURNITURE_OTHER",
+  NONE = "NONE"
 }
 
-export enum Amenity {
-  WIFI = "WIFI",
-  AC = "AC",
-  LAUNDRY = "LAUNDRY",
+export enum AmenityType {
   PARKING = "PARKING",
-  SECURITY = "SECURITY",
+  WIFI = "WIFI",
   GYM = "GYM",
-  MESS = "MESS"
+  SWIMMING_POOL = "SWIMMING_POOL",
+  SECURITY = "SECURITY",
+  POWER_BACKUP = "POWER_BACKUP",
+  LIFT = "LIFT",
+  PET_FRIENDLY = "PET_FRIENDLY",
+  GARDEN = "GARDEN",
+  PLAY_AREA = "PLAY_AREA",
+  CLUBHOUSE = "CLUBHOUSE",
+  HOUSEKEEPING = "HOUSEKEEPING",
+  MAINTENANCE = "MAINTENANCE",
+  CCTV = "CCTV",
+  COMMON_AREA = "COMMON_AREA",
+  LAUNDRY = "LAUNDRY",
+  GARBAGE_DISPOSAL = "GARBAGE_DISPOSAL",
+  COMMUNITY_EVENTS = "COMMUNITY_EVENTS",
+  AMENITIES_OTHER = "AMENITIES_OTHER",
 }
 
 export enum SharingType {
   SINGLE = "SINGLE",
   DOUBLE = "DOUBLE",
   TRIPLE = "TRIPLE",
-  DORMITORY = "DORMITORY"
+  QUAD = "QUAD"
 }
 
 export enum MoveInStatus {
   IMMEDIATE = "IMMEDIATE",
-  AVAILABLE = "AVAILABLE",
-  NOT_AVAILABLE = "NOT_AVAILABLE"
+  WITHIN_ONE_WEEK = "WITHIN_ONE_WEEK",
+  WITHIN_TWO_WEEKS = "WITHIN_TWO_WEEKS",
+  WITHIN_ONE_MONTH = "WITHIN_ONE_MONTH",
 }
 
 // Complete PgData interface matching Prisma model
 export interface PgData {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
   title: string;
   hostId: string;
   description?: string;
   propertyType: PropertyType;
-  foodIncluded: boolean;
+  foodIncluded?: boolean;
   furnishing: FurnishingType;
   address: string;
   latitude: number;
   longitude: number;
-  furnitures: Furniture[];
-  amenities: Amenity[];
-  sharingTypes: SharingType[];
+  furnitures: FurnitureType[];
+  amenities: AmenityType[];
+  sharingTypes: SharingTypeDetails[];
   pgRules?: string;
   moveInStatus: MoveInStatus;
   virtualTourUrl?: string;
   images: string[];
-  hostName?: string;
-  hostContact?: string;
   rating: number;
   reviews: string[];
-}
-
-// Request body interface for creating PG 
-export interface CreatePgRequest {
-  pgData: {
-    title: string;
-    hostId: string;
-    description?: string;
-    propertyType: PropertyType;
-    foodIncluded?: boolean;
-    furnishing: FurnishingType;
-    address: string;
-    latitude: number;
-    longitude: number;
-    furnitures?: Furniture[];
-    amenities?: Amenity[];
-    sharingTypes: SharingType[];
-    pgRules?: string;
-    moveInStatus: MoveInStatus;
-    virtualTourUrl?: string;
-    images?: string[];
-    hostName?: string;
-    hostContact?: string;
-    rating?: number;
-    reviews?: string[];
-  };
-}
-
-// Update request interface
-export interface UpdatePgRequest {
-  pgData: Partial<Omit<CreatePgRequest['pgData'], 'hostId'>>;
 }
 
 // Response interfaces

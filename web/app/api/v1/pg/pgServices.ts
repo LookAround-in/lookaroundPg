@@ -1,3 +1,5 @@
+import { PgData } from "@/generated/prisma";
+import { AmenityType, FurnitureType, SharingTypeDetails } from "@/interfaces/pg";
 import prisma from "@/lib/Prisma"
 
 export class PgServices {
@@ -7,7 +9,7 @@ export class PgServices {
         this.prismaClient = prisma;
     }
 
-    async createPg(pgData: any) {
+    async createPg(pgData: PgData) {
         try {
 
             // Create the PG data with related models
@@ -33,21 +35,21 @@ export class PgServices {
 
                     // Create related furniture records
                     furnitures: {
-                        create: pgData.furnitures?.map((furnitureType: string) => ({
+                        create: pgData.furnitures?.map((furnitureType: FurnitureType) => ({
                             type: furnitureType
                         })) ?? []
                     },
 
                     // Create related amenity records
                     amenities: {
-                        create: pgData.amenities?.map((amenityType: string) => ({
+                        create: pgData.amenities?.map((amenityType: AmenityType) => ({
                             type: amenityType
                         })) ?? []
                     },
 
                     // Create related sharing type records
                     sharingTypes: {
-                        create: pgData.sharingTypes?.map((sharingType: any) => ({
+                        create: pgData.sharingTypes?.map((sharingType: SharingTypeDetails) => ({
                             type: sharingType.type || sharingType,
                             description: sharingType.description,
                             price: sharingType.price || 0,
@@ -97,6 +99,70 @@ export class PgServices {
         } catch (error) {
             console.error("Error fetching featured Pgs:", error);
             throw new Error("Failed to fetch featured Pgs");
+        }
+    }
+
+    async getTrendingPgs() {
+        try {
+            const trendingPgs = await this.prismaClient.pgData.findMany({
+                take: 10,
+                orderBy: {
+                    rating: 'desc'
+                },
+                include: {
+                    Host: true,
+                    furnitures: true,
+                    amenities: true,
+                    sharingTypes: true
+                }
+            });
+            return trendingPgs;
+        } catch (error) {
+            console.error("Error fetching trending Pgs:", error);
+            throw new Error("Failed to fetch trending Pgs");
+        }
+    }
+
+    async getPgById(pgId: string) {
+        try {
+            const pg = await this.prismaClient.pgData.findUnique({
+                where: { id: pgId },
+                include: {
+                    Host: true,
+                    furnitures: true,
+                    amenities: true,
+                    sharingTypes: true
+                }
+            });
+
+            if (!pg) {
+                throw new Error("PG not found");
+            }
+
+            return pg;
+        } catch (error) {
+            console.error("Error fetching PG by ID:", error);
+            throw new Error("Failed to fetch PG by ID");
+        }
+    }
+
+    async getPgsByHostId(hostId: string) {
+        try {
+
+            const pgs = await this.prismaClient.pgData.findMany({
+                where: { hostId },
+                include: {
+                    Host: true,
+                    furnitures: true,
+                    amenities: true,
+                    sharingTypes: true
+                }
+            });
+
+            return pgs;
+        } catch (error) {
+            console.error("Error fetching PGs by Host ID:", error);
+            throw new Error("Failed to fetch PGs by Host ID");
         }
     }
 }

@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
-import { pgController } from "../../route";
+import { pgController } from "../../../route";
 
-export async function GET(request: Request) {
+export async function GET(request: Request, { params }: { params: Promise<{ pgId: string }> }) {
     try {
-        const result = await pgController.getFeaturedPgs(request);
+        const { pgId } = await params;
+
+        const result = await pgController.getPgById(request, pgId);
         return result;
     } catch (error) {
         console.error("Error in POST route:", error);

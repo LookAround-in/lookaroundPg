@@ -117,8 +117,6 @@ model PgData {
   moveInStatus   MoveInStatus
   virtualTourUrl String?
   images         String[]       @default([])
-  hostName       String?
-  hostContact    String?
   rating         Float          @default(0)
   reviews        String[]       @default([])
 }
