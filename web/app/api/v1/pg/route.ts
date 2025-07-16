@@ -1,12 +1,31 @@
 import { NextResponse } from "next/server";
+import { PgController } from "./pgController";
+
+const pgController = new PgController();
 
 export async function GET(request: Request) {
-    return NextResponse.json({
-        success: true,
-        message: "This is a protected route",
-    }, { status: 200 });
+    try {
+        const result = await pgController.getFeaturedPgs(request);
+        return result;
+    } catch (error) {
+        return NextResponse.json({
+            success: false,
+            message: "Error fetching PGs",
+            error: error instanceof Error ? error.message : "Unknown error"
+        }, { status: 500 });
+    }
 }
 
 export async function POST(request: Request) {
-    
+    try {
+        const result = await pgController.createPg(request);
+        return result;
+    } catch (error) {
+        console.error("Error in POST route:", error);
+        return NextResponse.json({
+            success: false,
+            message: "Error creating PG",
+            error: error instanceof Error ? error.message : "Unknown error"
+        }, { status: 500 });
+    }
 }
