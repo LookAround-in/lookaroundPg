@@ -103,6 +103,24 @@ export class PgController {
         }
     }
 
+    getExplorePgs = async (req: Request) => {
+        try {
+            const explorePgs = await this.pgService.getExplorePgs();
+            return NextResponse.json({
+                success: true,
+                message: "Explore PGs fetched successfully",
+                data: explorePgs
+            }, { status: 200 });
+        } catch (error) {
+            console.error("Error in getExplorePgs controller:", error);
+            return NextResponse.json({
+                success: false,
+                message: "Failed to fetch explore PGs",
+                error: error instanceof Error ? error.message : "Unknown error"
+            }, { status: 500 });
+        }
+    }
+
     getPgById = async (req: Request, pgId: string) => {
         try {
             console.log(pgId);

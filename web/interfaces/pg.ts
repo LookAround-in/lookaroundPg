@@ -65,7 +65,6 @@ export enum MoveInStatus {
   WITHIN_ONE_MONTH = "WITHIN_ONE_MONTH",
 }
 
-// Complete PgData interface matching Prisma model
 export interface PgData {
   id: string;
   title: string;

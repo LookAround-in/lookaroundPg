@@ -6,10 +6,10 @@ export async function GET(request: Request) {
         const result = await pgController.getFeaturedPgs(request);
         return result;
     } catch (error) {
-        console.error("Error in POST route:", error);
+        console.error("Error in getting featured Pg route:", error);
         return NextResponse.json({
             success: false,
-            message: "Error creating PG",
+            message: "Error getting featured PG",
             error: error instanceof Error ? error.message : "Unknown error"
         }, { status: 500 });
     }

@@ -123,6 +123,27 @@ export class PgServices {
         }
     }
 
+    async getExplorePgs() {
+        try {
+            const explorePgs = await this.prismaClient.pgData.findMany({
+                take: 10,
+                orderBy: {
+                    rating: 'desc'
+                },
+                include: {
+                    Host: true,
+                    furnitures: true,
+                    amenities: true,
+                    sharingTypes: true
+                }
+            });
+            return explorePgs;
+        } catch (error) {
+            console.error("Error fetching explore Pgs:", error);
+            throw new Error("Failed to fetch explore Pgs");
+        }
+    }
+
     async getPgById(pgId: string) {
         try {
             const pg = await this.prismaClient.pgData.findUnique({
