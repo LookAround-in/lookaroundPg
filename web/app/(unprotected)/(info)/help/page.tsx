@@ -190,21 +190,6 @@ const HelpCenter = () => {
 
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center p-6 bg-white rounded-xl shadow-sm">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="h-6 w-6 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-charcoal mb-2">
-                Live Chat
-              </h3>
-              <p className="text-gray-600 mb-4 text-sm">
-                Chat with our support team
-              </p>
-              <Button variant="outline" className="w-full">
-                Start Chat
-              </Button>
-            </div>
-
-            <div className="text-center p-6 bg-white rounded-xl shadow-sm">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Mail className="h-6 w-6 text-green-600" />
               </div>

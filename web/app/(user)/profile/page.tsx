@@ -5,14 +5,14 @@ import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import { Label } from 'components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
-import { User, Mail, Phone, Settings, Heart, LogOut } from 'lucide-react';
+import { User, Mail, Phone, Settings, Heart, LogOut, Trash } from 'lucide-react';
 import { useAuth } from 'contexts/AuthContext';
 import { useWishlist } from 'contexts/WishlistContext';
 import { useToast } from 'hooks/use-toast';
 import { authClient } from 'lib/auth-client';
 
 const Profile = () => {
-  const { user, logout, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
   const { wishlist } = useWishlist();
   const { toast } = useToast();
   const router = useRouter();
@@ -88,6 +88,21 @@ const Profile = () => {
       description: "You have been successfully logged out.",
     });
   };
+
+  // TODO: Please add additional configs for the required action
+  const handleDeleteAccount = async() => {
+    await authClient.deleteUser({
+      fetchOptions: {
+        onSuccess: ()=>{
+          router.push("/")
+        },
+      },
+    });
+    toast({
+      title: "Account deleted",
+      description: "You have successfully deleted the account.",
+    });
+  }
 
   return (
     <div className="min-h-screen bg-light-gray">
@@ -247,6 +262,15 @@ const Profile = () => {
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Log Out
+                </Button>
+
+                <Button
+                  variant="destructive"
+                  className="w-full justify-start"
+                  onClick={handleDeleteAccount}
+                >
+                  <Trash className="h-4 w-4 mr-2" />
+                  Delete Account
                 </Button>
               </CardContent>
             </Card>

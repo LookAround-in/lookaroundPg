@@ -31,26 +31,26 @@ const ContactUs = () => {
     {
       icon: MapPin,
       title: "Visit Us",
-      details: ["123 Tech Park", "Koramangala, Bangalore", "Karnataka 560034, India"],
-      color: "bg-blue-100 text-blue-600"
+      details: ["#77", "Marathalli, Bangalore", "Karnataka 560034, India"],
+      color: "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
     },
     {
       icon: Phone,
       title: "Call Us",
-      details: ["+91 98765 43210", "+91 87654 32109", "Mon-Fri 9AM-6PM IST"],
-      color: "bg-green-100 text-green-600"
+      details: ["+91 93906 31008", "+91 77026 67922", "Mon-Fri 9AM-6PM IST"],
+      color: "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300"
     },
     {
       icon: Mail,
       title: "Email Us",
-      details: ["support@findmypg.com", "hello@findmypg.com", "We'll respond within 24 hours"],
-      color: "bg-purple-100 text-purple-600"
+      details: ["info.lookaroundpg@gmail.com", "We'll respond within 24 hours"],
+      color: "bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300"
     },
     {
       icon: Clock,
       title: "Business Hours",
       details: ["Monday - Friday: 9AM - 6PM", "Saturday: 10AM - 4PM", "Sunday: Closed"],
-      color: "bg-red-100 text-red-600"
+      color: "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300"
     }
   ];
 
@@ -221,22 +221,6 @@ const ContactUs = () => {
               </p>
               <Button variant="outline" className="w-full">
                 Visit FAQ
-              </Button>
-            </div>
-
-            {/* Live Chat */}
-            <div className="bg-gradient-cool-light rounded-xl p-6">
-              <div className="flex items-center mb-4">
-                <MessageCircle className="h-6 w-6 text-purple-600 mr-3" />
-                <h3 className="text-xl font-semibold text-charcoal">
-                  Live Chat Available
-                </h3>
-              </div>
-              <p className="text-gray-600 mb-4">
-                Need immediate assistance? Our live chat support is available during business hours.
-              </p>
-              <Button className="bg-gradient-cool text-white hover:opacity-90 w-full">
-                Start Live Chat
               </Button>
             </div>
 

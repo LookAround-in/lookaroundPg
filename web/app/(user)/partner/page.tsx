@@ -45,12 +45,13 @@ const Partner = () => {
   ];
 
   const features = [
-    'Free property listing',
-    'Professional photography support',
-    'Dedicated account manager',
-    'Real-time inquiry notifications',
-    'Analytics and insights dashboard',
-    'Marketing support and promotion'
+    '4K Photos & Virtual Tours (Premium)',
+    'Instant lead notifications',
+    'Real-time inquiry tracking',
+    'Analytics & engagement dashboard',
+    'Easy listing management',
+    'Social & Instagram promotion',
+    'Verified tag after on-site check (Premium)'
   ];
 
   const roadmapSteps = [
@@ -89,27 +90,27 @@ const Partner = () => {
   const tourPlans = [
     {
       name: 'Standard Virtual Tour',
-      price: '₹999',
+      price: '₹500',
       features: [
-        '360° room photography',
-        'Basic virtual walkthrough',
-        'Mobile-friendly viewing',
-        'Social media sharing',
-        'Standard image quality'
+        'Host-uploaded photos only',
+        'Not verified – no virtual tour badge',
+        '24/7 customer support',
+        'Mobile-friendly & shareable',
+        'Host dashboard access'
       ],
       recommended: false
     },
     {
       name: 'Premium Virtual Tour',
-      price: '₹2,999',
+      price: '₹1,500',
       features: [
-        'Professional 4K 360° photography',
-        'Interactive virtual walkthrough',
-        'Floor plan integration',
-        'Custom branding',
+        '4K 360° photography',
+        'Virtual walkthrough',
+        'Verified badge (on-site visit)',
+        'Instagram Reel promotion',
         'Advanced analytics',
         'Priority listing placement',
-        'Marketing material creation'
+        '24/7 priority support'
       ],
       recommended: true
     }
@@ -159,11 +160,11 @@ const Partner = () => {
             </div>
             <div className="glass-effect rounded-xl p-6">
               <div className="text-3xl font-bold text-white mb-2">95%</div>
-              <div className="text-white/80 text-sm">Occupancy Rate</div>
+              <div className="text-white/80 text-sm">Visibility Rate</div>
             </div>
             <div className="glass-effect rounded-xl p-6">
-              <div className="text-3xl font-bold text-white mb-2">₹25K</div>
-              <div className="text-white/80 text-sm">Avg. Monthly Revenue</div>
+              <div className="text-3xl font-bold text-white mb-2">25K</div>
+              <div className="text-white/80 text-sm">Avg. Monthly Reach</div>
             </div>
             <div className="glass-effect rounded-xl p-6">
               <div className="text-3xl font-bold text-white mb-2">2hrs</div>
@@ -258,7 +259,7 @@ const Partner = () => {
           <div className="space-y-8">
             <div>
               <h2 className="text-3xl font-bold text-charcoal mb-6">
-                Why Choose FindMyPG?
+                Why Choose LookaroundPG?
               </h2>
               <div className="space-y-6">
                 {benefits.map((benefit, index) => (
@@ -307,7 +308,7 @@ const Partner = () => {
               <CardContent className="p-6">
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                    <Users className="h-6 w-6 text-white" />
+                    <Users className="h-6 w-12 text-white" />
                   </div>
                   <div>
                     <p className="text-gray-700 italic mb-2">

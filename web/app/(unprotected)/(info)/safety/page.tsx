@@ -10,17 +10,17 @@ const SafetyInformation = () => {
     {
       icon: Shield,
       title: 'Verified Properties',
-      description: 'All properties undergo thorough verification including document checks and on-site inspections.'
+      description: 'Select properties are verified through document checks and occasional on-site inspections.'
     },
     {
       icon: Eye,
       title: 'Background Checks',
-      description: 'Property owners and managers are verified through comprehensive background screening.'
+      description: 'Select property owners and managers are verified through background screening.'
     },
     {
       icon: Phone,
-      title: '24/7 Support',
-      description: 'Round-the-clock customer support for any safety concerns or emergencies.'
+      title: 'Call Support',
+      description: 'Customer support for any safety concerns or emergencies during working hours.'
     },
     {
       icon: Users,
@@ -61,13 +61,12 @@ const SafetyInformation = () => {
       ]
     }
   ];
-
   const emergencyContacts = [
     { service: 'Police', number: '100', available: '24/7' },
     { service: 'Fire Department', number: '101', available: '24/7' },
     { service: 'Ambulance', number: '102', available: '24/7' },
     { service: 'Women Helpline', number: '181', available: '24/7' },
-    { service: 'FindMyPG Safety', number: '+91 98765 43210', available: '24/7' }
+    { service: 'LookaroundPG Safety', number: '+91 98765 43210', available: '10:00 A.M. - 05:00 P.M.' }
   ];
 
   const reportingSteps = [
