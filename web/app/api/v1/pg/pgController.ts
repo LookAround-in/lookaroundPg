@@ -61,6 +61,65 @@ export class PgController {
         }
     }
 
+    updatePg = async (req: Request, id: string) => {
+        try {
+            const pgData: PgData = await req.json();
+
+            console.log(id);
+
+            console.log(pgData);
+
+
+            if (!pgData || !pgData) {
+                return NextResponse.json({
+                    success: false,
+                    message: "Pg data with ID is required"
+                }, { status: 400 });
+            }
+
+            const updatedPg = await this.pgService.updatePg(id, pgData);
+
+            return NextResponse.json({
+                success: true,
+                message: "Pg updated successfully",
+                data: updatedPg
+            }, { status: 200 });
+
+        } catch (error) {
+            console.error("Error in updatePg controller:", error);
+
+            return NextResponse.json({
+                success: false,
+                message: "Failed to update Pg",
+                error: error instanceof Error ? error.message : "Unknown error"
+            }, { status: 500 });
+        }
+    }
+
+    deletePg = async (req: Request, id: string) => {
+        try {
+            if (!id) {
+                return NextResponse.json({
+                    success: false,
+                    message: "Pg ID is required"
+                }, { status: 400 });
+            }
+            const deletedPg = await this.pgService.deletePg(id);
+            return NextResponse.json({
+                success: true,
+                message: "Pg deleted successfully",
+                data: deletedPg
+            }, { status: 200 });
+        } catch (error) {
+            console.error("Error in deletePg controller:", error);
+            return NextResponse.json({
+                success: false,
+                message: "Failed to delete Pg",
+                error: error instanceof Error ? error.message : "Unknown error"
+            }, { status: 500 });
+        }
+    }
+
     getFeaturedPgs = async (req: Request) => {
         try {
             const featuredPgs = await this.pgService.getFeaturedPgs();
@@ -98,6 +157,24 @@ export class PgController {
             return NextResponse.json({
                 success: false,
                 message: "Failed to fetch trending PGs",
+                error: error instanceof Error ? error.message : "Unknown error"
+            }, { status: 500 });
+        }
+    }
+
+    getExplorePgs = async (req: Request) => {
+        try {
+            const explorePgs = await this.pgService.getExplorePgs();
+            return NextResponse.json({
+                success: true,
+                message: "Explore PGs fetched successfully",
+                data: explorePgs
+            }, { status: 200 });
+        } catch (error) {
+            console.error("Error in getExplorePgs controller:", error);
+            return NextResponse.json({
+                success: false,
+                message: "Failed to fetch explore PGs",
                 error: error instanceof Error ? error.message : "Unknown error"
             }, { status: 500 });
         }

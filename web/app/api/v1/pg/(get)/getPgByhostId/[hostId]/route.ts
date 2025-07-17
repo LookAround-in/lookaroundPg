@@ -8,10 +8,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ host
         const result = await pgController.getPgsByHostId(request, hostId);
         return result;
     } catch (error) {
-        console.error("Error in POST route:", error);
+        console.error("Error in getting pg by hostId", error);
         return NextResponse.json({
             success: false,
-            message: "Error creating PG",
+            message: "Error in getting pg by hostId",
             error: error instanceof Error ? error.message : "Unknown error"
         }, { status: 500 });
     }

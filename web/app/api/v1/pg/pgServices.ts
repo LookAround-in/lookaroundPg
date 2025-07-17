@@ -81,6 +81,87 @@ export class PgServices {
         }
     }
 
+    async updatePg(pgId: string, pgData: PgData) {
+        try {
+            const updatedPg = await this.prismaClient.pgData.update({
+                where: { id: pgId },
+                data: {
+                    title: pgData.title,
+                    description: pgData.description,
+                    propertyType: pgData.propertyType,
+                    foodIncluded: pgData.foodIncluded ?? false,
+                    furnishing: pgData.furnishing,
+                    address: pgData.address,
+                    latitude: pgData.latitude,
+                    longitude: pgData.longitude,
+                    pgRules: pgData.pgRules,
+                    moveInStatus: pgData.moveInStatus,
+                    virtualTourUrl: pgData.virtualTourUrl,
+                    images: pgData.images ?? [],
+                    hostName: pgData.hostName,
+                    hostContact: pgData.hostContact,
+                    rating: pgData.rating ?? 0,
+                    reviews: pgData.reviews ?? [],
+                    // Update related furniture records
+                    furnitures: {
+                        deleteMany: {},
+                        create: pgData.furnitures?.map((furnitureType: FurnitureType) => ({
+                            type: furnitureType
+                        })) ?? []
+                    },
+                    // Update related amenity records
+                    amenities: {
+                        deleteMany: {},
+                        create: pgData.amenities?.map((amenityType: AmenityType) => ({
+                            type: amenityType
+                        })) ?? []
+                    },
+                    // Update related sharing type records
+                    sharingTypes: {
+                        deleteMany: {},
+                        create: pgData.sharingTypes?.map((sharingType: SharingTypeDetails) => ({
+                            type: sharingType.type || sharingType,
+                            description: sharingType.description,
+                            price: sharingType.price || 0,
+                            availability: sharingType.availability || 0,
+                            pricePerMonth: sharingType.pricePerMonth || sharingType.price || 0,
+                            pricePerDay: sharingType.pricePerDay,
+                            deposit: sharingType.deposit || 0,
+                            refundableDeposit: sharingType.refundableDeposit ?? true,
+                            refundableAmount: sharingType.refundableAmount || 0,
+                            maintainanceCharges: sharingType.maintainanceCharges,
+                            electricityCharges: sharingType.electricityCharges,
+                            waterCharges: sharingType.waterCharges,
+                            maintenanceIncluded: sharingType.maintenanceIncluded ?? false
+                        })) ?? []
+                    }
+                },
+                include: {
+                    Host: true,
+                    furnitures: true,
+                    amenities: true,
+                    sharingTypes: true
+                }
+            });
+            return updatedPg;
+        } catch (error) {
+            console.error("Detailed error updating Pg:", error);
+            throw error;
+        }
+    }
+
+    async deletePg(pgId: string) {
+        try {
+            const deletedPg = await this.prismaClient.pgData.delete({
+                where: { id: pgId }
+            });
+            return deletedPg;
+        } catch (error) {
+            console.error("Detailed error deleting Pg:", error);
+            throw error;
+        }
+    }
+
     async getFeaturedPgs() {
         try {
             const featuredPgs = await this.prismaClient.pgData.findMany({
@@ -120,6 +201,27 @@ export class PgServices {
         } catch (error) {
             console.error("Error fetching trending Pgs:", error);
             throw new Error("Failed to fetch trending Pgs");
+        }
+    }
+
+    async getExplorePgs() {
+        try {
+            const explorePgs = await this.prismaClient.pgData.findMany({
+                take: 10,
+                orderBy: {
+                    rating: 'desc'
+                },
+                include: {
+                    Host: true,
+                    furnitures: true,
+                    amenities: true,
+                    sharingTypes: true
+                }
+            });
+            return explorePgs;
+        } catch (error) {
+            console.error("Error fetching explore Pgs:", error);
+            throw new Error("Failed to fetch explore Pgs");
         }
     }
 
