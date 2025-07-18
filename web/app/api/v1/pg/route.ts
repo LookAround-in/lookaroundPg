@@ -1,9 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PgController } from "./pgController";
+import { isAdmin } from "@/lib/auth-middleware";
+
 
 export const pgController = new PgController();
 
-export async function POST(request: Request) {
+// Protect POST route with admin middleware
+export const POST = isAdmin(async (request: Request) => {
     try {
         const result = await pgController.createPg(request);
         return result;
@@ -15,4 +18,4 @@ export async function POST(request: Request) {
             error: error instanceof Error ? error.message : "Unknown error"
         }, { status: 500 });
     }
-}
+});
