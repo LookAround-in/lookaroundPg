@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PgController } from "./pgController";
+import { isAdmin } from "@/lib/auth-middleware";
+
+
 import { uploadImageToCloudinary } from "@/lib/cloudinary";
+
 import {
   PgData,
   PropertyType,
@@ -11,7 +15,7 @@ import {
 
 export const pgController = new PgController();
 
-export const POST = async (request: NextRequest) => {
+export const POST = isAdmin(async (request: Request) => {
   try {
     const formData = await request.formData();
 
@@ -85,3 +89,4 @@ export const POST = async (request: NextRequest) => {
     );
   }
 };
+
