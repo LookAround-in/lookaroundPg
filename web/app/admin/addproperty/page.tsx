@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Input } from '@/components/ui/input';
 
 const initialState = {
   title: '',
@@ -34,17 +35,19 @@ const houseRulesList = [
 ];
 
 export default function AddProperty() {
+  const [files, setFiles] = useState<File[]>([]);
   const [form, setForm] = useState(initialState);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const router = useRouter()
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
+    const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
     setForm(prev => ({
       ...prev,
-    //   [name]: type === 'checkbox' ? checked : value
+      [name]: newValue,
     }));
   };
 
@@ -62,14 +65,7 @@ export default function AddProperty() {
     setLoading(true);
     const files = Array.from(e.target.files);
     const urls: string[] = [];
-
-    for (const file of files) {
-    //   const { data, error } = 
-    //   if (error) {
-    //     setMessage('Image upload failed: ' + error.message);
-    //   }
-    }
-
+    // ...image upload logic...
     setImageUrls(urls);
     setForm(prev => ({ ...prev, images: urls }));
     setLoading(false);
@@ -79,160 +75,218 @@ export default function AddProperty() {
     e.preventDefault();
     setLoading(true);
     setMessage('');
-
-    const propertyData = {
-      ...form,
-      price: Number(form.price),
-      sharing_single: Number(form.sharing_single),
-      sharing_double: Number(form.sharing_double),
-      sharing_triple: Number(form.sharing_triple),
-      images: imageUrls,
-    };
-
+    // ...submit logic...
     setLoading(false);
-    router.push('/admin/properties')
+    router.push('/admin/properties');
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 m-10 bg-gray-100 rounded-xl shadow-md">
-      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Add New Property</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Text Inputs */}
-        {[
-          { name: 'title', placeholder: 'Title' },
-          { name: 'location', placeholder: 'Location' },
-          { name: 'price', placeholder: 'Base Price', type: 'number' },
-          { name: 'virtual_tour', placeholder: 'Virtual Tour Link' },
-          { name: 'host_name', placeholder: 'Host Name' },
-          { name: 'host_id', placeholder: 'Host ID' },
-          { name: 'host_avatar', placeholder: 'Host Avatar URL' },
-          { name: 'host_phone', placeholder: 'Host Phone' },
-          { name: 'host_email', placeholder: 'Host Email' },
-        ].map((field) => (
-          <input
-            key={field.name}
-            name={field.name}
-            value={form[field.name as keyof typeof form] as string}
-            onChange={handleChange}
-            placeholder={field.placeholder}
-            type={field.type || 'text'}
-            required
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        ))}
-
-        <textarea
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-          placeholder="Description"
-          required
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-
-        <div className="flex gap-2">
-          {['sharing_single', 'sharing_double', 'sharing_triple'].map(field => (
-            <input
-              key={field}
-              name={field}
-              value={form[field as keyof typeof form] as string}
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 py-16 px-2">
+      <div className="max-w-3xl mx-auto bg-white/90 rounded-2xl shadow-xl p-8 md:p-12">
+        <h1 className="text-4xl font-bold text-center text-charcoa mb-2">Add New Property</h1>
+        <p className="text-center text-gray-500 mb-8">Fill in the details to list your property</p>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Property Details */}
+          <section>
+            <h2 className="text-xl font-semibold text-primary mb-4">Property Details</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                name="title"
+                value={form.title}
+                onChange={handleChange}
+                placeholder="Title"
+                required
+                className="Input"
+              />
+              <Input
+                name="location"
+                value={form.location}
+                onChange={handleChange}
+                placeholder="Location"
+                required
+                className="Input"
+              />
+              <Input
+                name="price"
+                value={form.price}
+                onChange={handleChange}
+                placeholder="Base Price"
+                type="number"
+                required
+                className="Input"
+              />
+              <Input
+                name="virtual_tour"
+                value={form.virtual_tour}
+                onChange={handleChange}
+                placeholder="Virtual Tour Link"
+                className="Input"
+              />
+            </div>
+            <textarea
+              name="description"
+              value={form.description}
               onChange={handleChange}
-              placeholder={field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) + ' Price'}
-              type="number"
+              placeholder="Description"
               required
-              className="w-1/3 px-4 py-2 border rounded-md focus:outline-none"
+              className="Input mt-4"
+              rows={3}
             />
-          ))}
-        </div>
+          </section>
 
-        {/* File Upload */}
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="w-full px-4 py-2 border rounded-md bg-gray-50"
-        />
-
-        {/* Select Inputs */}
-        {[
-          { name: 'gender_preference', options: ['men', 'women', 'co-living'], label: 'Gender Preference' },
-          { name: 'property_type', options: ['single', 'shared', 'private'], label: 'Property Type' },
-          { name: 'availability_status', options: ['available', 'limited', 'full'], label: 'Availability Status' },
-        ].map(({ name, options, label }) => (
-          <div key={name}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{label}:</label>
-            <select
-              name={name}
-              value={form[name as keyof typeof form] as string}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md"
-            >
-              {options.map(opt => (
-                <option key={opt} value={opt}>{opt[0].toUpperCase() + opt.slice(1)}</option>
+          {/* Sharing Prices */}
+          <section>
+            <h2 className="text-xl font-semibold text-primary mb-4">Sharing Prices</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {['sharing_single', 'sharing_double', 'sharing_triple'].map(field => (
+                <Input
+                  key={field}
+                  name={field}
+                  value={form[field as keyof typeof form] as string}
+                  onChange={handleChange}
+                  placeholder={field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) + ' Price'}
+                  type="number"
+                  required
+                  className="Input"
+                />
               ))}
-            </select>
+            </div>
+          </section>
+
+          {/* Image Upload */}
+          <section>
+            <h2 className="text-xl font-semibold text-primary mb-4">Images</h2>
+            <Input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="Input bg-gray-50"
+            />
+            {imageUrls.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {imageUrls.map((url, idx) => (
+                  <img key={idx} src={url} alt="Property" className="w-20 h-20 object-cover rounded-lg border" />
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* Select Inputs */}
+          <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Gender Preference</label>
+              <select
+                name="gender_preference"
+                value={form.gender_preference}
+                onChange={handleChange}
+                className="Input"
+              >
+                {['men', 'women', 'co-living'].map(opt => (
+                  <option key={opt} value={opt}>{opt[0].toUpperCase() + opt.slice(1)}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
+              <select
+                name="property_type"
+                value={form.property_type}
+                onChange={handleChange}
+                className="Input"
+              >
+                {['single', 'shared', 'private'].map(opt => (
+                  <option key={opt} value={opt}>{opt[0].toUpperCase() + opt.slice(1)}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Availability Status</label>
+              <select
+                name="availability_status"
+                value={form.availability_status}
+                onChange={handleChange}
+                className="Input"
+              >
+                {['available', 'limited', 'full'].map(opt => (
+                  <option key={opt} value={opt}>{opt[0].toUpperCase() + opt.slice(1)}</option>
+                ))}
+              </select>
+            </div>
+          </section>
+
+          {/* Available Checkbox */}
+          <section>
+            <label className="inline-flex items-center space-x-2">
+              <Input
+                type="checkbox"
+                name="available"
+                checked={form.available}
+                onChange={handleChange}
+                className="form-checkbox h-5 w-5 text-blue-600"
+              />
+              <span className="text-gray-700">Currently Available</span>
+            </label>
+          </section>
+
+          {/* Amenities */}
+          <section>
+            <h2 className="text-xl font-semibold text-primary mb-2">Amenities</h2>
+            <div className="flex flex-wrap gap-3">
+              {amenitiesList.map(a => (
+                <label key={a} className="flex items-center space-x-1 bg-gray-100 px-3 py-1 rounded-lg">
+                  <Input
+                    type="checkbox"
+                    checked={form.amenities.includes(a)}
+                    onChange={() => handleMultiSelect('amenities', a)}
+                    className="form-checkbox text-blue-600"
+                  />
+                  <span className="text-sm text-gray-700">{a}</span>
+                </label>
+              ))}
+            </div>
+          </section>
+
+          {/* House Rules */}
+          <section>
+            <h2 className="text-xl font-semibold text-primary mb-2">House Rules</h2>
+            <div className="flex flex-wrap gap-3">
+              {houseRulesList.map(r => (
+                <label key={r} className="flex items-center space-x-1 bg-gray-100 px-3 py-1 rounded-lg">
+                  <Input
+                    type="checkbox"
+                    checked={form.house_rules.includes(r)}
+                    onChange={() => handleMultiSelect('house_rules', r)}
+                    className="form-checkbox text-blue-600"
+                  />
+                  <span className="text-sm text-gray-700">{r}</span>
+                </label>
+              ))}
+            </div>
+          </section>
+
+          {/* Host Details */}
+
+          {/* Submit Button & Message */}
+          <div>
+            <button
+              type="submit"
+              className="w-full bg-gradient-cool text-white py-3 px-4 rounded-lg font-semibold text-lg shadow hover:bg-primary transition disabled:opacity-50"
+              disabled={loading}
+            >
+              {loading ? 'Adding...' : 'Add Property'}
+            </button>
+            {message && <p className="text-center text-sm text-red-500 mt-2">{message}</p>}
           </div>
-        ))}
+        </form>
+      </div>
 
-        {/* Checkbox: Available */}
-        <label className="inline-flex items-center space-x-2">
-          <input
-            type="checkbox"
-            name="available"
-            checked={form.available}
-            onChange={handleChange}
-            className="form-checkbox h-5 w-5 text-blue-600"
-          />
-          <span className="text-gray-700">Currently Available</span>
-        </label>
-
-        {/* Amenities */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Amenities:</label>
-          <div className="flex flex-wrap gap-2">
-            {amenitiesList.map(a => (
-              <label key={a} className="flex items-center space-x-1">
-                <input
-                  type="checkbox"
-                  checked={form.amenities.includes(a)}
-                  onChange={() => handleMultiSelect('amenities', a)}
-                  className="form-checkbox text-blue-600"
-                />
-                <span className="text-sm text-gray-700">{a}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* House Rules */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">House Rules:</label>
-          <div className="flex flex-wrap gap-2">
-            {houseRulesList.map(r => (
-              <label key={r} className="flex items-center space-x-1">
-                <input
-                  type="checkbox"
-                  checked={form.house_rules.includes(r)}
-                  onChange={() => handleMultiSelect('house_rules', r)}
-                  className="form-checkbox text-blue-600"
-                />
-                <span className="text-sm text-gray-700">{r}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Submit Button & Message */}
-        <button
-          type="submit"
-          className="w-full bg-gradient-cool text-white py-2 px-4 rounded-md hover:bg-primary transition disabled:opacity-50"
-          disabled={loading}
-        >
-          {loading ? 'Adding...' : 'Add Property'}
-        </button>
-        {message && <p className="text-center text-sm text-red-500 mt-2">{message}</p>}
-      </form>
+      {/* Tailwind utility for Input */}
+      <style jsx global>{`
+        .Input {
+          @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/60 bg-white;
+        }
+      `}</style>
     </div>
   );
 }

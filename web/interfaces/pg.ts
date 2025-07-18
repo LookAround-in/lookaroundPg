@@ -2,13 +2,13 @@
 export enum PropertyType {
   MEN = "MEN",
   WOMEN = "WOMEN",
-  COLIVE = "COLIVE"
+  COLIVE = "COLIVE",
 }
 
 export enum FurnishingType {
   FURNISHED = "FURNISHED",
   SEMI_FURNISHED = "SEMI_FURNISHED",
-  UNFURNISHED = "UNFURNISHED"
+  UNFURNISHED = "UNFURNISHED",
 }
 
 export enum FurnitureType {
@@ -26,7 +26,7 @@ export enum FurnitureType {
   GAS_STOVE = "GAS_STOVE",
   KITCHEN_APPLIANCES = "KITCHEN_APPLIANCES",
   FURNITURE_OTHER = "FURNITURE_OTHER",
-  NONE = "NONE"
+  NONE = "NONE",
 }
 
 export enum AmenityType {
@@ -55,7 +55,7 @@ export enum SharingType {
   SINGLE = "SINGLE",
   DOUBLE = "DOUBLE",
   TRIPLE = "TRIPLE",
-  QUAD = "QUAD"
+  QUAD = "QUAD",
 }
 
 export enum MoveInStatus {
@@ -118,3 +118,8 @@ export interface SharingTypeDetails {
   waterCharges?: number;
   maintenanceIncluded?: boolean;
 }
+
+export type PgCreateInput = Omit<PgData, "id" | "createdAt" | "updatedAt"> & {
+  rating?: number;
+  reviews?: string[];
+};
