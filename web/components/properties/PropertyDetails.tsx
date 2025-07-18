@@ -209,7 +209,7 @@ const PropertyDetails = () => {
           {property.virtualTour && (
             <Button 
               onClick={() => setShowVirtualTourModal(true)}
-              className="md:hidden bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg"
+              className="md:hidden bg-gradient-cool text-white shadow-lg"
               size="sm"
             >
               <Eye className="h-4 w-4 mr-2" />
@@ -760,14 +760,15 @@ const PropertyDetails = () => {
 
         {/* Virtual Tour Modal */}
         <Dialog open={showVirtualTourModal} onOpenChange={setShowVirtualTourModal}>
-          <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-hidden p-0">
+          <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-hidden p-2">
             <DialogHeader className="p-6 pb-0">
-              <DialogTitle className="flex items-center gap-2">
+              <DialogTitle className="flex items-center gap-2 pt-2">
                 <Play className="h-5 w-5" />
                 Virtual Tour - {property.title}
               </DialogTitle>
             </DialogHeader>
-            <div className="p-6">
+            {/* Future use case, when there are multiple versions of the same property for different sharing options*/}
+            {/* <div className="p-6">
               <Tabs defaultValue="single" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="single">Single Sharing</TabsTrigger>
@@ -805,6 +806,15 @@ const PropertyDetails = () => {
                   </div>
                 </TabsContent>
               </Tabs>
+            </div> */}
+            <div className="w-full h-full">
+              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                <iframe
+                  src="https://www.lookaround.in/library/tour?url=https%3A%2F%2Frealsee.ai%2FZyKKW8Kp"
+                  title="360 Virtual Tour"
+                  className="absolute top-0 w-full h-full rounded-lg"
+                />
+              </div>
             </div>
           </DialogContent>
         </Dialog>

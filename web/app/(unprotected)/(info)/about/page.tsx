@@ -10,7 +10,7 @@ const About = () => {
     {
       icon: Shield,
       title: 'Safety First',
-      description: 'Every property is verified for safety and authenticity to ensure peace of mind for our users.'
+      description: 'Only premium properties are verified for safety and authenticity to give users added peace of mind.'
     },
     {
       icon: Users,
@@ -20,35 +20,30 @@ const About = () => {
     {
       icon: Star,
       title: 'Quality Assured',
-      description: 'We maintain high standards for all listed properties through regular quality checks.'
+      description: 'Quality checks are occasionally conducted for verified listings that include virtual tours.'
     },
     {
       icon: Heart,
       title: 'User-Centric',
-      description: 'Every feature we build is designed with our users\' needs and convenience in mind.'
+      description: 'Every feature we build is designed with our user\'s needs and convenience in mind.'
     }
-  ];
+  ]
 
   const team = [
     {
-      name: 'Priya Sharma',
-      role: 'CEO & Co-founder',
-      description: 'Former product manager with 8+ years in proptech and a passion for solving housing challenges.'
+      name: 'Likhith Reddy',
+      role: 'Co-founder & Sales Lead',
+      description: 'Builder at heart with 2+ years in proptech, now solving the chaos of finding a decent place to live.'
     },
     {
-      name: 'Arjun Patel',
-      role: 'CTO & Co-founder',
-      description: 'Tech enthusiast with expertise in building scalable platforms and ensuring data security.'
+      name: 'Aashish Reddy',
+      role: 'Co-founder & COO',
+      description: 'From code to creatives—handles tech, design, marketing, and ops to keep everything moving fast.'
     },
     {
-      name: 'Meera Reddy',
-      role: 'Head of Operations',
-      description: 'Operations expert focused on creating seamless experiences for both tenants and property owners.'
-    },
-    {
-      name: 'Rohit Kumar',
-      role: 'Head of Growth',
-      description: 'Growth strategist dedicated to expanding our reach and helping more people find their perfect PG.'
+      name: 'Aakash Subedi',
+      role: 'CTO',
+      description: 'Building the tech backbone that keeps tenants and owners connected with ease.'
     }
   ];
 
@@ -86,7 +81,7 @@ const About = () => {
               </h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  Founded in 2024, LookaroundPG was born from a simple observation: 
+                  Founded in 2025, LookaroundPG was born from a simple observation: 
                   finding quality PG accommodation shouldn't be a stressful, 
                   time-consuming process filled with uncertainty and safety concerns.
                 </p>
@@ -205,7 +200,7 @@ const About = () => {
                 <Shield className="h-12 w-12 text-primary mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">Verified Properties</h3>
                 <p className="text-gray-600">
-                  Every listing undergoes thorough verification for authenticity and safety
+                  We verify premium listings to ensure they meet the highest standards of safety and authenticity.
                 </p>
               </CardContent>
             </Card>
