@@ -8,6 +8,7 @@ import { useAuth } from 'contexts/AuthContext';
 import { useWishlist } from 'contexts/WishlistContext';
 import Image from 'next/image';
 import { Property } from '@/interfaces/property';
+import formatText from '@/utils/formatText';
 
 interface PropertyCardProps {
   property: Property;
@@ -116,7 +117,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
             <div className="flex flex-wrap gap-1">
               {property.amenities.slice(0, 3).map((amenity, index) => (
                 <Badge key={index} variant="outline" className="text-xs">
-                  {amenity.type}
+                  {formatText(amenity.type)}
                 </Badge>
               ))}
               {property.amenities.length > 3 && (

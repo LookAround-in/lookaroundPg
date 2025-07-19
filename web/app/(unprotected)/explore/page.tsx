@@ -1,6 +1,5 @@
 'use client'
 import React, { useState, useMemo, startTransition, useCallback, useTransition } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { PropertyCard } from 'components/properties/PropertyCard';
 import { Button } from 'components/ui/button';
 import { Label } from 'components/ui/label';
@@ -103,7 +102,7 @@ const Explore = () => {
         const prices = property.sharingTypes.map(st => st.pricePerMonth);
         propertyPrice = Math.min(...prices);
       } else {
-        const targetType = sharingType === 'single' ? SharingType.SINGLE : sharingType === 'double' ? SharingType.DOUBLE : SharingType.TRIPLE;
+        const targetType = sharingType === 'single' ? SharingType.SINGLE : sharingType === 'double' ? SharingType.DOUBLE : sharingType === 'triple' ? SharingType.TRIPLE : SharingType.QUAD;
         const matchedSharingType = property.sharingTypes.find(st => st.type === targetType);
         
         if (!matchedSharingType) return false; // Skip if sharing type not available
