@@ -134,7 +134,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
               {property.hostId ? (
-                <Image src='./logo.png' alt={property.hostId} width={32} height={32} className="w-full h-full rounded-full" />
+                <Image 
+                src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800' 
+                alt={property.hostId} 
+                width={32} 
+                height={32} 
+                className="w-full h-full rounded-full" 
+                />
               ) : (
                 <User className="h-3 w-3 text-white" />
               )}

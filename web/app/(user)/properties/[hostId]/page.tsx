@@ -1,44 +1,110 @@
-'use client'
-import React, { useState, useEffect } from 'react';
-import { PropertyCard } from 'components/properties/PropertyCard';
-import { Button } from 'components/ui/button';
-import { Badge } from 'components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
-import { Progress } from 'components/ui/progress';
-import { ArrowLeft, User, Star, Phone, Mail, MapPin, Home, Calendar, TrendingUp, Users, Shield, Award, MessageSquareDot } from 'lucide-react';
-import { useParams } from 'next/navigation';
-import { useRouter } from 'next/navigation';
-import { mockProperties } from 'data/mockData';
+"use client";
+import React, { useState, useEffect } from "react";
+import { PropertyCard } from "components/properties/PropertyCard";
+import { Button } from "components/ui/button";
+import { Badge } from "components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "components/ui/tabs";
+import { Progress } from "components/ui/progress";
+import {
+  ArrowLeft,
+  User,
+  Star,
+  Phone,
+  Mail,
+  MapPin,
+  Home,
+  Calendar,
+  TrendingUp,
+  Users,
+  Shield,
+  Award,
+  MessageSquareDot,
+  Loader2,
+} from "lucide-react";
+import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { ExploreApiResponse } from "@/interfaces/property";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchHostProperties = async (
+  hostId: string
+): Promise<ExploreApiResponse> => {
+  const response = await fetch(`/api/v1/pg/getPgByhostId/${hostId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return response.json();
+};
 
 const HostProperties = () => {
   const { hostId } = useParams();
-  const router = useRouter()
-  const [hostProperties, setHostProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    async function loadHostProperties() {
-      setLoading(true);
-      const data = mockProperties.filter(p => p.hostId === hostId);
-      setHostProperties(data)
-      setLoading(false);
-    }
-    if (hostId) loadHostProperties();
-  }, [hostId]);
+  const router = useRouter();
 
-  if (!hostProperties.length && !loading) {
+  const hostPropertiesData = useQuery({
+    queryKey: ["hostProperties", hostId],
+    queryFn: () => fetchHostProperties(hostId as string),
+    enabled: !!hostId,
+  });
+
+  const hostProperties = hostPropertiesData.data?.data || [];
+
+  if (hostPropertiesData.isLoading || hostPropertiesData.isFetching) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-whit">
+      <div className="min-h-screen flex items-center justify-center bg-light-gray">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <h1 className="text-2xl font-bold mb-4">Loading properties...</h1>
+          <p className="text-gray-600">
+            Please wait while we fetch the properties.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (hostPropertiesData.isError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-light-gray">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4 text-red-600">
+            Error loading property
+          </h1>
+          <p className="text-gray-600 mb-4">
+            {(hostPropertiesData.error as Error)?.message ||
+              "Failed to load property details"}
+          </p>
+          <div className="space-x-4">
+            <Button onClick={() => hostPropertiesData.refetch()}>
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!hostProperties.length && !hostPropertiesData.isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-white">
         <Card className="text-center p-8">
           <CardContent>
             <div className="w-20 h-20 bg-gradient-cool-light rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
               <User className="h-10 w-10 text-gray-400" />
             </div>
             <h1 className="text-2xl font-bold mb-4">Host not found</h1>
-            <p className="text-gray-600 mb-6">The host you're looking for doesn't exist or has been removed.</p>
-            <Button onClick={() => router.push('/explore')} className="bg-gradient-cool text-white hover:opacity-90">
+            <p className="text-gray-600 mb-6">
+              The host you're looking for doesn't exist or has been removed.
+            </p>
+            <Button
+              onClick={() => router.push("/explore")}
+              className="bg-gradient-cool text-white hover:opacity-90"
+            >
               Explore Properties
             </Button>
           </CardContent>
@@ -52,18 +118,18 @@ const HostProperties = () => {
     averageRating: 4.8,
     totalReviews: 127,
     responseRate: 98,
-    responseTime: '2 hours',
+    responseTime: "2 hours",
     yearsHosting: 5,
     occupancyRate: 92,
-    repeatGuests: 78
+    repeatGuests: 78,
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Back button */}
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={() => router.back()}
           className="mb-6 font-medium"
         >
@@ -81,11 +147,12 @@ const HostProperties = () => {
                 <div className="relative">
                   <div className="w-24 h-24 bg-gradient-cool rounded-full flex items-center justify-center flex-shrink-0 p-1">
                     <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
-                      {hostProperties.length > 0 && hostProperties[0].host_avatar ? (
-                        <img 
-                          src={hostProperties[0].host_avatar} 
-                          alt={hostProperties[0].host_name} 
-                          className="w-20 h-20 rounded-full object-cover" 
+                      {hostProperties.length > 0 &&
+                      hostProperties[0].Host.userId ? (
+                        <img
+                          src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800'
+                          alt={hostProperties[0].Host.userId}
+                          className="w-20 h-20 rounded-full object-cover"
                         />
                       ) : (
                         <User className="h-10 w-10 text-gradient-cool" />
@@ -103,21 +170,31 @@ const HostProperties = () => {
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4">
                     <div>
                       <h1 className="text-2xl lg:text-3xl font-bold text-charcoal mb-2 tracking-tight">
-                        {hostProperties.length > 0 ? hostProperties[0].host_name : 'Loading...'}
+                        {hostProperties.length > 0
+                          ? hostProperties[0].Host.userId
+                          : "Loading..."}
                       </h1>
                       <div className="flex items-center space-x-2 mb-3">
-                        <Badge variant="outline" className="border-gray-600 bg-gradient-cool text-white font-medium">
+                        <Badge
+                          variant="outline"
+                          className="border-gray-600 bg-gradient-cool text-white font-medium"
+                        >
                           <Award className="h-3 w-3 mr-1" />
                           Superhost
                         </Badge>
-                        <Badge variant="outline" className="border-gray-600 text-gray-900">
+                        <Badge
+                          variant="outline"
+                          className="border-gray-600 text-gray-900"
+                        >
                           Property Host
                         </Badge>
                       </div>
                       <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                         <div className="flex items-center">
                           <Home className="h-4 w-4 mr-1" />
-                          <span className="font-medium">{hostStats.totalProperties} Properties</span>
+                          <span className="font-medium">
+                            {hostStats.totalProperties} Properties
+                          </span>
                         </div>
                         <div className="flex items-center">
                           <MapPin className="h-4 w-4 mr-1" />
@@ -129,11 +206,13 @@ const HostProperties = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     {hostProperties.length > 0 && hostProperties[0].rating && (
                       <div className="flex items-center space-x-2 mt-4 sm:mt-0 bg-yellow-50 px-3 py-2 rounded-lg">
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
-                        <span className="text-lg font-bold">{hostStats.averageRating}</span>
+                        <span className="text-lg font-bold">
+                          {hostStats.averageRating}
+                        </span>
                         <span className="text-gray-600 text-sm">
                           ({hostStats.totalReviews} reviews)
                         </span>
@@ -172,29 +251,45 @@ const HostProperties = () => {
             <CardContent className="space-y-4">
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-600">Response Rate</span>
-                  <span className="text-sm font-bold text-green-600">{hostStats.responseRate}%</span>
+                  <span className="text-sm font-medium text-gray-600">
+                    Response Rate
+                  </span>
+                  <span className="text-sm font-bold text-green-600">
+                    {hostStats.responseRate}%
+                  </span>
                 </div>
                 <Progress value={hostStats.responseRate} className="h-2" />
               </div>
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-600">Occupancy Rate</span>
-                  <span className="text-sm font-bold text-blue-600">{hostStats.occupancyRate}%</span>
+                  <span className="text-sm font-medium text-gray-600">
+                    Occupancy Rate
+                  </span>
+                  <span className="text-sm font-bold text-blue-600">
+                    {hostStats.occupancyRate}%
+                  </span>
                 </div>
                 <Progress value={hostStats.occupancyRate} className="h-2" />
               </div>
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-600">Repeat Guests</span>
-                  <span className="text-sm font-bold text-purple-600">{hostStats.repeatGuests}%</span>
+                  <span className="text-sm font-medium text-gray-600">
+                    Repeat Guests
+                  </span>
+                  <span className="text-sm font-bold text-purple-600">
+                    {hostStats.repeatGuests}%
+                  </span>
                 </div>
                 <Progress value={hostStats.repeatGuests} className="h-2" />
               </div>
               <div className="pt-2 border-t :border-gray-700">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-gray-600">Response Time</span>
-                  <span className="text-sm font-bold text-gradient-cool">{hostStats.responseTime}</span>
+                  <span className="text-sm font-medium text-gray-600">
+                    Response Time
+                  </span>
+                  <span className="text-sm font-bold text-gradient-cool">
+                    {hostStats.responseTime}
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -204,13 +299,22 @@ const HostProperties = () => {
         {/* Enhanced Tabs Section */}
         <Tabs defaultValue="properties" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6 lg:mb-8 bg-gray-100 p-1 rounded-xl">
-            <TabsTrigger value="properties" className="font-semibold data-[state=active]">
+            <TabsTrigger
+              value="properties"
+              className="font-semibold data-[state=active]"
+            >
               All Properties ({hostStats.totalProperties})
             </TabsTrigger>
-            <TabsTrigger value="reviews" className="font-semibold data-[state=active]">
+            <TabsTrigger
+              value="reviews"
+              className="font-semibold data-[state=active]"
+            >
               Reviews ({hostStats.totalReviews})
             </TabsTrigger>
-            <TabsTrigger value="about" className="font-semibold data-[state=active]">
+            <TabsTrigger
+              value="about"
+              className="font-semibold data-[state=active]"
+            >
               About Host
             </TabsTrigger>
           </TabsList>
@@ -219,13 +323,19 @@ const HostProperties = () => {
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-xl lg:text-2xl font-bold text-charcoal mb-2 tracking-tight">
-                  All Properties by {hostProperties.length > 0 ? hostProperties[0].host_name : 'Loading...'}
+                  All Properties by{" "}
+                  {hostProperties.length > 0
+                    ? hostProperties[0].Host.userId
+                    : "Loading..."}
                 </h2>
                 <p className="text-gray-600 font-medium">
                   {hostProperties.length} properties available for booking
                 </p>
               </div>
-              <Badge variant="outline" className="text-gradient-cool border-2 font-semibold">
+              <Badge
+                variant="outline"
+                className="text-gradient-cool border-2 font-semibold"
+              >
                 <Users className="h-4 w-4 mr-1" />
                 Active Host
               </Badge>
@@ -234,10 +344,10 @@ const HostProperties = () => {
             {/* Properties Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
               {hostProperties.map((property, index) => (
-                <div 
+                <div
                   key={property.id}
                   className="animate-fadeInUp"
-                  style={{animationDelay: `${index * 0.1}s`}}
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <PropertyCard property={property} className="h-full" />
                 </div>
@@ -246,14 +356,17 @@ const HostProperties = () => {
           </TabsContent>
 
           <TabsContent value="reviews" className="space-y-6">
-            <Card >
+            <Card>
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-gradient-cool-light rounded-full flex items-center justify-center mx-auto mb-4">
                   <Star className="h-8 w-8 text-gradient-cool" />
                 </div>
-                <h3 className="text-xl font-bold text-charcoal mb-2">Reviews Coming Soon</h3>
+                <h3 className="text-xl font-bold text-charcoal mb-2">
+                  Reviews Coming Soon
+                </h3>
                 <p className="text-gray-600">
-                  Guest reviews and ratings will be displayed here once available.
+                  Guest reviews and ratings will be displayed here once
+                  available.
                 </p>
               </CardContent>
             </Card>
@@ -262,26 +375,47 @@ const HostProperties = () => {
           <TabsContent value="about" className="space-y-6">
             <Card>
               <CardContent className="p-6 lg:p-8">
-                <h3 className="text-xl font-bold text-charcoal mb-4">About {hostProperties.length > 0 ? hostProperties[0].host_name : 'Loading...'}</h3>
+                <h3 className="text-xl font-bold text-charcoal mb-4">
+                  About{" "}
+                  {hostProperties.length > 0
+                    ? hostProperties[0].Host.userId
+                    : "Loading..."}
+                </h3>
                 <div className="prose max-w-none">
                   <p className="text-gray-600 leading-relaxed mb-4">
-                    Welcome! I'm {hostProperties.length > 0 ? hostProperties[0].host_name : 'Loading...'}, a dedicated property host with over {hostStats.yearsHosting} years of experience 
-                    in providing comfortable and safe accommodations in Bangalore. I take pride in maintaining high-quality 
-                    properties and ensuring all my guests have a pleasant stay.
+                    Welcome! I'm{" "}
+                    {hostProperties.length > 0
+                      ? hostProperties[0].Host.userId
+                      : "Loading..."}
+                    , a dedicated property host with over{" "}
+                    {hostStats.yearsHosting} years of experience in providing
+                    comfortable and safe accommodations in Bangalore. I take
+                    pride in maintaining high-quality properties and ensuring
+                    all my guests have a pleasant stay.
                   </p>
                   <p className="text-gray-600 leading-relaxed mb-4">
-                    My properties are carefully selected and maintained to provide the best living experience for students 
-                    and working professionals. I believe in creating a home-like environment where guests can focus on 
-                    their goals while enjoying comfortable amenities.
+                    My properties are carefully selected and maintained to
+                    provide the best living experience for students and working
+                    professionals. I believe in creating a home-like environment
+                    where guests can focus on their goals while enjoying
+                    comfortable amenities.
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                     <div className="bg-gradient-cool-light p-4 rounded-lg">
-                      <h4 className="font-semibold text-gradient-cool mb-2">Languages</h4>
-                      <p className="text-sm text-gray-600">English, Hindi, Kannada</p>
+                      <h4 className="font-semibold text-gradient-cool mb-2">
+                        Languages
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        English, Hindi, Kannada
+                      </p>
                     </div>
                     <div className="bg-gradient-cool-light p-4 rounded-lg">
-                      <h4 className="font-semibold text-gradient-cool mb-2">Response Time</h4>
-                      <p className="text-sm text-gray-600">Usually within {hostStats.responseTime}</p>
+                      <h4 className="font-semibold text-gradient-cool mb-2">
+                        Response Time
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        Usually within {hostStats.responseTime}
+                      </p>
                     </div>
                   </div>
                 </div>
