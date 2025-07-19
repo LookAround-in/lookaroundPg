@@ -15,14 +15,14 @@ const FAQ = () => {
     {
       id: 1,
       category: 'Getting Started',
-      question: "How do I create an account on FindMyPG?",
+      question: "How do I create an account on LookaroundPG?",
       answer: "To create an account, click on the 'Sign Up' button in the top right corner of our website. You'll need to provide your email address, create a password, and verify your email. Once verified, you can start browsing and saving properties to your wishlist."
     },
     {
       id: 2,
       category: 'Getting Started',
-      question: "Is it free to use FindMyPG?",
-      answer: "Yes, creating an account and browsing properties on FindMyPG is completely free. We don't charge users any fees for searching or contacting property owners. Our revenue comes from partnerships with verified property owners."
+      question: "Is it free to use LookaroundPG?",
+      answer: "Yes, creating an account and browsing properties on LookaroundPG is completely free. We don't charge users any fees for searching or contacting property owners. Our revenue comes from partnerships with verified property owners."
     },
     {
       id: 3,
@@ -82,7 +82,7 @@ const FAQ = () => {
       id: 12,
       category: 'Safety',
       question: "What should I do if I feel unsafe?",
-      answer: "Your safety is our priority. If you feel unsafe, immediately contact local authorities if there's immediate danger. For non-emergency safety concerns, contact our 24/7 support team at +91 98765 43210 or email safety@findmypg.com."
+      answer: "Your safety is our priority. If you feel unsafe, immediately contact local authorities if there's immediate danger. For non-emergency safety concerns, contact our 24/7 support team at +91 98765 43210 or email safety LookaroundPG.com."
     },
     {
       id: 13,
@@ -118,7 +118,7 @@ const FAQ = () => {
       id: 18,
       category: 'Technical',
       question: "How do I report a bug or technical issue?",
-      answer: "You can report technical issues by contacting our support team at support@findmypg.com or using the 'Contact Us' form. Please include details about the issue, your device/browser information, and steps to reproduce the problem."
+      answer: "You can report technical issues by contacting our support team at support LookaroundPG.com or using the 'Contact Us' form. Please include details about the issue, your device/browser information, and steps to reproduce the problem."
     }
   ];
 
@@ -143,7 +143,7 @@ const FAQ = () => {
             Frequently Asked Questions
           </h1>
           <p className="text-xl text-white/90 mb-8 animate-fadeInUp" style={{animationDelay: '0.2s'}}>
-            Find quick answers to common questions about FindMyPG
+            Find quick answers to common questions about LookaroundPG
           </p>
           
           {/* Search Bar */}

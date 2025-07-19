@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState,useMemo } from 'react';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import { usePropertyContext } from 'contexts/PropertyContext';
@@ -15,20 +15,11 @@ import { useWishlist } from 'contexts/WishlistContext';
 import { mockProperties } from 'data/mockData';
 import { useToast } from 'hooks/use-toast';
 import Image from 'next/image';
+import { ExploreApiResponse, Property } from '@/interfaces/property';
+import { useQuery } from '@tanstack/react-query';
 
 //Mock property features data
   const propertyFeatures = {
-    foodIncluded: true,
-    furnishing: 'Fully Furnished',
-    furniture: [
-      'Single Bed with Mattress',
-      'Study Table & Chair',
-      'Wardrobe',
-      'Side Table',
-      'Mirror',
-      'Ceiling Fan',
-      'Window Curtains'
-    ],
     nearbyFacilities: [
       { name: 'Metro Station', distance: '0.5 km', icon: Train },
       { name: 'Shopping Mall', distance: '2 km', icon: ShoppingBag },
@@ -66,6 +57,26 @@ import Image from 'next/image';
     }
   ];
 
+interface pgDetailsInterface{
+  propertyId: string;
+}
+
+const fetchPropertyById = async (propertyId: string): Promise<ExploreApiResponse> => {
+  if (!propertyId){
+    throw new Error("Pg Id is required")
+  }
+  const response = await fetch(`/api/v1/pg/getPgById/${propertyId}`,{
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  return response.json();
+}
+
 const PropertyDetails = () => {
   const { propertyId } = usePropertyContext();
   const router = useRouter();
@@ -78,9 +89,67 @@ const PropertyDetails = () => {
   const [showTermsDialog, setShowTermsDialog] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showVirtualTourModal, setShowVirtualTourModal] = useState(false);
+
+  const data = useQuery({
+    queryKey: ['property', propertyId],
+    queryFn: () => fetchPropertyById(propertyId),
+    enabled: !!propertyId, //only run when proprtyID is truthy
+  })
   
-  const property = mockProperties.find(p => p.id === propertyId);
-  
+  const property = useMemo(() => {
+    if (data.isLoading || data.isPending) {
+      return null;
+    }
+    
+    if (data.isError || !data.data) {
+      console.error('Error fetching property:', data.error);
+      return null;
+    }
+    
+    const response = data.data;
+    
+    if (response.success && response.data) {
+      // Handle both single object and array responses
+      const propertyData = Array.isArray(response.data) ? response.data[0] : response.data;
+      return propertyData as Property;
+    }
+    console.warn('Unexpected API response structure:', response);
+    return null;
+  }, [data]);
+
+  if (data.isLoading || data.isPending) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-light-gray">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <h1 className="text-2xl font-bold mb-4">Loading property...</h1>
+          <p className="text-gray-600">Please wait while we fetch the property details.</p>
+        </div>
+      </div>
+    );
+  }
+
+   if (data.isError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-light-gray">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4 text-red-600">Error loading property</h1>
+          <p className="text-gray-600 mb-4">
+            {(data.error as Error)?.message || 'Failed to load property details'}
+          </p>
+          <div className="space-x-4">
+            <Button onClick={() => data.refetch()}>
+              Try Again
+            </Button>
+            <Button variant="outline" onClick={() => router.push('/explore')}>
+              Back to Explore
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!property) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-gray">
@@ -173,19 +242,19 @@ const PropertyDetails = () => {
   // Pricing data based on sharing type with refundable deposit
   const pricingData = {
     single: {
-      price: property.price_single,
-      deposit: 5000,
-      refundableDeposit: 4000,
-      maintenance: 1000
+      price: property.sharingTypes[0].price,
+      deposit: property.sharingTypes[0].deposit,
+      refundableDeposit: property.sharingTypes[0].refundableDeposit,
+      maintenance: property.sharingTypes[0].maintainanceCharges
     },
     double: {
-      price: property.price_double,
+      price: property.sharingTypes[0].price,
       deposit: 4000,
       refundableDeposit: 3200,
       maintenance: 800
     },
     triple: {
-      price: property.price_triple,
+      price: property.sharingTypes[0].price,
       deposit: 3000,
       refundableDeposit: 2500,
       maintenance: 600
@@ -206,7 +275,7 @@ const PropertyDetails = () => {
           </Button>
           
           {/* Virtual Tour Button - Mobile Top Right */}
-          {property.virtualTour && (
+          {property.virtualTourUrl && (
             <Button 
               onClick={() => setShowVirtualTourModal(true)}
               className="md:hidden bg-gradient-cool text-white shadow-lg"
@@ -231,7 +300,7 @@ const PropertyDetails = () => {
                 />
                 
                 {/* Virtual Tour Badge */}
-                {property.virtualTour && (
+                {property.virtualTourUrl && (
                   <Badge className="absolute top-3 left-3 bg-accent text-primary hover:text-white">
                     <Eye className="h-3 w-3 mr-1" />
                     360° Tour Available
@@ -302,7 +371,7 @@ const PropertyDetails = () => {
                     </h1>
                     <div className="flex items-center text-gray-6000">
                       <MapPin className="h-4 w-4 mr-1" />
-                      <span>{property.location}</span>
+                      <span>{property.address}</span>
                     </div>
                   </div>
 
@@ -313,7 +382,7 @@ const PropertyDetails = () => {
                       <div>
                         <p className="font-semibold text-gray-800">Food Included</p>
                         <p className="text-sm text-gray-600">
-                          {propertyFeatures.foodIncluded ? 'Yes, meals provided' : 'Not included'}
+                          {property.foodIncluded ? 'Yes, meals provided' : 'Not included'}
                         </p>
                       </div>
                     </div>
@@ -321,7 +390,7 @@ const PropertyDetails = () => {
                       <Sofa className="h-5 w-5 text-blue-600" />
                       <div>
                         <p className="font-semibold text-gray-800">Furnishing</p>
-                        <p className="text-sm text-gray-600">{propertyFeatures.furnishing}</p>
+                        <p className="text-sm text-gray-600">{property.furnishing}</p>
                       </div>
                     </div>
                   </div>
@@ -355,25 +424,25 @@ const PropertyDetails = () => {
                       </span>
                       <span className="text-gray-6000 ml-2">/month</span>
                     </div>
-                    <Badge className={getStatusBadgeColor(property.availabilityStatus)}>
+                    {/* <Badge className={getStatusBadgeColor(property.availabilityStatus)}>
                       {property.availabilityStatus === 'available' ? 'Available' :
                        property.availabilityStatus === 'limited' ? 'Limited Availability' : 'Full'}
-                    </Badge>
+                    </Badge> */}
                   </div>
 
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant='outline' className={getGenderBadgeColor(property.genderPreference)}>
-                      {property.genderPreference === 'co-living' ? 'Co-living' : 
-                       property.genderPreference === 'men' ? 'Men Only' : 'Women Only'}
+                    <Badge variant='outline' className={getGenderBadgeColor(property.propertyType)}>
+                      {property.propertyType === 'COLIVE' ? 'Co-living' : 
+                       property.propertyType === 'MEN' ? 'Men Only' : 'Women Only'}
                     </Badge>
                     <Badge variant="outline" className="">
                       {property.propertyType.charAt(0).toUpperCase() + property.propertyType.slice(1)} Room
                     </Badge>
-                    {property.virtualTour && (
+                    {property.virtualTourUrl && (
                       <Badge variant="outline" className="">Virtual Tour</Badge>
                     )}
-                    {propertyFeatures.foodIncluded && (
+                    {property.foodIncluded && (
                       <Badge variant='outline' className="bg-green-100 text-green-800">
                         <Utensils className="h-3 w-3 mr-1" />
                         Food Included
@@ -388,8 +457,8 @@ const PropertyDetails = () => {
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
                         <span className="ml-1 font-semibold">{property.rating}</span>
                       </div>
-                      {property.reviewCount && (
-                        <span className="text-gray-6000">({property.reviewCount} reviews)</span>
+                      {property.reviews && (
+                        <span className="text-gray-6000">({property.reviews.length} reviews)</span>
                       )}
                     </div>
                   )}
@@ -409,7 +478,7 @@ const PropertyDetails = () => {
                     <div className="text-center p-3 bg-gradient-cool-light rounded-lg">
                       <Calendar className="h-6 w-6 mx-auto mb-2 text-gradient-cool" />
                       <p className="text-sm font-medium">Move-in</p>
-                      <p className="text-xs text-gray-6000">{property.move_in}</p>
+                      <p className="text-xs text-gray-6000">{property.moveInStatus}</p>
                     </div>
                   </div>
 
@@ -476,10 +545,10 @@ const PropertyDetails = () => {
                   Furniture & Amenities Included
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {propertyFeatures.furniture.map((item, index) => (
+                  {property.furnitures.map((item, index) => (
                     <div key={index} className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-primary rounded-full"></div>
-                      <span className="text-gray-700">{item}</span>
+                      <span className="text-gray-700">{item.type}</span>
                     </div>
                   ))}
                 </div>
@@ -521,7 +590,7 @@ const PropertyDetails = () => {
                   {property.amenities.map((amenity, index) => (
                     <div key={index} className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-primary rounded-full"></div>
-                      <span className="text-gray-700">{amenity}</span>
+                      <span className="text-gray-700">{amenity.type}</span>
                     </div>
                   ))}
                 </div>
@@ -536,12 +605,16 @@ const PropertyDetails = () => {
                   House Rules
                 </h3>
                 <div className="space-y-2">
-                  {property.houseRules.map((rule, index) => (
+                  {/* {property.pgRules.map((rule, index) => (
                     <div key={index} className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-primary rounded-full"></div>
                       <span className="text-gray-700">{rule}</span>
                     </div>
-                  ))}
+                  ))} */}
+                  <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      <span className="text-gray-700">{property.pgRules}</span>
+                    </div>
                 </div>
               </CardContent>
             </Card>
@@ -557,7 +630,7 @@ const PropertyDetails = () => {
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
                         <span className="ml-1 font-semibold">{property.rating}</span>
                       </div>
-                      <span className="text-gray-6000">({property.reviewCount} reviews)</span>
+                      <span className="text-gray-6000">({property.reviews.length} reviews)</span>
                     </div>
                   )}
                 </div>
@@ -607,15 +680,22 @@ const PropertyDetails = () => {
               <CardContent className="p-6">
                 <div className="text-center space-y-4">
                   <div className="w-16 h-16 bg-gradient-cool rounded-full flex items-center justify-center mx-auto">
-                    {property.hostAvatar ? (
+                    {/* {property.hostAvatar ? (
                       <Image src={property.hostAvatar} alt={property.hostName} width={32} height={32} className="w-full h-full rounded-full" />
                     ) : (
                       <User className="h-8 w-8 text-white" />
+                    )} */}
+                    
+                    {property.hostId ? (
+                      <Image src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800' alt={property.hostId} width={32} height={32} className="w-full h-full rounded-full" />
+                    ) : (
+                      <User className="h-8 w-8 text-white" />
                     )}
+
                   </div>
                   
                   <div>
-                    <h3 className="font-semibold text-lg">{property.hostName}</h3>
+                    <h3 className="font-semibold text-lg">{property.hostId}</h3>
                     <p className="text-gray-6000">Property Host</p>
                   </div>
 
@@ -624,7 +704,7 @@ const PropertyDetails = () => {
                       <Star className="h-4 w-4 text-yellow-400 fill-current" />
                       <span className="font-medium">{property.rating}</span>
                       <span className="text-gray-6000">
-                        ({property.reviewCount} reviews)
+                        ({property.reviews.length} reviews)
                       </span>
                     </div>
                   )}
@@ -639,25 +719,25 @@ const PropertyDetails = () => {
                       </Button>
                     ) : (
                       <div className="space-y-2">
-                        {property.hostPhone && (
-                          <a href={`tel:${property.hostPhone}`}>
+                        {property.Host.contactNumber && (
+                          <a href={`tel:${property.Host.contactNumber}`}>
                             <Button variant="outline" className="w-full">
                               <Phone className="h-4 w-4 mr-2" />
-                              {property.hostPhone}
+                              {property.Host.contactNumber}
                             </Button>
                           </a>
                         )}
-                        {property.hostEmail && (
-                          <a href={`mailto:${property.hostEmail}`}>
+                        {property.Host.alternateContact && (
+                          <a href={`mailto:${property.Host.alternateContact}`}>
                             <Button variant="outline" className="w-full mt-2">
                               <Mail className="h-4 w-4 mr-2" />
                               Email Host
                             </Button>
                           </a>
                         )}
-                        {property.hostPhone && (
-                          <a 
-                            href={`https://wa.me/${property.hostPhone.replace(/\D/g, '')}`}
+                        {property.Host.contactNumber && (
+                          <a
+                            href={`https://wa.me/${property.Host.contactNumber.replace(/\D/g, '')}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -687,7 +767,7 @@ const PropertyDetails = () => {
                   <span className="text-gray-5000">Map placeholder</span>
                 </div>
                 <p className="text-gray-6000 text-sm">
-                  {property.location}
+                  {property.address}
                 </p>
               </CardContent>
             </Card>
@@ -704,7 +784,7 @@ const PropertyDetails = () => {
               </Button>
               
               {/* Enhanced Virtual Tour Button */}
-              {property.virtualTour && (
+              {property.virtualTourUrl && (
                 <Button 
                   onClick={() => setShowVirtualTourModal(true)}
                   className="w-full bg-gradient-cool text-white shadow-lg transform transition-all duration-200 hover:scale-105 hidden md:flex items-center justify-center"

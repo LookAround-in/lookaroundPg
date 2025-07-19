@@ -7,21 +7,7 @@ import { Badge } from 'components/ui/badge';
 import { useAuth } from 'contexts/AuthContext';
 import { useWishlist } from 'contexts/WishlistContext';
 import Image from 'next/image';
-
-interface Property {
-  id: string;
-  title: string;
-  location: string;
-  price_triple: number;
-  images: string[];
-  genderPreference: 'men' | 'women' | 'co-living';
-  amenities: string[];
-  virtualTour?: string;
-  hostName: string;
-  hostAvatar?: string;
-  rating?: number;
-  reviewCount?: number;
-}
+import { Property } from '@/interfaces/property';
 
 interface PropertyCardProps {
   property: Property;
@@ -74,7 +60,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
         </Link>
         
         {/* Virtual Tour Badge */}
-        {property.virtualTour && (
+        {property.virtualTourUrl && (
           <Badge className="absolute top-3 left-3 bg-accent text-primary hover:text-white">
             360° Tour
           </Badge>
@@ -105,23 +91,23 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
             </h3>
             <div className="flex items-center text-gray-600 text-sm">
               <MapPin className="h-3 w-3 mr-1" />
-              <span className="line-clamp-1">{property.location}</span>
+              <span className="line-clamp-1">{property.address}</span>
             </div>
           </div>
 
           {/* Price */}
           <div className="mb-3">
             <span className="text-2xl font-bold text-primary">
-              ₹{property.price_triple.toLocaleString()}
+              ₹{property.sharingTypes[0].pricePerMonth.toLocaleString()}
             </span>
             <span className="text-gray-600 text-sm ml-1">/month</span>
           </div>
 
           {/* Gender Preference */}
           <div className="mb-3">
-            <Badge className={getGenderBadgeColor(property.genderPreference)}>
-              {property.genderPreference === 'co-living' ? 'Co-living' : 
-               property.genderPreference === 'men' ? 'Men Only' : 'Women Only'}
+            <Badge className={getGenderBadgeColor(property.propertyType)}>
+              {property.propertyType === 'COLIVE' ? 'Co-living' : 
+               property.propertyType === 'MEN' ? 'Men Only' : 'Women Only'}
             </Badge>
           </div>
 
@@ -130,7 +116,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
             <div className="flex flex-wrap gap-1">
               {property.amenities.slice(0, 3).map((amenity, index) => (
                 <Badge key={index} variant="outline" className="text-xs">
-                  {amenity}
+                  {amenity.type}
                 </Badge>
               ))}
               {property.amenities.length > 3 && (
@@ -146,21 +132,21 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-              {property.hostAvatar ? (
-                <Image src={property.hostAvatar} alt={property.hostName} width={32} height={32} className="w-full h-full rounded-full" />
+              {property.hostId ? (
+                <Image src='./logo.png' alt={property.hostId} width={32} height={32} className="w-full h-full rounded-full" />
               ) : (
                 <User className="h-3 w-3 text-white" />
               )}
             </div>
-            <span className="text-sm text-gray-600">{property.hostName}</span>
+            <span className="text-sm text-gray-600">{property.hostId}</span>
           </div>
           
           {property.rating && (
             <div className="flex items-center space-x-1">
               <Star className="h-3 w-3 text-yellow-400 fill-current" />
               <span className="text-sm font-medium">{property.rating}</span>
-              {property.reviewCount && (
-                <span className="text-xs text-gray-500">({property.reviewCount})</span>
+              {property.reviews && (
+                <span className="text-xs text-gray-500">({property.reviews.length})</span>
               )}
             </div>
           )}
