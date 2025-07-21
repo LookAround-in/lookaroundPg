@@ -123,3 +123,9 @@ export type PgCreateInput = Omit<PgData, "id" | "createdAt" | "updatedAt"> & {
   rating?: number;
   reviews?: string[];
 };
+
+export interface PgRequestData {
+  hostId: string;
+  userId: string;
+  pgId: string;
+}

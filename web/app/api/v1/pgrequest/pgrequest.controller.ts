@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PgRequestServices } from "./pgrequest.service";
+import { PgRequestData } from "@/interfaces/pg";
 
 export class PgRequestController {
     private pgService: PgRequestServices;
@@ -10,7 +11,7 @@ export class PgRequestController {
 
     async createPgRequest(req: Request) {
         try {
-            const requestData = await req.json();
+            const requestData: PgRequestData = await req.json();
 
             if (!requestData) {
                 return NextResponse.json({
