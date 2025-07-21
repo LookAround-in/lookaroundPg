@@ -1,6 +1,7 @@
 
 import prisma from "@/lib/Prisma";
 import { NextResponse } from "next/server";
+import { title } from "process";
 
 export class PgRequestServices {
     private prismaClient;
@@ -43,6 +44,25 @@ export class PgRequestServices {
                 where: {
                     hostId: hostId,
                 },
+                include: {
+                    pgData: {
+                        select: {
+                            id: true,
+                            title: true,
+                            description: true,
+                            address: true,
+                            images: true,
+                            propertyType: true
+                        }
+                    },
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true
+                        }
+                    }
+                }
             });
 
             return pgRequests;
