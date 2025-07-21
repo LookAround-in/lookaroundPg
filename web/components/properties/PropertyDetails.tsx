@@ -18,6 +18,7 @@ import Image from 'next/image';
 import { ExploreApiResponse, Property } from '@/interfaces/property';
 import { useQuery } from '@tanstack/react-query';
 import formatText from '@/utils/formatText';
+import { authClient } from '@/lib/auth-client';
 
 //Mock property features data
 const propertyFeatures = {
@@ -78,7 +79,6 @@ const fetchPropertyById = async (propertyId: string): Promise<ExploreApiResponse
 const PropertyDetails = () => {
   const { propertyId } = usePropertyContext();
   const router = useRouter();
-  const { user } = useAuth();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const { toast } = useToast();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -87,6 +87,14 @@ const PropertyDetails = () => {
   const [showTermsDialog, setShowTermsDialog] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showVirtualTourModal, setShowVirtualTourModal] = useState(false);
+
+  const {
+    data: session,
+    isPending,
+    error,
+    refetch
+  } = authClient.useSession()
+
 
   const data = useQuery({
     queryKey: ['property', propertyId],
@@ -229,7 +237,7 @@ const PropertyDetails = () => {
   };
 
   const handleRevealHostInfo = () => {
-    if (!user) {
+    if (!session) {
       toast({
         title: "Login required",
         description: "Please login to view host contact information.",
@@ -265,6 +273,9 @@ const PropertyDetails = () => {
       });
       return;
     }
+    // show notification to host and admin ...
+    
+
     setShowHostInfo(true);
     setShowTermsDialog(false);
     toast({
