@@ -312,7 +312,7 @@ const Partner = () => {
                   </div>
                   <div>
                     <p className="text-gray-700 italic mb-2">
-                      "Since partnering with FindMyPG, our occupancy rate increased from 70% to 95%. 
+                      "Since partnering with LookaroundPG, our occupancy rate increased from 70% to 95%. 
                       The platform brings quality tenants and the support team is excellent."
                     </p>
                     <div className="text-sm">
@@ -331,7 +331,7 @@ const Partner = () => {
               <CardHeader>
                 <CardTitle className="text-gradient-cool">Start Your Partnership Journey</CardTitle>
                 <CardDescription >
-                  Join thousands of successful property owners earning with FindMyPG
+                  Join thousands of successful property owners earning with LookaroundPG
                 </CardDescription>
               </CardHeader>
               <CardContent>

@@ -165,7 +165,7 @@ export class PgServices {
   async getFeaturedPgs() {
     try {
       const featuredPgs = await this.prismaClient.pgData.findMany({
-        take: 10,
+        take: 3,
         orderBy: {
           rating: "desc",
         },
@@ -186,9 +186,9 @@ export class PgServices {
   async getTrendingPgs() {
     try {
       const trendingPgs = await this.prismaClient.pgData.findMany({
-        take: 10,
+        take: 3,
         orderBy: {
-          rating: "desc",
+          createdAt: "desc",
         },
         include: {
           Host: true,

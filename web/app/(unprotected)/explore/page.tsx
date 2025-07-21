@@ -1,6 +1,5 @@
 'use client'
 import React, { useState, useMemo, startTransition, useCallback, useTransition } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { PropertyCard } from 'components/properties/PropertyCard';
 import { Button } from 'components/ui/button';
 import { Label } from 'components/ui/label';
@@ -10,9 +9,11 @@ import { Slider } from 'components/ui/slider';
 import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
 import { Badge } from 'components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from 'components/ui/sheet';
-import { Search, Filter, X, SlidersHorizontal, MapPin, Star, Home, Users } from 'lucide-react';
-import { mockProperties } from 'data/mockData';
+import { Search, Filter, X, SlidersHorizontal, MapPin, Star, Home, Users, Loader2 } from 'lucide-react';
 import { useDebouncedCallback } from 'use-debounce';
+import { useQuery } from '@tanstack/react-query';
+import { ExploreApiResponse } from '@/interfaces/property';
+import { SharingType } from '@/interfaces/pg';
 
 const availableAmenities = [
     'WiFi', 'AC', 'Meals', 'Parking', 'Security', 'Gym', 
@@ -26,8 +27,21 @@ const cities =  [
     { value: 'chennai', label: 'Chennai', available: false }
   ]
 
+const fetchProperties = async (): Promise<ExploreApiResponse> => {
+  const response = await fetch('/api/v1/pg/getExplorePg', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  return response.json();
+}
+
 const Explore = () => {
-  const searchParams = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
   const [isPending, startTransition] = useTransition();
   
@@ -43,9 +57,21 @@ const Explore = () => {
   const [rating, setRating] = useState(0);
   const [selectedCity, setSelectedCity] = useState('bangalore');
   const [selectedLocation, setSelectedLocation] = useState('');
-  const properties = mockProperties;
+  // const properties = mockProperties;
 
-  //Debounced price range updatte
+  const data = useQuery<ExploreApiResponse>({
+    queryKey: ['properties'],
+    queryFn: fetchProperties,
+  }); 
+  // Extract the data array from the API response
+  const properties = useMemo(() => {
+    if (data.data && data.data.success) {
+      return data.data.data || [];
+    }
+    return [];
+  }, [data]);
+
+  //Debounced price range update
   const debouncedSetPriceRange = useDebouncedCallback(
     (value: number[]) => {
       startTransition(()=>{
@@ -62,37 +88,56 @@ const Explore = () => {
   }, [debouncedSetPriceRange]);
 
   const filteredProperties = useMemo(() => {
-    const filtered = mockProperties.filter(property => {
-      // Location filter
-      if (selectedLocation && !property.location.toLowerCase().includes(selectedLocation.toLowerCase())) {
+    const filtered = properties.filter(property => {
+      // Location filter - handle empty string properly
+      if (selectedLocation && selectedLocation !== "" && !property.address.toLowerCase().includes(selectedLocation.toLowerCase())) {
         return false;
       }
-      
       // Price filter based on sharing type
-      let propertyPrice = property.price_triple;
-      if (sharingType === 'single') propertyPrice = property.price_single;
-      else if (sharingType === 'double') propertyPrice = property.price_double;
-      else if (sharingType === 'triple') propertyPrice = property.price_triple;
+      let propertyPrice = 0;
+
+      // Find the appropriate sharing type and get its price
+      if (sharingType === 'any') {
+        // Use the lowest price if "any" is selected
+        const prices = property.sharingTypes.map(st => st.pricePerMonth);
+        propertyPrice = Math.min(...prices);
+      } else {
+        const targetType = sharingType === 'single' ? SharingType.SINGLE : sharingType === 'double' ? SharingType.DOUBLE : sharingType === 'triple' ? SharingType.TRIPLE : SharingType.QUAD;
+        const matchedSharingType = property.sharingTypes.find(st => st.type === targetType);
+        
+        if (!matchedSharingType) return false; // Skip if sharing type not available
+        propertyPrice = matchedSharingType.pricePerMonth;
+      }
       
       if (propertyPrice < debouncedPriceRange[0] || propertyPrice > debouncedPriceRange[1]) {
         return false;
       }
       
-      // Gender preference filter
-      if (genderPreference !== 'any' && property.genderPreference !== genderPreference) {
-        return false;
+      // Gender preference filter - use propertyType instead
+      if (genderPreference !== 'any') {
+        const genderMap = {
+          'men': 'MEN',
+          'women': 'WOMEN', 
+          'co-living': 'COLIVE'
+        };
+        
+        const targetGender = genderMap[genderPreference as keyof typeof genderMap];
+        if (targetGender && property.propertyType !== targetGender) {
+          return false;
+        }
       }
       
-      // Amenities filter
+      // Amenities filter - check amenities array structure
       if (amenities.length > 0) {
+        const propertyAmenities = property.amenities.map(amenity => amenity.type);
         const hasAllAmenities = amenities.every(amenity => 
-          property.amenities.includes(amenity)
+          propertyAmenities.includes(amenity)
         );
         if (!hasAllAmenities) return false;
       }
       
-      // Virtual tour filter
-      if (virtualTour && !property.virtualTour) {
+      // Virtual tour filter - check if virtualTourUrl exists and is not empty
+      if (virtualTour && (!property.virtualTourUrl || property.virtualTourUrl.trim() === '')) {
         return false;
       }
       
@@ -107,10 +152,18 @@ const Explore = () => {
     // Sort properties
     switch (sortBy) {
       case 'price-low':
-        filtered.sort((a, b) => a.price_triple - b.price_triple);
+        filtered.sort((a, b) => {
+          const aPrice = Math.min(...a.sharingTypes.map(st => st.pricePerMonth));
+          const bPrice = Math.min(...b.sharingTypes.map(st => st.pricePerMonth));
+          return aPrice - bPrice;
+        });
         break;
       case 'price-high':
-        filtered.sort((a, b) => b.price_triple - a.price_triple);
+        filtered.sort((a, b) => {
+          const aPrice = Math.min(...a.sharingTypes.map(st => st.pricePerMonth));
+          const bPrice = Math.min(...b.sharingTypes.map(st => st.pricePerMonth));
+          return bPrice - aPrice;
+        });
         break;
       case 'rating':
         filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
@@ -122,7 +175,7 @@ const Explore = () => {
     }
 
     return filtered;
-  }, [selectedLocation, debouncedPriceRange, genderPreference, amenities, virtualTour, sortBy, rating, sharingType]);
+  }, [selectedLocation, debouncedPriceRange, genderPreference, amenities, virtualTour, sortBy, rating, sharingType, properties]);
 
   const handleAmenityChange = useCallback((amenity: string, checked: boolean) => {
     if (checked) {
@@ -134,7 +187,7 @@ const Explore = () => {
 
   const clearFilters = useCallback(() => {
     setSelectedCity('bangalore');
-    setSelectedLocation('');
+    setSelectedLocation(''); // This will work correctly now
     setPriceRange([8000, 35000]);
     setDebouncedPriceRange([8000, 35000]);
     setGenderPreference('any');
@@ -146,9 +199,10 @@ const Explore = () => {
     setRating(0);
   },[]);
 
+  // Update the active filters count to handle the location properly
   const activeFiltersCount = [
     selectedCity !== 'bangalore',
-    selectedLocation !== '',
+    selectedLocation !== '' && selectedLocation !== 'all', // Updated condition
     genderPreference !== 'any',
     amenities.length > 0,
     virtualTour,
@@ -158,7 +212,9 @@ const Explore = () => {
     debouncedPriceRange[0] !== 8000 || debouncedPriceRange[1] !== 35000
   ].filter(Boolean).length;
 
-  const locations = useMemo(() => [...new Set(properties.map(p => p.location))], [properties]);
+  const locations = useMemo(() => [...new Set(properties.map(p => p.address))], [properties]);
+
+  
 
   // Filter component for reuse
   const FilterContent = useMemo(() => (
@@ -191,12 +247,14 @@ const Explore = () => {
         </Select>
       </div>
 
-      {/* Location Select */}
+      {/* Location Select - Fixed */}
       <div>
         <h4 className="text-sm font-semibold mb-3 block text-gray-700">Location</h4>
         <Select
-          value={selectedLocation}
-          onValueChange={setSelectedLocation}
+          value={selectedLocation || "all"} // Show "all" when selectedLocation is empty
+          onValueChange={(value) => {
+            setSelectedLocation(value === "all" ? "" : value);
+          }}
           disabled={selectedCity !== 'bangalore'}
         >
           <SelectTrigger>
@@ -227,6 +285,7 @@ const Explore = () => {
             <SelectItem value="single">Single Occupancy</SelectItem>
             <SelectItem value="double">Double Sharing</SelectItem>
             <SelectItem value="triple">Triple Sharing</SelectItem>
+            <SelectItem value="quad">Quad Sharing</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -347,22 +406,41 @@ const Explore = () => {
         </Button>
       )}
     </div>
-  ), [selectedLocation, priceRange, sharingType, genderPreference, rating, amenities, virtualTour, activeFiltersCount, handleAmenityChange, clearFilters, handlePriceRangeChange, locations, selectedCity]);
+  ), [selectedLocation, priceRange, sharingType, genderPreference, rating, amenities, virtualTour, activeFiltersCount, handleAmenityChange, clearFilters, handlePriceRangeChange, selectedCity, locations]);
+
+  if (data.isLoading || data.isPending) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-light-gray">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+            <h1 className="text-2xl font-bold mb-4">Loading properties...</h1>
+            <p className="text-gray-600">Please wait while we fetch the properties.</p>
+          </div>
+        </div>
+      );
+    }
+  
+     if (data.isError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-light-gray">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-4 text-red-600">Error loading property</h1>
+            <p className="text-gray-600 mb-4">
+              {(data.error as Error)?.message || 'Failed to load property details'}
+            </p>
+            <div className="space-x-4">
+              <Button onClick={() => data.refetch()}>
+                Try Again
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      {/* Enhanced Hero Section
-      <div className="bg-gradient-cool relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/30"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 text-center">
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 lg:mb-6 animate-fadeInUp tracking-tight">
-            Find Your Perfect PG
-          </h1>
-          <p className="text-lg lg:text-xl text-white/90 mb-6 lg:mb-8 animate-fadeInUp max-w-2xl mx-auto leading-relaxed" style={{animationDelay: '0.2s'}}>
-            Discover safe, comfortable, and affordable accommodations tailored to your needs
-          </p>
-        </div>
-      </div> */}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Results Header */}

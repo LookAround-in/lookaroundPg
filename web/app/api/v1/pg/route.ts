@@ -88,5 +88,5 @@ export const POST = isAdmin(async (request: Request) => {
       { status: 500 }
     );
   }
-};
+});
 

@@ -1,35 +1,80 @@
-'use client'
-import React from 'react';
-import Link from 'next/link';
-import { Button } from 'components/ui/button';
-import { SearchBar } from 'components/search/SearchBar';
-import { PropertyCard } from 'components/properties/PropertyCard';
-import { Shield, Search, Star, Users } from 'lucide-react';
-import { featuredProperties, trendingProperties } from 'data/mockData';
+"use client";
+import React from "react";
+import Link from "next/link";
+import { Button } from "components/ui/button";
+import { SearchBar } from "components/search/SearchBar";
+import { PropertyCard } from "components/properties/PropertyCard";
+import { Shield, Search, Star, Users, Loader2 } from "lucide-react";
+import { ExploreApiResponse } from "@/interfaces/property";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchFeaturedProperties = async (): Promise<ExploreApiResponse> => {
+  const response = await fetch("/api/v1/pg/getFeaturedPg", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch featured properties");
+  }
+
+  return response.json();
+};
+
+const fetchTrendingProperties = async (): Promise<ExploreApiResponse> => {
+  const response = await fetch("/api/v1/pg/getTrendingPg", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch trending properties");
+  }
+
+  return response.json();
+};
 
 const Index = () => {
   const features = [
     {
       icon: Shield,
-      title: 'Verified Properties',
-      description: 'All listings are verified for safety and authenticity'
+      title: "Verified Properties",
+      description: "All listings are verified for safety and authenticity",
     },
     {
       icon: Search,
-      title: 'Transparent Pricing',
-      description: 'No hidden fees, clear pricing for all amenities'
+      title: "Transparent Pricing",
+      description: "No hidden fees, clear pricing for all amenities",
     },
     {
       icon: Users,
-      title: 'Trusted Hosts',
-      description: 'Connect with verified, responsive property owners'
+      title: "Trusted Hosts",
+      description: "Connect with verified, responsive property owners",
     },
     {
       icon: Star,
-      title: 'Easy Booking',
-      description: 'Simple process to find and secure your accommodation'
-    }
+      title: "Easy Booking",
+      description: "Simple process to find and secure your accommodation",
+    },
   ];
+
+  const featuredPropertiesData = useQuery({
+    queryKey: ["featuredProperties"],
+    queryFn: fetchFeaturedProperties,
+  });
+
+  const featuredProperties = featuredPropertiesData.data?.data || [];
+
+  const trendingPropertiesData = useQuery({
+    queryKey: ["trendingProperties"],
+    queryFn: fetchTrendingProperties,
+  });
+
+  const trendingProperties = trendingPropertiesData.data?.data || [];
 
   return (
     <div className="min-h-screen bg-background transition-colors duration-200">
@@ -38,22 +83,30 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-bold text-charcoa mb-6 animate-fadeInUp">
-              Find Your Perfect{' '}
-              <span className="text-gradient-cool">
-                PG Home
-              </span>
+              Find Your Perfect{" "}
+              <span className="text-gradient-cool">PG Home</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 animate-fadeInUp" style={{animationDelay: '0.2s'}}>
-              Discover safe, comfortable, and affordable paying guest accommodations
+            <p
+              className="text-xl text-gray-600 mb-8 animate-fadeInUp"
+              style={{ animationDelay: "0.2s" }}
+            >
+              Discover safe, comfortable, and affordable paying guest
+              accommodations
             </p>
-            
+
             {/* Search Bar */}
-            <div className="max-w-2xl mx-auto mb-8 animate-scaleIn" style={{animationDelay: '0.4s'}}>
+            <div
+              className="max-w-2xl mx-auto mb-8 animate-scaleIn"
+              style={{ animationDelay: "0.4s" }}
+            >
               <SearchBar />
             </div>
-            
+
             {/* Quick Stats */}
-            <div className="grid grid-cols-3 gap-8 max-w-md mx-auto text-center animate-fadeInUp" style={{animationDelay: '0.6s'}}>
+            <div
+              className="grid grid-cols-3 gap-8 max-w-md mx-auto text-center animate-fadeInUp"
+              style={{ animationDelay: "0.6s" }}
+            >
               <div>
                 <div className="text-2xl font-bold text-primary">500+</div>
                 <div className="text-sm text-gray-600">Properties</div>
@@ -79,16 +132,17 @@ const Index = () => {
               Why Choose LookaroundPG?
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              We make finding the perfect PG accommodation simple, safe, and reliable
+              We make finding the perfect PG accommodation simple, safe, and
+              reliable
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="text-center group hover:transform hover:scale-105 transition-all duration-300"
-                style={{animationDelay: `${index * 0.1}s`}}
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="w-16 h-16 bg-gradient-cool rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-all duration-300">
                   <feature.icon className="h-8 w-8 text-white" />
@@ -96,9 +150,7 @@ const Index = () => {
                 <h3 className="text-xl font-semibold text-charcoa mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600">
-                  {feature.description}
-                </p>
+                <p className="text-gray-600">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -118,32 +170,64 @@ const Index = () => {
               </p>
             </div>
             <Link href="/explore">
-              <Button variant="outline" className="">View All</Button>
+              <Button variant="outline" className="">
+                View All
+              </Button>
             </Link>
           </div>
-          
+
+          {(featuredPropertiesData.isLoading ||
+            featuredPropertiesData.isPending) && (
+            <div className="min-h-screen flex items-center justify-center bg-light-gray">
+              <div className="text-center">
+                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+                <h1 className="text-2xl font-bold mb-4">
+                  Loading properties...
+                </h1>
+                <p className="text-gray-600">
+                  Please wait while we fetch the properties.
+                </p>
+              </div>
+            </div>
+          )}
+
+          { (featuredPropertiesData.isError) && (
+            <div className="min-h-screen flex items-center justify-center bg-light-gray">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold mb-4 text-red-600">Error loading property</h1>
+                <p className="text-gray-600 mb-4">
+                  {(featuredPropertiesData.error as Error)?.message || 'Failed to load property details'}
+                </p>
+                <div className="space-x-4">
+                  <Button onClick={() => featuredPropertiesData.refetch()}>
+                    Try Again
+                  </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
           {/* Mobile Horizontal Scroll */}
           <div className="md:hidden">
             <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
               {featuredProperties.map((property, index) => (
-                <div 
+                <div
                   key={property.id}
                   className="flex-shrink-0 w-80 animate-fadeInUp"
-                  style={{animationDelay: `${index * 0.1}s`}}
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <PropertyCard property={property} />
                 </div>
               ))}
             </div>
           </div>
-          
           {/* Desktop Grid */}
           <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredProperties.map((property, index) => (
-              <div 
+              <div
                 key={property.id}
                 className="animate-fadeInUp"
-                style={{animationDelay: `${index * 0.1}s`}}
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <PropertyCard property={property} />
               </div>
@@ -165,32 +249,65 @@ const Index = () => {
               </p>
             </div>
             <Link href="/explore">
-              <Button variant="outline" className="">Explore More</Button>
+              <Button variant="outline" className="">
+                Explore More
+              </Button>
             </Link>
           </div>
-          
+
+          {(trendingPropertiesData.isLoading ||
+            trendingPropertiesData.isPending) && (
+            <div className="min-h-screen flex items-center justify-center bg-light-gray">
+              <div className="text-center">
+                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+                <h1 className="text-2xl font-bold mb-4">
+                  Loading properties...
+                </h1>
+                <p className="text-gray-600">
+                  Please wait while we fetch the properties.
+                </p>
+              </div>
+            </div>
+          )}
+
+          { (trendingPropertiesData.isError) && (
+            <div className="min-h-screen flex items-center justify-center bg-light-gray">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold mb-4 text-red-600">Error loading property</h1>
+                <p className="text-gray-600 mb-4">
+                  {(trendingPropertiesData.error as Error)?.message || 'Failed to load property details'}
+                </p>
+                <div className="space-x-4">
+                  <Button onClick={() => trendingPropertiesData.refetch()}>
+                    Try Again
+                  </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
           {/* Mobile Horizontal Scroll */}
           <div className="md:hidden">
             <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
               {trendingProperties.map((property, index) => (
-                <div 
+                <div
                   key={property.id}
                   className="flex-shrink-0 w-80 animate-fadeInUp"
-                  style={{animationDelay: `${index * 0.1}s`}}
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <PropertyCard property={property} />
                 </div>
               ))}
             </div>
           </div>
-          
+
           {/* Desktop Grid */}
           <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {trendingProperties.map((property, index) => (
-              <div 
+              <div
                 key={property.id}
                 className="animate-fadeInUp"
-                style={{animationDelay: `${index * 0.1}s`}}
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <PropertyCard property={property} />
               </div>
@@ -215,7 +332,11 @@ const Index = () => {
               </Button>
             </Link>
             <Link href="/about">
-              <Button size="lg" variant="secondary" className="text-lg px-8 hover:text-primary">
+              <Button
+                size="lg"
+                variant="secondary"
+                className="text-lg px-8 hover:text-primary"
+              >
                 Learn More
               </Button>
             </Link>
