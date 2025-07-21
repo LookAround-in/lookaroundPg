@@ -8,16 +8,94 @@ export class PgRequestController {
         this.pgService = new PgRequestServices();
     }
 
-    async createPgRequest(req: Request) { }
+    async createPgRequest(req: Request) {
+        try {
+            const requestData = await req.json();
+
+            if (!requestData) {
+                return NextResponse.json({
+                    success: false,
+                    message: "Request data is required",
+                }, { status: 400 });
+            }
+
+            const newPgRequest = await this.pgService.createPgRequest(requestData);
+
+            return NextResponse.json({
+                success: true,
+                message: "PG request created successfully",
+                data: newPgRequest,
+            }, { status: 201 });
+        } catch (error) {
+            console.error("Error creating PG request:", error);
+            return NextResponse.json({
+                success: false,
+                message: "Error creating PG request",
+                error: error instanceof Error ? error.message : "Unknown error"
+            }, { status: 500 });
+        }
+    }
 
     async updatePgRequest(req: Request, id: string) { }
 
     async deletePgRequest(req: Request, id: string) { }
 
-    async getPgRequestByHostId(req: Request, hostId: string) { }
+    async getPgRequestByHostId(req: Request, hostId: string) {
+        try {
+            const pgRequests = await this.pgService.getPgRequestByHostId(hostId);
 
-    async acceptPgRequest(req: Request, pgId: string, hostId: string) { }
+            return NextResponse.json({
+                success: true,
+                data: pgRequests,
+            }, { status: 200 });
+        } catch (error) {
+            console.error("Error fetching PG requests by host ID:", error);
+            return NextResponse.json({
+                success: false,
+                message: "Error fetching PG requests",
+                error: error instanceof Error ? error.message : "Unknown error"
+            }, { status: 500 });
+        }
+    }
 
-    async rejectPgRequest(req: Request, pgId: string, hostId: string) { }
+    async acceptPgRequest(req: Request) {
+        try {
+            const data = await req.json();
+            const { pgId, hostId } = data;
+            const result = await this.pgService.acceptPgRequest(pgId, hostId);
+            return NextResponse.json({
+                success: true,
+                message: "PG request accepted successfully",
+                data: result,
+            }, { status: 200 });
+        } catch (error) {
+            console.error("Error accepting PG request:", error);
+            return NextResponse.json({
+                success: false,
+                message: "Error accepting PG request",
+                error: error instanceof Error ? error.message : "Unknown error"
+            }, { status: 500 });
+        }
+    }
+
+    async rejectPgRequest(req: Request) {
+        try {
+            const data = await req.json();
+            const { pgId, hostId } = data;
+            const result = await this.pgService.rejectPgRequest(pgId, hostId);
+            return NextResponse.json({
+                success: true,
+                message: "PG request rejected successfully",
+                data: result,
+            }, { status: 200 });
+        } catch (error) {
+            console.error("Error rejecting PG request:", error);
+            return NextResponse.json({
+                success: false,
+                message: "Error rejecting PG request",
+                error: error instanceof Error ? error.message : "Unknown error"
+            }, { status: 500 });
+        }
+    }
 
 }

@@ -113,6 +113,7 @@ const PropertyDetails = () => {
     }
 
     const response = data.data;
+    console.log(response);
 
     if (response.success && response.data) {
       // Handle both single object and array responses
@@ -274,7 +275,7 @@ const PropertyDetails = () => {
       return;
     }
     // show notification to host and admin ...
-    
+
 
     setShowHostInfo(true);
     setShowTermsDialog(false);
