@@ -17,17 +17,12 @@ export class PgRequestServices {
                     message: "Request data is required",
                 }, { status: 400 });
             }
-            console.log(this.prismaClient.pgRequest);
 
             const newPgRequest = await this.prismaClient.pgRequest.create({
                 data: requestData,
             });
 
-            return NextResponse.json({
-                success: true,
-                message: "PG request created successfully",
-                data: newPgRequest,
-            }, { status: 201 });
+            return newPgRequest;
         } catch (error) {
             console.error("Error creating PG request:", error);
             return NextResponse.json({
@@ -50,10 +45,8 @@ export class PgRequestServices {
                 },
             });
 
-            return NextResponse.json({
-                success: true,
-                data: pgRequests,
-            }, { status: 200 });
+            return pgRequests;
+
         } catch (error) {
             console.error("Error fetching PG requests by host ID:", error);
             return NextResponse.json({
@@ -64,18 +57,15 @@ export class PgRequestServices {
         }
     }
 
-    async acceptPgRequest(pgId: string, hostId: string) { 
+    async acceptPgRequest(pgrequestId: string) {
         try {
             const updatedPgRequest = await this.prismaClient.pgRequest.update({
-                where: { id: pgId },
-                data: { status: "ACCEPTED", hostId: hostId },
+                where: { id: pgrequestId },
+                data: { status: "ACCEPTED" },
             });
+            console.log(updatedPgRequest);
 
-            return NextResponse.json({
-                success: true,
-                message: "PG request accepted successfully",
-                data: updatedPgRequest,
-            }, { status: 200 });
+            return updatedPgRequest;
         } catch (error) {
             console.error("Error accepting PG request:", error);
             return NextResponse.json({
@@ -86,18 +76,18 @@ export class PgRequestServices {
         }
     }
 
-    async rejectPgRequest(pgId: string, hostId: string) {
+    async rejectPgRequest(pgrequestId: string) {
         try {
+            console.log(pgrequestId + " is the id of the pg request to be rejected");
+
             const updatedPgRequest = await this.prismaClient.pgRequest.update({
-                where: { id: pgId },
-                data: { status: "REJECTED", hostId: hostId },
+                where: { id: pgrequestId },
+                data: { status: "REJECTED" },
             });
 
-            return NextResponse.json({
-                success: true,
-                message: "PG request rejected successfully",
-                data: updatedPgRequest,
-            }, { status: 200 });
+            console.log("Updated PG Request:", updatedPgRequest);
+
+            return updatedPgRequest;
         } catch (error) {
             console.error("Error rejecting PG request:", error);
             return NextResponse.json({
@@ -106,5 +96,5 @@ export class PgRequestServices {
                 error: error instanceof Error ? error.message : "Unknown error"
             }, { status: 500 });
         }
-     }
+    }
 }

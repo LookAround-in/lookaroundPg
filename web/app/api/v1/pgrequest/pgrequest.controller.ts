@@ -58,11 +58,9 @@ export class PgRequestController {
         }
     }
 
-    async acceptPgRequest(req: Request) {
+    async acceptPgRequest(req: Request, pgrequestId: string) {
         try {
-            const data = await req.json();
-            const { pgId, hostId } = data;
-            const result = await this.pgService.acceptPgRequest(pgId, hostId);
+            const result = await this.pgService.acceptPgRequest(pgrequestId);
             return NextResponse.json({
                 success: true,
                 message: "PG request accepted successfully",
@@ -78,11 +76,9 @@ export class PgRequestController {
         }
     }
 
-    async rejectPgRequest(req: Request) {
+    async rejectPgRequest(req: Request, pgrequestId: string) {
         try {
-            const data = await req.json();
-            const { pgId, hostId } = data;
-            const result = await this.pgService.rejectPgRequest(pgId, hostId);
+            const result = await this.pgService.rejectPgRequest(pgrequestId);
             return NextResponse.json({
                 success: true,
                 message: "PG request rejected successfully",

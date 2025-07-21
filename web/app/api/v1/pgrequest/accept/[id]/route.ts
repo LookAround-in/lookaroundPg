@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { pgRequestController } from "../route";
+import { pgRequestController } from "../../route"; 
 
-export async function POST(request: Request) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const result = await pgRequestController.rejectPgRequest(request);
+        const { id } = await params;
+        const result = await pgRequestController.acceptPgRequest(request, id);
         return result;
     } catch (error) {
         console.error("Error in getting explore pg's route:", error);
