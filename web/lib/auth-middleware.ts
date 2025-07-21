@@ -8,7 +8,7 @@ export async function withAuth(
 ) {
     return async (req: NextRequest) => {
         try {
-
+            // TODO : 
             // Get the user role from the request
             // compare it with the required role
             // if(req.role !== requiredRole) return error

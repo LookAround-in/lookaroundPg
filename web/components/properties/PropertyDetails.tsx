@@ -1,5 +1,5 @@
 'use client'
-import React, { useState,useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import { usePropertyContext } from 'contexts/PropertyContext';
@@ -18,52 +18,53 @@ import Image from 'next/image';
 import { ExploreApiResponse, Property } from '@/interfaces/property';
 import { useQuery } from '@tanstack/react-query';
 import formatText from '@/utils/formatText';
+import { authClient } from '@/lib/auth-client';
 
 //Mock property features data
-  const propertyFeatures = {
-    nearbyFacilities: [
-      { name: 'Metro Station', distance: '0.5 km', icon: Train },
-      { name: 'Shopping Mall', distance: '2 km', icon: ShoppingBag },
-      { name: 'Hospital', distance: '1.5 km', icon: Hospital },
-      { name: 'Bus Stop', distance: '200 m', icon: Car },
-      { name: 'ATM', distance: '300 m', icon: MapPin },
-      { name: 'Grocery Store', distance: '500 m', icon: ShoppingBag }
-    ]
-  };
+const propertyFeatures = {
+  nearbyFacilities: [
+    { name: 'Metro Station', distance: '0.5 km', icon: Train },
+    { name: 'Shopping Mall', distance: '2 km', icon: ShoppingBag },
+    { name: 'Hospital', distance: '1.5 km', icon: Hospital },
+    { name: 'Bus Stop', distance: '200 m', icon: Car },
+    { name: 'ATM', distance: '300 m', icon: MapPin },
+    { name: 'Grocery Store', distance: '500 m', icon: ShoppingBag }
+  ]
+};
 // Mock reviews data
-  const reviews = [
-    {
-      id: 1,
-      name: "Priya Sharma",
-      rating: 5,
-      date: "2 weeks ago",
-      comment: "Excellent PG with all amenities. The host is very responsive and the location is perfect for my office commute.",
-      avatar: "/placeholder.svg"
-    },
-    {
-      id: 2,
-      name: "Rahul Kumar",
-      rating: 4,
-      date: "1 month ago", 
-      comment: "Good facilities and clean rooms. WiFi speed could be better but overall satisfied with the stay.",
-      avatar: "/placeholder.svg"
-    },
-    {
-      id: 3,
-      name: "Sneha Patel",
-      rating: 5,
-      date: "2 months ago",
-      comment: "Amazing place! Feels like home. The food is delicious and the common areas are well maintained.",
-      avatar: "/placeholder.svg"
-    }
-  ];
+const reviews = [
+  {
+    id: 1,
+    name: "Priya Sharma",
+    rating: 5,
+    date: "2 weeks ago",
+    comment: "Excellent PG with all amenities. The host is very responsive and the location is perfect for my office commute.",
+    avatar: "/placeholder.svg"
+  },
+  {
+    id: 2,
+    name: "Rahul Kumar",
+    rating: 4,
+    date: "1 month ago",
+    comment: "Good facilities and clean rooms. WiFi speed could be better but overall satisfied with the stay.",
+    avatar: "/placeholder.svg"
+  },
+  {
+    id: 3,
+    name: "Sneha Patel",
+    rating: 5,
+    date: "2 months ago",
+    comment: "Amazing place! Feels like home. The food is delicious and the common areas are well maintained.",
+    avatar: "/placeholder.svg"
+  }
+];
 
 
 const fetchPropertyById = async (propertyId: string): Promise<ExploreApiResponse> => {
-  if (!propertyId){
+  if (!propertyId) {
     throw new Error("Pg Id is required")
   }
-  const response = await fetch(`/api/v1/pg/getPgById/${propertyId}`,{
+  const response = await fetch(`/api/v1/pg/getPgById/${propertyId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -78,7 +79,6 @@ const fetchPropertyById = async (propertyId: string): Promise<ExploreApiResponse
 const PropertyDetails = () => {
   const { propertyId } = usePropertyContext();
   const router = useRouter();
-  const { user } = useAuth();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const { toast } = useToast();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -88,24 +88,33 @@ const PropertyDetails = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showVirtualTourModal, setShowVirtualTourModal] = useState(false);
 
+  const {
+    data: session,
+    isPending,
+    error,
+    refetch
+  } = authClient.useSession()
+
+
   const data = useQuery({
     queryKey: ['property', propertyId],
     queryFn: () => fetchPropertyById(propertyId),
     enabled: !!propertyId, //only run when proprtyID is truthy
   })
-  
+
   const property = useMemo(() => {
     if (data.isLoading || data.isPending) {
       return null;
     }
-    
+
     if (data.isError || !data.data) {
       console.error('Error fetching property:', data.error);
       return null;
     }
-    
+
     const response = data.data;
-    
+    console.log(response);
+
     if (response.success && response.data) {
       // Handle both single object and array responses
       const propertyData = Array.isArray(response.data) ? response.data[0] : response.data;
@@ -122,7 +131,7 @@ const PropertyDetails = () => {
     return property.sharingTypes.map(st => {
       const typeMap: Record<string, string> = {
         'SINGLE': 'single',
-        'DOUBLE': 'double', 
+        'DOUBLE': 'double',
         'TRIPLE': 'triple',
         'QUAD': 'quad'
       };
@@ -141,10 +150,10 @@ const PropertyDetails = () => {
       'triple': 'TRIPLE',
       'quad': 'QUAD'
     };
-    
+
     const targetType = typeMap[selectedSharingType];
     const sharingTypeData = property.sharingTypes.find(st => st.type === targetType);
-    
+
     return sharingTypeData || property.sharingTypes[0]; // Fallback to first available
   }, [property?.sharingTypes, selectedSharingType]);
 
@@ -166,7 +175,7 @@ const PropertyDetails = () => {
     );
   }
 
-   if (data.isError) {
+  if (data.isError) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-gray">
         <div className="text-center">
@@ -229,7 +238,7 @@ const PropertyDetails = () => {
   };
 
   const handleRevealHostInfo = () => {
-    if (!user) {
+    if (!session) {
       toast({
         title: "Login required",
         description: "Please login to view host contact information.",
@@ -265,6 +274,9 @@ const PropertyDetails = () => {
       });
       return;
     }
+    // show notification to host and admin ...
+
+
     setShowHostInfo(true);
     setShowTermsDialog(false);
     toast({
@@ -278,17 +290,17 @@ const PropertyDetails = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back button and Virtual Tour button for mobile */}
         <div className="flex justify-between items-center mb-6">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => router.push('/explore')}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
-          
+
           {/* Virtual Tour Button - Mobile Top Right */}
           {property.virtualTourUrl && (
-            <Button 
+            <Button
               onClick={() => setShowVirtualTourModal(true)}
               className="md:hidden bg-gradient-cool text-white shadow-lg"
               size="sm"
@@ -310,7 +322,7 @@ const PropertyDetails = () => {
                   alt={property.title}
                   className="w-full h-full object-cover"
                 />
-                
+
                 {/* Virtual Tour Badge */}
                 {property.virtualTourUrl && (
                   <Badge className="absolute top-3 left-3 bg-accent text-primary hover:text-white">
@@ -318,19 +330,18 @@ const PropertyDetails = () => {
                     360° Tour Available
                   </Badge>
                 )}
-                
+
                 {/* Wishlist Button */}
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={`absolute top-4 right-4 p-2 h-10 w-10 bg-white/80 hover:bg-white wishlist-heart ${
-                    isInWishlist ? 'active' : ''
-                  }`}
+                  className={`absolute top-4 right-4 p-2 h-10 w-10 bg-white/80 hover:bg-white wishlist-heart ${isInWishlist ? 'active' : ''
+                    }`}
                   onClick={handleWishlistToggle}
                 >
                   <Heart className={`h-5 w-5 ${isInWishlist ? 'fill-current text-red-500' : ''}`} />
                 </Button>
-                
+
                 {/* Image navigation */}
                 {property.images && property.images.length > 1 && (
                   <>
@@ -354,15 +365,14 @@ const PropertyDetails = () => {
                     >
                       →
                     </Button>
-                    
+
                     {/* Image dots */}
                     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
                       {property.images.map((_, index) => (
                         <button
                           key={index}
-                          className={`w-2 h-2 rounded-full ${
-                            index === currentImageIndex ? 'bg-white' : 'bg-white/50'
-                          }`}
+                          className={`w-2 h-2 rounded-full ${index === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                            }`}
                           onClick={() => setCurrentImageIndex(index)}
                         />
                       ))}
@@ -440,7 +450,7 @@ const PropertyDetails = () => {
                     {property.sharingTypes && property.sharingTypes.length > 0 && (
                       <Badge className={getStatusBadgeColor(property.sharingTypes[0].availability)}>
                         {property.sharingTypes[0].availability > 5 ? 'Available' :
-                         property.sharingTypes[0].availability > 0 ? 'Limited Availability' : 'Full'}
+                          property.sharingTypes[0].availability > 0 ? 'Limited Availability' : 'Full'}
                       </Badge>
                     )}
                   </div>
@@ -448,8 +458,8 @@ const PropertyDetails = () => {
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2">
                     <Badge variant='outline' className={getGenderBadgeColor(property.propertyType)}>
-                      {property.propertyType === 'COLIVE' ? 'Co-living' : 
-                       property.propertyType === 'MEN' ? 'Men Only' : 'Women Only'}
+                      {property.propertyType === 'COLIVE' ? 'Co-living' :
+                        property.propertyType === 'MEN' ? 'Men Only' : 'Women Only'}
                     </Badge>
                     {property.virtualTourUrl && (
                       <Badge variant="outline" className="">Virtual Tour</Badge>
@@ -514,21 +524,21 @@ const PropertyDetails = () => {
                           </span>
                         </div>
                         {getCurrentSharingTypeData.maintainanceCharges && (
-                            <div className="flex justify-between text-sm">
-                              <span className="text-gray-600 ml-4">- Maintenance:</span>
-                              <span className="text-red-600 font-medium">
-                                - ₹{getCurrentSharingTypeData.maintainanceCharges.toLocaleString()}
-                              </span>
-                            </div>
-                          )}
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600 ml-4">- Maintenance:</span>
+                            <span className="text-red-600 font-medium">
+                              - ₹{getCurrentSharingTypeData.maintainanceCharges.toLocaleString()}
+                            </span>
+                          </div>
+                        )}
                         {getCurrentSharingTypeData.refundableAmount && (
-                            <div className="flex justify-between text-sm">
-                              <span className="text-gray-600 ml-4">- Refundable Amount:</span>
-                              <span className="text-green-600 font-medium">
-                                + ₹{getCurrentSharingTypeData.refundableAmount.toLocaleString()}
-                              </span>
-                            </div>
-                          )}
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600 ml-4">- Refundable Amount:</span>
+                            <span className="text-green-600 font-medium">
+                              + ₹{getCurrentSharingTypeData.refundableAmount.toLocaleString()}
+                            </span>
+                          </div>
+                        )}
                         <hr className="my-2" />
                         <div className="flex justify-between font-semibold text-md">
                           <span>Total Move-in Cost:</span>
@@ -536,7 +546,7 @@ const PropertyDetails = () => {
                             ₹
                             {(
                               getCurrentSharingTypeData.pricePerMonth +
-                                getCurrentSharingTypeData.deposit 
+                              getCurrentSharingTypeData.deposit
                             ).toLocaleString()}
                           </span>
                         </div>
@@ -604,7 +614,7 @@ const PropertyDetails = () => {
               <Card className="">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
-                    <PackagePlus className="h-5 w-5 mr-2"/>
+                    <PackagePlus className="h-5 w-5 mr-2" />
                     Additional Amenities
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -624,14 +634,14 @@ const PropertyDetails = () => {
               <Card className="">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
-                    <PencilRuler className="h-5 w-5 mr-2"/>
+                    <PencilRuler className="h-5 w-5 mr-2" />
                     House Rules
                   </h3>
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
-                        <span className="text-gray-700">{property.pgRules}</span>
-                      </div>
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      <span className="text-gray-700">{property.pgRules}</span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -651,7 +661,7 @@ const PropertyDetails = () => {
                       <span className="text-gray-600">({property.reviews?.length || 0} reviews)</span>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-6">
                     {reviews.map((review) => (
                       <div key={review.id} className="border-b border-gray-200 last:border-b-0 pb-6 last:pb-0">
@@ -670,9 +680,8 @@ const PropertyDetails = () => {
                               {[...Array(5)].map((_, i) => (
                                 <Star
                                   key={i}
-                                  className={`h-4 w-4 ${
-                                    i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                                  }`}
+                                  className={`h-4 w-4 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                                    }`}
                                 />
                               ))}
                             </div>
@@ -682,7 +691,7 @@ const PropertyDetails = () => {
                       </div>
                     ))}
                   </div>
-                  
+
                   <Button variant="outline" className="w-full mt-6">
                     View All Reviews
                   </Button>
@@ -704,7 +713,7 @@ const PropertyDetails = () => {
                       <User className="h-8 w-8 text-white" />
                     )}
                   </div>
-                  
+
                   <div>
                     <h3 className="font-semibold text-lg">{property.hostId}</h3>
                     <p className="text-gray-600">Property Host</p>
@@ -722,7 +731,7 @@ const PropertyDetails = () => {
 
                   <div className="space-y-2">
                     {!showHostInfo ? (
-                      <Button 
+                      <Button
                         onClick={handleRevealHostInfo}
                         className="w-full bg-gradient-cool hover:opacity-90"
                       >
@@ -775,7 +784,11 @@ const PropertyDetails = () => {
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4">Location</h3>
                 <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center mb-4">
-                  <span className="text-gray-500">Map placeholder</span>
+
+                  <iframe
+                    width="100%"
+                    src={`https://www.google.com/maps?q=${property.latitude},${property.longitude}&z=15&output=embed`}>
+                  </iframe>
                 </div>
                 <p className="text-gray-600 text-sm">
                   {property.address}
@@ -785,18 +798,18 @@ const PropertyDetails = () => {
 
             {/* Action Buttons */}
             <div className="space-y-3">
-              <Button 
+              <Button
                 onClick={handleWishlistToggle}
-                variant="outline" 
+                variant="outline"
                 className="w-full"
               >
                 <Heart className={`h-4 w-4 mr-2 ${isInWishlist ? 'fill-current text-red-500' : ''}`} />
                 {isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
               </Button>
-              
+
               {/* Enhanced Virtual Tour Button */}
               {property.virtualTourUrl && (
-                <Button 
+                <Button
                   onClick={() => setShowVirtualTourModal(true)}
                   className="w-full bg-gradient-cool text-white shadow-lg transform transition-all duration-200 hover:scale-105 hidden md:flex items-center justify-center"
                 >

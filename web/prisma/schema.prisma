@@ -25,6 +25,9 @@ model User {
   // Relations related to host
   HostProfile HostProfile?
 
+  // Relation with pgRequest
+  pgRequest PgRequest[]
+
   @@unique([email])
   @@map("user")
 }
@@ -90,6 +93,9 @@ model HostProfile {
   // Relation with PgData
   PgData PgData[]
 
+  // Relating with PgRequest
+  pgRequest PgRequest[]
+
   // Relation with actual user table
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -119,6 +125,7 @@ model PgData {
   images         String[]       @default([])
   rating         Float          @default(0)
   reviews        String[]       @default([])
+  PgRequest      PgRequest[]
 }
 
 model SharingType {
@@ -160,6 +167,29 @@ model Amenity {
   pgData   PgData      @relation(fields: [pgDataId], references: [id], onDelete: Cascade)
 
   @@map("amenity")
+}
+
+model PgRequest {
+  id     String          @id @default(uuid())
+  hostId String
+  host   HostProfile     @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  userId String
+  user   User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pgId   String
+  pgData PgData          @relation(fields: [pgId], references: [id], onDelete: Cascade)
+  status PgRequestStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // @@unique([userId, pgId]) // Ensure a user can only have one request per PG
+  @@map("pg_request")
+}
+
+enum PgRequestStatus {
+  ACCEPTED
+  REJECTED
+  PENDING
 }
 
 enum UserRole {
