@@ -24,6 +24,9 @@ import {
   Minus,
   Clock,
 } from "lucide-react";
+import { QueryClient, useQuery } from "@tanstack/react-query";
+import { PropertyRequestsApiResponse } from "@/interfaces/property";
+import { HostRequest } from "@/interfaces/property";
 
 interface UserQuery {
   id: string;
@@ -53,32 +56,25 @@ interface PropertyAvailability {
   };
 }
 
+const getPropertyQueries = async (hostId: string): Promise<PropertyRequestsApiResponse> => {
+  if(!hostId){
+    throw new Error("Host ID is required to fetch property queries.");
+  }
+  const response = await fetch(`/api/v1/pgrequest/${hostId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch property queries");
+  }
+  return response.json();
+}
+
 const HostDashboard = () => {
   const { toast } = useToast();
-  const [queries, setQueries] = useState<UserQuery[]>([
-    {
-      id: "1",
-      userName: "Priya Sharma",
-      userEmail: "priya@example.com",
-      propertyId: "1",
-      propertyTitle: "Modern Co-living Space in Koramangala",
-      sharingType: "single",
-      message: "Hi, I am interested in a single room. Can we schedule a visit?",
-      timestamp: "2024-01-15T10:30:00Z",
-      status: "pending",
-    },
-    {
-      id: "2",
-      userName: "Rahul Kumar",
-      userEmail: "rahul@example.com",
-      propertyId: "2",
-      propertyTitle: "Premium Ladies PG with Meals",
-      sharingType: "double",
-      message: "Looking for double sharing accommodation. Is it available?",
-      timestamp: "2024-01-14T15:45:00Z",
-      status: "approved",
-    },
-  ]);
+  const queryClient = new QueryClient();
 
   const [properties, setProperties] = useState<PropertyAvailability[]>([
     {
@@ -113,21 +109,47 @@ const HostDashboard = () => {
     },
   ]);
 
-  const handleQueryAction = (queryId: string, action: "approve" | "reject") => {
-    setQueries((prev) =>
-      prev.map((query) =>
-        query.id === queryId
-          ? { ...query, status: action === "approve" ? "approved" : "rejected" }
-          : query
-      )
-    );
+  // TODO: Replace with actual user ID from context or auth
+  const userId = "hostprofile-003";
 
-    toast({
-      title: `Query ${action === "approve" ? "Approved" : "Rejected"}`,
-      description: `User query has been ${
-        action === "approve" ? "approved" : "rejected"
-      } successfully.`,
-    });
+  const {data: queriesData, isLoading: loading} = useQuery({
+    queryKey: ["propertyQueries", userId],
+    queryFn: () => getPropertyQueries(userId),
+    enabled: !!userId,
+  });
+  const queries: HostRequest[] = queriesData?.data;
+
+  const handleQueryAction = async (queryId: string, action: "APPROVE" | "REJECT") => {
+     try {
+      const endpoint = action === "APPROVE" ? "accept" : "reject";
+      const response = await fetch(`/api/v1/pgrequest/${endpoint}/${queryId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to ${action} query: ${errorText}`);
+      }
+
+      console.log(`✅ Query ${action}ed successfully`);
+
+      toast({
+        title: `Query ${action === "APPROVE" ? "Approved" : "Rejected"}`,
+        description: `User query has been ${action === "APPROVE" ? "approved" : "rejected"} successfully.`,
+      });
+      
+      queryClient.invalidateQueries({ queryKey: ["propertyQueries", userId] });
+    } catch (error) {
+      console.error(`💥 Error ${action}ing query:`, error);
+      toast({
+        title: "Error",
+        description: `Failed to ${action} the query. Please try again.`,
+        variant: "destructive",
+      });
+    }
   };
 
   const handleAvailabilityChange = (
@@ -185,8 +207,8 @@ const HostDashboard = () => {
 
   const stats = {
     totalProperties: 5,
-    totalQueries: queries.length,
-    pendingQueries: queries.filter((q) => q.status === "pending").length,
+    totalQueries: queries,
+    pendingQueries: queries?.filter((q) => q.status === "PENDING").length,
     occupancyRate: 78,
     monthlyRevenue: 125000,
   };
@@ -229,7 +251,7 @@ const HostDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-gradient-cool">
-                {stats.totalQueries}
+                {stats.totalQueries?.length}
               </div>
             </CardContent>
           </Card>
@@ -268,7 +290,7 @@ const HostDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-gradient-cool">
-                ₹{stats.monthlyRevenue.toLocaleString()}
+                ₹{stats.monthlyRevenue.toString()}
               </div>
             </CardContent>
           </Card>
@@ -311,7 +333,12 @@ const HostDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {queries.map((query) => (
+                  {loading && (
+                    <div className="text-center text-gray-500">
+                      Loading queries...
+                    </div>
+                  )}
+                  {!loading && queries?.map((query) => (
                     <div
                       key={query.id}
                       className="border rounded-lg p-4 space-y-3"
@@ -319,17 +346,17 @@ const HostDashboard = () => {
                       <div className="flex justify-between items-start">
                         <div>
                           <h4 className="font-semibold text-charcoal">
-                            {query.userName}
+                            {query.user.name}
                           </h4>
                           <p className="text-sm text-gray-600">
-                            {query.userEmail}
+                            {query.user.email}
                           </p>
                         </div>
                         <Badge
                           variant={
-                            query.status === "pending"
+                            query.status === "PENDING"
                               ? "default"
-                              : query.status === "approved"
+                              : query.status === "APPROVED"
                               ? "default"
                               : "destructive"
                           }
@@ -340,26 +367,26 @@ const HostDashboard = () => {
 
                       <div>
                         <p className="text-sm font-medium text-gray-700">
-                          {query.propertyTitle}
+                          {query.pgData.title}
                         </p>
                         <p className="text-sm text-gray-600">
                           Interested in:{" "}
                           <span className="font-medium capitalize">
-                            {query.sharingType} sharing
+                            {query.pgData.propertyType} sharing
                           </span>
                         </p>
                       </div>
 
-                      <p className="text-sm bg-gray-50 p-3 rounded">
-                        {query.message}
-                      </p>
+                      {/* <p className="text-sm bg-gray-50 p-3 rounded">
+                        {query.}
+                      </p> */}
 
-                      {query.status === "pending" && (
+                      {query.status === "PENDING" && (
                         <div className="flex gap-2">
                           <Button
                             size="sm"
                             onClick={() =>
-                              handleQueryAction(query.id, "approve")
+                              handleQueryAction(query.id, "APPROVE")
                             }
                             className="bg-green-500 hover:bg-green-600"
                           >
@@ -370,7 +397,7 @@ const HostDashboard = () => {
                             size="sm"
                             variant="destructive"
                             onClick={() =>
-                              handleQueryAction(query.id, "reject")
+                              handleQueryAction(query.id, "REJECT")
                             }
                           >
                             <X className="w-4 h-4 mr-1" />

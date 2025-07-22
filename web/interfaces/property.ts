@@ -56,3 +56,34 @@ export interface ExploreApiResponse {
   data: Property[];
 }
 
+interface PgData {
+  id: string;
+  title: string;
+  description: string;
+  address: string;
+  images: string[];
+  propertyType: string;
+}
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface HostRequest {
+  id: string;
+  hostId: string;
+  userId: string;
+  pgId: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  pgData: PgData;
+  user: User;
+}
+
+export interface PropertyRequestsApiResponse {
+  success: boolean;
+  data: HostRequest[];
+}

@@ -1,7 +1,7 @@
 
+import { PgRequestData } from "@/interfaces/pg";
 import prisma from "@/lib/Prisma";
 import { NextResponse } from "next/server";
-import { title } from "process";
 
 export class PgRequestServices {
     private prismaClient;
@@ -10,7 +10,7 @@ export class PgRequestServices {
         this.prismaClient = prisma;
     }
 
-    async createPgRequest(requestData) {
+    async createPgRequest(requestData: PgRequestData) {
         try {
             if (!requestData) {
                 return NextResponse.json({

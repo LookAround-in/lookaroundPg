@@ -12,7 +12,7 @@ import { useToast } from 'hooks/use-toast';
 import { authClient } from 'lib/auth-client';
 
 const Profile = () => {
-  const { user, isLoading } = useAuth();
+  const {data: session, isPending} = authClient.useSession();
   const { wishlist } = useWishlist();
   const { toast } = useToast();
   const router = useRouter();
@@ -21,33 +21,30 @@ const Profile = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: ''
+    // phone: ''
   });
 
-  // Debug logging
-  console.log('Profile component - isLoading:', isLoading, 'user:', user);
 
   // Update form data when user changes
   useEffect(() => {
-    if (user) {
+    if (session) {
       setFormData({
-        name: user.name || '',
-        email: user.email || '',
-        phone: user.phone || ''
+        name: session.user.name || '',
+        email: session.user.email || ''
       });
     }
-  }, [user]);
+  }, [session]);
 
   // Handle authentication check
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (!session) {
       console.log('Redirecting to login - no user found');
       router.push('/login');
     }
-  }, [user, isLoading, router]);
+  }, [session, router]);
 
   // Show loading state
-  if (isLoading) {
+  if (isPending) {
     console.log('Showing loading state');
     return (
       <div className="min-h-screen bg-light-gray flex items-center justify-center">
@@ -57,12 +54,10 @@ const Profile = () => {
   }
 
   // Don't render if no user (will redirect)
-  if (!user) {
+  if (!session) {
     console.log('No user, returning null');
     return null;
   }
-
-  console.log('Rendering profile page for user:', user);
 
   const handleSave = () => {
     setIsEditing(false);
@@ -73,8 +68,6 @@ const Profile = () => {
   };
 
   const handleLogout = async () => {
-    // logout();
-    // router.push('/');
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
@@ -159,7 +152,7 @@ const Profile = () => {
                     />
                   </div>
 
-                  <div>
+                  {/* <div>
                     <Label htmlFor="phone">Phone Number</Label>
                     <Input
                       id="phone"
@@ -167,7 +160,7 @@ const Profile = () => {
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       disabled={!isEditing}
                     />
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="flex space-x-4 pt-4">
@@ -219,15 +212,15 @@ const Profile = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between">
+                {/* <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Phone className="h-4 w-4 text-orange-500" />
                     <span className="text-sm">Phone</span>
                   </div>
                   <span className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">
-                    {user.phone ? 'Added' : 'Not Added'}
+                    {session.user.phone ? 'Added' : 'Not Added'}
                   </span>
-                </div>
+                </div> */}
               </CardContent>
             </Card>
 

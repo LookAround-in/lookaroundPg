@@ -8,20 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'compo
 import { Badge } from 'components/ui/badge';
 import { Home, Users, Star, TrendingUp, CheckCircle, Calendar, Camera, Eye, Crown, Award, PhoneOutgoing } from 'lucide-react';
 import { useToast } from 'hooks/use-toast';
+import { authClient } from '@/lib/auth-client';
 
-const Partner = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    propertyType: '',
-    location: '',
-    message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
-
-  const benefits = [
+const benefits = [
     {
       icon: Users,
       title: 'Wide Reach',
@@ -44,7 +33,7 @@ const Partner = () => {
     }
   ];
 
-  const features = [
+const features = [
     '4K Photos & Virtual Tours (Premium)',
     'Instant lead notifications',
     'Real-time inquiry tracking',
@@ -54,7 +43,7 @@ const Partner = () => {
     'Verified tag after on-site check (Premium)'
   ];
 
-  const roadmapSteps = [
+const roadmapSteps = [
     {
       step: 1,
       title: 'Submit Application',
@@ -87,7 +76,7 @@ const Partner = () => {
     }
   ];
 
-  const tourPlans = [
+const tourPlans = [
     {
       name: 'Standard Virtual Tour',
       price: '₹500',
@@ -115,6 +104,19 @@ const Partner = () => {
       recommended: true
     }
   ];
+
+const Partner = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    propertyType: '',
+    location: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+  const { data: session } = authClient.useSession();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

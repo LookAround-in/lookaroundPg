@@ -1,20 +1,18 @@
 'use client'
 import React from 'react';
 import Link from 'next/link'
-import { useRouter } from 'next/navigation';
 import { Button } from 'components/ui/button';
 import { PropertyCard } from 'components/properties/PropertyCard';
 import { Heart, Search } from 'lucide-react';
-import { useAuth } from 'contexts/AuthContext';
 import { useWishlist } from 'contexts/WishlistContext';
 import { mockProperties } from 'data/mockData';
+import { authClient } from '@/lib/auth-client';
 
 const Wishlist = () => {
-  const { user } = useAuth();
   const { wishlist } = useWishlist();
-  const router = useRouter();
+  const {data: session} = authClient.useSession();
 
-  if (!user) {
+  if (!session) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-gray">
         <div className="text-center max-w-md">
@@ -61,7 +59,8 @@ const Wishlist = () => {
                 className="animate-fadeInUp"
                 style={{animationDelay: `${index * 0.1}s`}}
               >
-                <PropertyCard property={property} />
+                {/* TODO: Get properties once wishlist endpoint is available */}
+                {/* <PropertyCard property={property} /> */}
               </div>
             ))}
           </div>
