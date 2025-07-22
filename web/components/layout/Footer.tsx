@@ -146,7 +146,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 mt-8 pt-8 text-center">
           <p className="text-gray-50">
-            © 2024 LookaroundPG. Made with <Heart className="inline w-4 h-4 text-red-500 mx-1" /> for better living.
+            © 2025 LookaroundPG. Made with <Heart className="inline w-4 h-4 text-red-500 mx-1" /> for better living.
           </p>
         </div>
       </div>
