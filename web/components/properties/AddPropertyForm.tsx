@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -38,17 +38,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 
-type PgFormType = z.infer<typeof PgFormSchema>
+type PgFormType = z.infer<typeof PgFormSchema>;
 
 const createProperty = async (formData: FormData) => {
-  const response = await fetch('/api/v1/pg', {
-    method: 'POST',
-    body: formData, // Send FormData directly
+  const response = await fetch("/api/v1/pg", {
+    method: "POST",
+    body: formData,
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Failed to create property: ${response.status} ${errorText}`);
+    throw new Error(
+      `Failed to create property: ${response.status} ${errorText}`
+    );
   }
 
   return response.json();
@@ -63,29 +65,39 @@ function AddPropertyForm() {
 
   const createPropertyMutation = useMutation({
     mutationFn: createProperty,
+    onMutate: () => {
+      setIsSubmitting(true);
+    },
     onSuccess: (data) => {
       setIsSubmitting(false);
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      propertyForm.reset();
+      setSelectedImages([]);
+      setImagePreviews([]);
+      queryClient.invalidateQueries({ queryKey: ["properties"] });
       setTimeout(() => {
-        router.push('/admin/properties');
+        router.push("/admin/properties");
       }, 2000);
     },
     onError: (error: Error) => {
-      console.error('Mutation error:', error);
+      console.error("Mutation error:", error);
+      setIsSubmitting(false);
+      alert(`Error creating property: ${error.message}`);
     },
-  })
+  });
 
   const propertyForm = useForm<PgFormType>({
     resolver: zodResolver(PgFormSchema),
+    mode: "onSubmit",
     defaultValues: {
       title: "",
+      hostId: "hostprofile-001",
       description: "",
       propertyType: PropertyType.COLIVE,
       foodIncluded: false,
       furnishing: FurnishingType.FURNISHED,
       address: "",
-      latitude: 0.0,
-      longitude: 0.0,
+      latitude: 0,
+      longitude: 0,
       furnitures: [],
       amenities: [],
       sharingTypes: [],
@@ -93,12 +105,11 @@ function AddPropertyForm() {
       moveInStatus: MoveInStatus.IMMEDIATE,
       virtualTourUrl: "",
       images: [],
-      rating: 0.0,
+      rating: 0,
       reviews: [],
     },
   });
 
-  //to be used only with array of objects
   const {
     fields: sharingTypeFields,
     append: appendSharingType,
@@ -106,12 +117,14 @@ function AddPropertyForm() {
   } = useFieldArray({
     control: propertyForm.control,
     name: "sharingTypes",
-  });;
+  });
 
   const reviewFields = propertyForm.watch("reviews") || [];
+  
   const appendReview = (value: string = "") => {
     propertyForm.setValue("reviews", [...reviewFields, value]);
   };
+  
   const removeReview = (index: number) => {
     const updated = [...reviewFields];
     updated.splice(index, 1);
@@ -122,11 +135,11 @@ function AddPropertyForm() {
     appendSharingType({
       type: SharingType.SINGLE,
       description: "",
-      price: 0.0,
-      pricePerMonth: 0.0,
-      deposit: 0.0,
-      refundableAmount: 0.0,
-      availability: 0.0,
+      price: 0,
+      pricePerMonth: 0,
+      deposit: 0,
+      refundableAmount: 0,
+      availability: 1,
     });
   };
 
@@ -134,82 +147,87 @@ function AddPropertyForm() {
     appendReview("");
   };
 
-  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>)=>{
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
     const newFiles = Array.from(files);
-    setSelectedImages(prev => [...prev, ...newFiles])
-    newFiles.forEach(file => {
+    setSelectedImages((prev) => [...prev, ...newFiles]);
+    newFiles.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
-          setImagePreviews(prev => [...prev, e.target.result as string]);
+          setImagePreviews((prev) => [...prev, e.target.result as string]);
         }
       };
       reader.readAsDataURL(file);
     });
-    event.target.value = '';
-  }
-
-  const removeImage = (index: number) => {
-    setSelectedImages(prev => prev.filter((_, i) => i !== index));
-    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+    event.target.value = "";
   };
 
-  function onPropertyFormSubmit(data: z.infer<typeof PgFormSchema>) {
-    console.log("Property Form Data:", data);
-    const formData = new FormData();
-    
-    formData.append("title", data.title || "");
-    formData.append("description", data.description || "");
-    formData.append("propertyType", data.propertyType || "");
-    formData.append("foodIncluded", data.foodIncluded ? "true" : "false");
-    formData.append("furnishing", data.furnishing || "");
-    formData.append("address", data.address || "");
-    formData.append("latitude", data.latitude?.toString() || "0");
-    formData.append("longitude", data.longitude?.toString() || "0");
-    formData.append("pgRules", data.pgRules || "");
-    formData.append("moveInStatus", data.moveInStatus || "");
-    formData.append("virtualTourUrl", data.virtualTourUrl || "");
-    formData.append("rating", data.rating?.toString() || "0");
-    // Add array fields as JSON strings
-    formData.append("furnitures", JSON.stringify(data.furnitures || []));
-    formData.append("amenities", JSON.stringify(data.amenities || []));
-    formData.append("reviews", JSON.stringify(data.reviews || []));
-    const transformedSharingTypes = data.sharingTypes.map(sharingType => ({
-        ...sharingType,
-        price: typeof sharingType.price === 'string' ? parseFloat(sharingType.price) || 0 : sharingType.price,
-        pricePerMonth: typeof sharingType.pricePerMonth === 'string' ? parseFloat(sharingType.pricePerMonth) || 0 : sharingType.pricePerMonth,
-        deposit: typeof sharingType.deposit === 'string' ? parseFloat(sharingType.deposit) || 0 : sharingType.deposit,
-        refundableAmount: typeof sharingType.refundableAmount === 'string' ? parseFloat(sharingType.refundableAmount) || 0 : sharingType.refundableAmount,
-        availability: typeof sharingType.availability === 'string' ? parseInt(sharingType.availability) || 0 : sharingType.availability,
-      }));
-    formData.append("sharingTypes", JSON.stringify(transformedSharingTypes));
+  const removeImage = (index: number) => {
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  };
 
-    selectedImages.forEach((file) => {
+  const onSubmit = async (data: PgFormType) => {
+    try {
+      if (!data.sharingTypes || data.sharingTypes.length === 0) {
+        alert("Please add at least one sharing type");
+        return;
+      }
+      if (selectedImages.length === 0) {
+        alert("Please select at least one image");
+        return;
+      }
+      setIsSubmitting(true);
+      const formData = new FormData();
+      // Add basic form fields - using validated data from React Hook Form
+      formData.append("title", data.title);
+      formData.append("hostId", data.hostId);
+      formData.append("description", data.description);
+      formData.append("propertyType", data.propertyType);
+      formData.append("foodIncluded", data.foodIncluded.toString());
+      formData.append("furnishing", data.furnishing);
+      formData.append("address", data.address);
+      formData.append("latitude", data.latitude.toString());
+      formData.append("longitude", data.longitude.toString());
+      formData.append("pgRules", data.pgRules || "");
+      formData.append("moveInStatus", data.moveInStatus);
+      formData.append("virtualTourUrl", data.virtualTourUrl || "");
+      formData.append("rating", data.rating.toString()); 
+      // Add array fields as JSON strings
+      formData.append("furnitures", JSON.stringify(data.furnitures));
+      formData.append("amenities", JSON.stringify(data.amenities));
+      formData.append("reviews", JSON.stringify(data.reviews));
+      formData.append("sharingTypes", JSON.stringify(data.sharingTypes));
+      // Add images
+      selectedImages.forEach((file) => {
         formData.append("images", file);
       });
-    console.log("Final form data before submission", formData);
-    createPropertyMutation.mutate(formData);
-  }
+      await createPropertyMutation.mutateAsync(formData);
+    } catch (error) {
+      console.error("Form submission error:", error);
+      alert("Error preparing form data. Please try again.");
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="max-w-3xl mx-auto p-6 bg-gray-100 border-2 border-pink-600 shadow-lg rounded-lg m-6">
       <h2 className="text-2xl font-bold mb-4">Add New Property</h2>
       <Form {...propertyForm}>
-        <form
-          onSubmit={propertyForm.handleSubmit(onPropertyFormSubmit)}
-          className="space-y-8"
-        >
+        <form onSubmit={propertyForm.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={propertyForm.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Property Title</FormLabel>
+                <FormLabel>Property Title *</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Premium Boys PG in Koramangala"
                     {...field}
+                    value={field.value || ""}
                   />
                 </FormControl>
                 <FormDescription>
@@ -219,16 +237,18 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
+          
           <FormField
             control={propertyForm.control}
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>Description *</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="A brief description of the property"
                     {...field}
+                    value={field.value || ""}
                   />
                 </FormControl>
                 <FormDescription>
@@ -238,13 +258,18 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
+          
           <FormField
             control={propertyForm.control}
             name="propertyType"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>PropertyType</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <FormLabel>Property Type *</FormLabel>
+                <Select 
+                  onValueChange={field.onChange} 
+                  value={field.value}
+                  defaultValue={PropertyType.COLIVE}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select Property Type" />
@@ -265,6 +290,7 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
+          
           <FormField
             control={propertyForm.control}
             name="foodIncluded"
@@ -278,7 +304,7 @@ function AddPropertyForm() {
                 </div>
                 <FormControl>
                   <Switch
-                    checked={field.value}
+                    checked={field.value || false}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
@@ -286,13 +312,18 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
+          
           <FormField
             control={propertyForm.control}
             name="furnishing"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Furnishing</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <FormLabel>Furnishing *</FormLabel>
+                <Select 
+                  onValueChange={field.onChange} 
+                  value={field.value}
+                  defaultValue={FurnishingType.FURNISHED}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select Furnishing Type" />
@@ -313,25 +344,28 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
+          
           <FormField
             control={propertyForm.control}
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Property Address</FormLabel>
+                <FormLabel>Property Address *</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Premium Boys PG in Koramangala"
+                    placeholder="123 Main Street, Koramangala, Bangalore"
                     {...field}
+                    value={field.value || ""} 
                   />
                 </FormControl>
                 <FormDescription>
-                  This is your property's address.
+                  Enter the complete address of your property.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+          
           <FormField
             control={propertyForm.control}
             name="latitude"
@@ -340,17 +374,24 @@ function AddPropertyForm() {
                 <FormLabel>Property Latitude</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Premium Boys PG in Koramangala"
-                    {...field}
+                    type="number"
+                    step="any"
+                    placeholder="12.9716"
+                    value={field.value?.toString() || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value === "" ? 0 : parseFloat(value));
+                    }}
                   />
                 </FormControl>
                 <FormDescription>
-                  This is your property's latitude.
+                  This is your property's latitude coordinate.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+          
           <FormField
             control={propertyForm.control}
             name="longitude"
@@ -359,18 +400,25 @@ function AddPropertyForm() {
                 <FormLabel>Property Longitude</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Premium Boys PG in Koramangala"
-                    {...field}
+                    type="number"
+                    step="any"
+                    placeholder="77.5946"
+                    value={field.value?.toString() || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value === "" ? 0 : parseFloat(value));
+                    }}
                   />
                 </FormControl>
                 <FormDescription>
-                  This is your property's longitude.
+                  This is your property's longitude coordinate.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          {/* Furnitures Multiselect */}
+          
+  
           <FormField
             control={propertyForm.control}
             name="furnitures"
@@ -382,11 +430,12 @@ function AddPropertyForm() {
                     Select the furnitures available in the property.
                   </FormDescription>
                 </div>
-                {Object.values(FurnitureType).map((furniture) => (
-                  <FormField
-                    key={furniture}
-                    control={propertyForm.control}
-                    name="furnitures"
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {Object.values(FurnitureType).map((furniture) => (
+                    <FormField
+                      key={furniture}
+                      control={propertyForm.control}
+                      name="furnitures"
                     render={({ field }) => {
                       return (
                         <FormItem
@@ -395,12 +444,13 @@ function AddPropertyForm() {
                         >
                           <FormControl>
                             <Checkbox
-                              checked={field.value?.includes(furniture)}
+                              checked={field.value?.includes(furniture) || false}
                               onCheckedChange={(checked) => {
+                                const currentValue = field.value || [];
                                 return checked
-                                  ? field.onChange([...field.value, furniture])
+                                  ? field.onChange([...currentValue, furniture])
                                   : field.onChange(
-                                      field.value.filter(
+                                      currentValue.filter(
                                         (item) => item !== furniture
                                       )
                                     );
@@ -415,9 +465,12 @@ function AddPropertyForm() {
                     }}
                   />
                 ))}
+                </div>
+                <FormMessage />
               </FormItem>
             )}
           />
+          
           <FormField
             control={propertyForm.control}
             name="amenities"
@@ -429,7 +482,8 @@ function AddPropertyForm() {
                     Select the amenities available in the property.
                   </FormDescription>
                 </div>
-                {Object.values(AmenityType).map((amenity) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {Object.values(AmenityType).map((amenity) => (
                   <FormField
                     key={amenity}
                     control={propertyForm.control}
@@ -442,12 +496,13 @@ function AddPropertyForm() {
                         >
                           <FormControl>
                             <Checkbox
-                              checked={field.value?.includes(amenity)}
+                              checked={field.value?.includes(amenity) || false}
                               onCheckedChange={(checked) => {
+                                const currentValue = field.value || [];
                                 return checked
-                                  ? field.onChange([...field.value, amenity])
+                                  ? field.onChange([...currentValue, amenity])
                                   : field.onChange(
-                                      field.value.filter(
+                                      currentValue.filter(
                                         (item) => item !== amenity
                                       )
                                     );
@@ -462,6 +517,8 @@ function AddPropertyForm() {
                     }}
                   />
                 ))}
+                </div>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -473,25 +530,30 @@ function AddPropertyForm() {
               <FormItem>
                 <FormLabel>Property Rules</FormLabel>
                 <FormControl>
-                  <Input placeholder="No smoking, No pets, etc." {...field} />
+                  <Input 
+                    placeholder="No smoking, No pets, etc." 
+                    {...field}
+                    value={field.value || ""}
+                  />
                 </FormControl>
                 <FormDescription>
-                  This is your property's rules.
+                  Enter any specific rules for your property.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+          
           <FormField
             control={propertyForm.control}
             name="moveInStatus"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Move-In Status</FormLabel>
+                <FormLabel>Move-In Status *</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
                   value={field.value}
+                  defaultValue={MoveInStatus.IMMEDIATE}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -507,12 +569,13 @@ function AddPropertyForm() {
                   </SelectContent>
                 </Select>
                 <FormDescription>
-                  Select the move-in status for your property.
+                  Select when tenants can move in.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+          
           <FormField
             control={propertyForm.control}
             name="virtualTourUrl"
@@ -523,15 +586,17 @@ function AddPropertyForm() {
                   <Input
                     placeholder="https://example.com/virtual-tour"
                     {...field}
+                    value={field.value || ""}
                   />
                 </FormControl>
                 <FormDescription>
-                  This is your property's virtual tour URL.
+                  Optional: Add a virtual tour URL for your property.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+          
           <FormField
             control={propertyForm.control}
             name="rating"
@@ -540,18 +605,27 @@ function AddPropertyForm() {
                 <FormLabel>Property Rating</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Rate this property from 1 to 5"
-                    {...field}
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    placeholder="4.5"
+                    value={field.value?.toString() || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value === "" ? 0 : parseFloat(value));
+                    }}
                   />
                 </FormControl>
                 <FormDescription>
-                  This is your property's rating.
+                  Rate your property from 0 to 5 stars.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          {/* reviews */}
+          
+          {/* Reviews section - same as before */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -567,7 +641,7 @@ function AddPropertyForm() {
                 variant="outline"
                 size="sm"
                 onClick={addReview}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 hover:bg-primary hover:text-white"
               >
                 <Plus className="h-4 w-4" />
                 Add Review
@@ -580,7 +654,7 @@ function AddPropertyForm() {
             )}
 
             {reviewFields.map((field, index) => (
-              <div key={field} className="flex gap-2 items-start">
+              <div key={index} className="flex gap-2 items-start">
                 <FormField
                   control={propertyForm.control}
                   name={`reviews.${index}`}
@@ -595,15 +669,17 @@ function AddPropertyForm() {
                             index + 1
                           }: "Great place to stay! Clean rooms and friendly staff..."`}
                           {...field}
+                          value={field.value || ""} 
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
                 <Button
                   type="button"
                   variant="ghost"
-                  size="default"
+                  size="sm"
                   onClick={() => removeReview(index)}
                   className="text-red-500 hover:text-red-700 px-2 py-1"
                 >
@@ -613,15 +689,15 @@ function AddPropertyForm() {
             ))}
           </div>
 
-          {/* Sharing Type form */}
+          {/* Sharing Types section with improved validation */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <FormLabel className="text-lg font-semibold">
-                  Sharing Types
+                  Sharing Types *
                 </FormLabel>
                 <FormDescription>
-                  Add different sharing options with pricing details.
+                  Add different sharing options with pricing details. At least one is required.
                 </FormDescription>
               </div>
               <Button
@@ -637,9 +713,8 @@ function AddPropertyForm() {
             </div>
 
             {sharingTypeFields.length === 0 && (
-              <div className="text-center py-4 text-gray-500 text-sm border-2 border-dashed border-gray-300 rounded-lg">
-                No sharing types added yet. Click "Add Sharing Type" to get
-                started.
+              <div className="text-center py-4 text-red-500 text-sm border-2 border-dashed border-red-300 rounded-lg">
+                No sharing types added yet. Click "Add Sharing Type" to get started. At least one is required.
               </div>
             )}
 
@@ -648,7 +723,7 @@ function AddPropertyForm() {
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm font-medium">
-                      Sharing Type #{index + 1}
+                      Sharing Type #{index + 1} *
                     </CardTitle>
                     <Button
                       type="button"
@@ -662,16 +737,16 @@ function AddPropertyForm() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* Sharing Type Selection */}
                   <FormField
                     control={propertyForm.control}
                     name={`sharingTypes.${index}.type`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Sharing Type</FormLabel>
+                        <FormLabel>Sharing Type *</FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           value={field.value}
+                          defaultValue={SharingType.SINGLE}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -687,25 +762,24 @@ function AddPropertyForm() {
                           </SelectContent>
                         </Select>
                         <FormDescription>
-                          Select the type of sharing (Single, Double, Triple,
-                          etc.)
+                          Select the type of sharing (Single, Double, Triple, etc.)
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  {/* Description */}
                   <FormField
                     control={propertyForm.control}
                     name={`sharingTypes.${index}.description`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description</FormLabel>
+                        <FormLabel>Description *</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Spacious single room with attached bathroom"
                             {...field}
+                            value={field.value || ""}
                           />
                         </FormControl>
                         <FormDescription>
@@ -716,18 +790,24 @@ function AddPropertyForm() {
                     )}
                   />
 
-                  {/* Pricing Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={propertyForm.control}
                       name={`sharingTypes.${index}.price`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Base Price (₹)</FormLabel>
+                          <FormLabel>Base Price (₹) *</FormLabel>
                           <FormControl>
-                            <Input
+                            <Input 
+                              type="number"
+                              step="1"
+                              min="0"
                               placeholder="15000"
-                              {...field}
+                              value={field.value?.toString() || ""}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                field.onChange(value === "" ? 0 : parseInt(value));
+                              }}
                             />
                           </FormControl>
                           <FormDescription>
@@ -743,11 +823,18 @@ function AddPropertyForm() {
                       name={`sharingTypes.${index}.pricePerMonth`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Monthly Rent (₹)</FormLabel>
+                          <FormLabel>Monthly Rent (₹) *</FormLabel>
                           <FormControl>
-                            <Input
+                            <Input 
+                              type="number"
+                              step="1"
+                              min="0"
                               placeholder="12000"
-                              {...field}
+                              value={field.value?.toString() || ""}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                field.onChange(value === "" ? 0 : parseInt(value));
+                              }}
                             />
                           </FormControl>
                           <FormDescription>
@@ -763,11 +850,18 @@ function AddPropertyForm() {
                       name={`sharingTypes.${index}.deposit`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Security Deposit (₹)</FormLabel>
+                          <FormLabel>Security Deposit (₹) *</FormLabel>
                           <FormControl>
-                            <Input
+                            <Input 
+                              type="number"
+                              step="1"
+                              min="0"
                               placeholder="25000"
-                              {...field}
+                              value={field.value?.toString() || ""}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                field.onChange(value === "" ? 0 : parseInt(value));
+                              }}
                             />
                           </FormControl>
                           <FormDescription>
@@ -783,11 +877,18 @@ function AddPropertyForm() {
                       name={`sharingTypes.${index}.refundableAmount`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Refundable Amount (₹)</FormLabel>
+                          <FormLabel>Refundable Amount (₹) *</FormLabel>
                           <FormControl>
-                            <Input
+                            <Input 
+                              type="number"
+                              step="1"
+                              min="0"
                               placeholder="20000"
-                              {...field}
+                              value={field.value?.toString() || ""}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                field.onChange(value === "" ? 0 : parseInt(value));
+                              }}
                             />
                           </FormControl>
                           <FormDescription>
@@ -797,30 +898,44 @@ function AddPropertyForm() {
                         </FormItem>
                       )}
                     />
+
+                    <FormField
+                      control={propertyForm.control}
+                      name={`sharingTypes.${index}.availability`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Available Slots *</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number"
+                              step="1"
+                              min="0"
+                              max="10"
+                              placeholder="3"
+                              value={field.value?.toString() || ""}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === "") {
+                                  field.onChange(undefined);
+                                } else {
+                                  const numValue = parseInt(value, 10);
+                                  if (!isNaN(numValue)) {
+                                    field.onChange(numValue);
+                                  }
+                                }
+                              }}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Number of available slots for this sharing type
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
 
-                  {/* Availability */}
-                  <FormField
-                    control={propertyForm.control}
-                    name={`sharingTypes.${index}.availability`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Available Slots</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="3"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Number of available slots for this sharing type
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Summary Card */}
+                  {/* Summary Card - same as before */}
                   <div className="bg-gray-50 p-3 rounded-lg border">
                     <h4 className="text-sm font-medium text-gray-700 mb-2">
                       Summary
@@ -840,8 +955,7 @@ function AddPropertyForm() {
                       </div>
                       <div>
                         Deposit: ₹
-                        {propertyForm.watch(`sharingTypes.${index}.deposit`) ||
-                          0}
+                        {propertyForm.watch(`sharingTypes.${index}.deposit`) || 0}
                       </div>
                       <div>
                         Available:{" "}
@@ -857,14 +971,15 @@ function AddPropertyForm() {
             ))}
           </div>
 
+          {/* Images section - same as before but with required indication */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <FormLabel className="text-lg font-semibold">
-                  Property Images
+                  Property Images *
                 </FormLabel>
                 <FormDescription>
-                  Upload multiple images of your property.
+                  Upload multiple images of your property. At least one image is required.
                 </FormDescription>
               </div>
               <div className="relative">
@@ -880,15 +995,19 @@ function AddPropertyForm() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => document.getElementById('image-upload')?.click()}
-                  className="flex items-center gap-2"
+                  onClick={() =>
+                    document.getElementById("image-upload")?.click()
+                  }
+                  className="flex items-center gap-2 hover:bg-primary hover:text-white"
                   disabled={isSubmitting}
-                ><Upload className="h-4 w-4" />
+                >
+                  <Upload className="h-4 w-4" />
                   Select Images
                 </Button>
               </div>
             </div>
-             {imagePreviews.length > 0 && (
+            
+            {imagePreviews.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {imagePreviews.map((preview, index) => (
                   <div key={index} className="relative group">
@@ -915,30 +1034,51 @@ function AddPropertyForm() {
                 ))}
               </div>
             )}
+            
             {imagePreviews.length === 0 && (
-              <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
-                <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
-                <div className="mt-2 text-sm text-gray-600">
-                  No images selected yet
+              <div className="text-center py-8 border-2 border-dashed border-red-300 rounded-lg">
+                <ImageIcon className="mx-auto h-12 w-12 text-red-400" />
+                <div className="mt-2 text-sm text-red-600">
+                  No images selected yet - Required
                 </div>
-                <div className="mt-1 text-xs text-gray-500">
+                <div className="mt-1 text-xs text-red-500">
                   Click "Select Images" to add property photos
                 </div>
               </div>
             )}
-            {/* Upload Status */}
+            
             {selectedImages.length > 0 && (
-              <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-                <div className="text-sm text-blue-800">
-                  <strong>{selectedImages.length}</strong> image(s) selected
+              <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                <div className="text-sm text-green-800">
+                  ✓ <strong>{selectedImages.length}</strong> image(s) selected
                 </div>
               </div>
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? 'Creating Property...' : 'Submit Property'}
-          </Button>
+          {/* Submit Button Section */}
+          <div className="space-y-4">
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={isSubmitting || createPropertyMutation.isPending}
+            >
+              {isSubmitting || createPropertyMutation.isPending 
+                ? "Creating Property..." 
+                : "Submit Property"
+              }
+            </Button>
+            {createPropertyMutation.isError && (
+              <div className="text-center p-3 bg-red-100 text-red-700 border border-red-300 rounded-md">
+                Error: {createPropertyMutation.error?.message || "Something went wrong"}
+              </div>
+            )}
+            {createPropertyMutation.isSuccess && (
+              <div className="text-center p-3 bg-green-100 text-green-700 border border-green-300 rounded-md">
+                Property created successfully! Redirecting...
+              </div>
+            )}
+          </div>
         </form>
       </Form>
     </div>

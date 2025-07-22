@@ -44,7 +44,7 @@ interface PropertyForm {
 
 const initialFormState: PropertyForm = {
   title: '',
-  hostId: 'host-001', // Default host ID - you can change this or make it dynamic
+  hostId: 'hostprofile-002', // Default host ID - you can change this or make it dynamic
   description: '',
   propertyType: PropertyType.COLIVE,
   foodIncluded: false,

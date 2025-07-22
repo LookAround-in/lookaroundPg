@@ -63,7 +63,6 @@ export const PgDataSchema = z.object({
     .max(100, 'Title must be less than 100 characters')
     .trim(),
   hostId: z.string()
-    .uuid('Host ID must be a valid UUID')
     .min(1, 'Host ID is required'),
   description: z.string()
     .min(10, 'Description must be at least 10 characters')
