@@ -653,7 +653,7 @@ export default function AddProperty() {
           <section>
             <h2 className="text-xl font-semibold text-primary mb-2">Amenities</h2>
             <div className="flex flex-wrap gap-3">
-              {amenitiesList.map(a => (
+              {Object.values(AmenityType).map(a => (
                 <label key={a} className="flex items-center space-x-1 bg-gray-100 px-3 py-1 rounded-lg">
                   <Input
                     type="checkbox"

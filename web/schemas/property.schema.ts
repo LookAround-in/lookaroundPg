@@ -52,7 +52,7 @@ export const SharingTypeDetailsSchema = z.object({
     .optional(),
   maintenanceIncluded: z.boolean()
     .optional()
-}) satisfies z.ZodType<SharingTypeDetails>;
+})
 
 // Main PG Data Schema
 export const PgDataSchema = z.object({
@@ -113,7 +113,7 @@ export const PgDataSchema = z.object({
     .min(0, 'Rating must be between 0 and 5')
     .max(5, 'Rating must be between 0 and 5'),
   reviews: z.array(z.string())
-}) satisfies z.ZodType<PgData>;
+})
 
 // Create PG Schema (without ID for creation)
 export const CreatePgDataSchema = PgDataSchema.omit({ id: true });
