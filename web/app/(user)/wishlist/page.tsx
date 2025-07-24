@@ -5,7 +5,6 @@ import { Button } from 'components/ui/button';
 import { PropertyCard } from 'components/properties/PropertyCard';
 import { Heart, Search } from 'lucide-react';
 import { useWishlist } from 'contexts/WishlistContext';
-import { mockProperties } from 'data/mockData';
 import { authClient } from '@/lib/auth-client';
 
 const Wishlist = () => {
@@ -33,9 +32,7 @@ const Wishlist = () => {
     );
   }
 
-  const wishlistProperties = mockProperties.filter(property => 
-    wishlist.includes(property.id)
-  );
+  const wishlistProperties = []
 
   return (
     <div className="min-h-screen bg-light-gray">

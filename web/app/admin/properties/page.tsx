@@ -7,7 +7,6 @@ import { Badge } from 'components/ui/badge';
 import { Input } from 'components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
 import { ArrowLeft, Plus, Search, Filter, Home, Eye, Edit, Trash2 } from 'lucide-react';
-import { mockProperties } from 'data/mockData';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -17,7 +16,7 @@ const HostAllProperties = () => {
   const [filterStatus, setFilterStatus] = useState('all');
 
   // In a real app, these would be filtered by the logged-in host
-  const hostProperties = mockProperties;
+  const hostProperties = [];
 
   const filteredProperties = hostProperties.filter(property => {
     const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
