@@ -150,7 +150,7 @@ const HostAllProperties = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredProperties.map((property, index) => (
             <div key={property.id} className="relative group">
-              <PropertyCard property={property} />
+              {/* <PropertyCard property={property} /> */}
 
               {/* Management Overlay */}
               <div className="absolute top-3 right-12 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">

@@ -1146,7 +1146,7 @@ const PropertyDetails = () => {
                 style={{ paddingBottom: "56.25%" }}
               >
                 <iframe
-                  src="https://www.lookaround.in/library/tour?url=https%3A%2F%2Frealsee.ai%2FZyKKW8Kp"
+                  src={property.virtualTourUrl}
                   title="360 Virtual Tour"
                   className="absolute top-0 w-full h-full rounded-lg"
                 />

@@ -190,7 +190,7 @@ async function main() {
         longitude: 77.6632,
         pgRules: 'No smoking, No drinking, No visitors after 10 PM, Maintain cleanliness',
         moveInStatus: MoveInStatus.IMMEDIATE,
-        virtualTourUrl: 'https://example.com/virtual-tour/pg-001',
+        virtualTourUrl: 'https://www.lookaround.in/library/tour?url=https%3A%2F%2Frealsee.ai%2FZyKKW8Kp',
         images: [
           'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800',
           'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800',
@@ -222,7 +222,7 @@ async function main() {
         longitude: 77.6245,
         pgRules: 'No male visitors, In-time by 9 PM, No smoking, Maintain cleanliness',
         moveInStatus: MoveInStatus.WITHIN_ONE_WEEK,
-        virtualTourUrl: 'https://example.com/virtual-tour/pg-002',
+        virtualTourUrl: 'https://www.lookaround.in/library/tour?url=https%3A%2F%2Frealsee.ai%2FZyKKW8Kp',
         images: [
           'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800',
           'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800',
@@ -254,7 +254,7 @@ async function main() {
         longitude: 77.6476,
         pgRules: 'Respect common areas, Clean after yourself, No loud music after 10 PM',
         moveInStatus: MoveInStatus.IMMEDIATE,
-        virtualTourUrl: 'https://example.com/virtual-tour/pg-003',
+        virtualTourUrl: 'https://www.lookaround.in/library/tour?url=https%3A%2F%2Frealsee.ai%2FZyKKW8Kp',
         images: [
           'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800',
           'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800',
@@ -316,7 +316,7 @@ async function main() {
         longitude: 77.6412,
         pgRules: 'No male visitors, In-time by 10 PM, Maintain silence after 10 PM',
         moveInStatus: MoveInStatus.WITHIN_ONE_MONTH,
-        virtualTourUrl: 'https://example.com/virtual-tour/pg-005',
+        virtualTourUrl: 'https://www.lookaround.in/library/tour?url=https%3A%2F%2Frealsee.ai%2FZyKKW8Kp',
         images: [
           'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800',
           'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800',

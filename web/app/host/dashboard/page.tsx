@@ -24,9 +24,10 @@ import {
   Minus,
   Clock,
 } from "lucide-react";
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { PropertyRequestsApiResponse } from "@/interfaces/property";
 import { HostRequest } from "@/interfaces/property";
+import { error } from "console";
 
 interface UserQuery {
   id: string;
@@ -71,10 +72,30 @@ const getPropertyQueries = async (hostId: string): Promise<PropertyRequestsApiRe
   }
   return response.json();
 }
+const handlePropertyQueries = async (endpoint: string, queryId: string) => {
+  if(!endpoint){
+    throw new Error("Endpoint is required to handle property queries.");
+  }
+  if (!queryId){
+    throw new Error("Query ID is required to handle property queries.");
+  }
+  const response = await fetch(`/api/v1/pgrequest/${endpoint}/${queryId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to ${endpoint} query: ${errorText}`);
+      }
+  return response.json();
+}
 
 const HostDashboard = () => {
   const { toast } = useToast();
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
   const [properties, setProperties] = useState<PropertyAvailability[]>([
     {
@@ -119,37 +140,37 @@ const HostDashboard = () => {
   });
   const queries: HostRequest[] = queriesData?.data;
 
-  const handleQueryAction = async (queryId: string, action: "APPROVE" | "REJECT") => {
-     try {
-      const endpoint = action === "APPROVE" ? "accept" : "reject";
-      const response = await fetch(`/api/v1/pgrequest/${endpoint}/${queryId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to ${action} query: ${errorText}`);
+  const {mutate, isPending} = useMutation({
+      mutationFn: ({ endpoint, queryId }: { endpoint: string; queryId: string }) => handlePropertyQueries(endpoint, queryId),
+      onSuccess: async (data, variables)=>{
+        const action = variables.endpoint === "accept" ? "APPROVE" : "REJECT";
+        toast({
+          title: `Query ${action === "APPROVE" ? "Approved" : "Rejected"}`,
+          description: `User query has been ${action === "APPROVE" ? "approved" : "rejected"} successfully.`,
+        });
+        await queryClient.invalidateQueries({ 
+          queryKey: ["propertyQueries", userId],
+          exact: true, 
+        });
+      },
+      onError: (error: Error)=>{
+        console.error(`Error query:`, error);
+        toast({
+          title: "Error",
+          description: `Failed to process the query. Please try again.`,
+          variant: "destructive",
+        });
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({ 
+          queryKey: ["propertyQueries", userId],
+        });
       }
+    })
 
-      console.log(`✅ Query ${action}ed successfully`);
-
-      toast({
-        title: `Query ${action === "APPROVE" ? "Approved" : "Rejected"}`,
-        description: `User query has been ${action === "APPROVE" ? "approved" : "rejected"} successfully.`,
-      });
-      
-      queryClient.invalidateQueries({ queryKey: ["propertyQueries", userId] });
-    } catch (error) {
-      console.error(`💥 Error ${action}ing query:`, error);
-      toast({
-        title: "Error",
-        description: `Failed to ${action} the query. Please try again.`,
-        variant: "destructive",
-      });
-    }
+  const handleQueryAction = async (queryId: string, action: "APPROVE" | "REJECT") => {
+    const endpoint = action === "APPROVE" ? "accept" : "reject";
+    mutate({ endpoint, queryId });
   };
 
   const handleAvailabilityChange = (
@@ -391,7 +412,7 @@ const HostDashboard = () => {
                             className="bg-green-500 hover:bg-green-600"
                           >
                             <Check className="w-4 h-4 mr-1" />
-                            Approve
+                            {isPending ? "Processing...": "Approve"}
                           </Button>
                           <Button
                             size="sm"
@@ -401,7 +422,7 @@ const HostDashboard = () => {
                             }
                           >
                             <X className="w-4 h-4 mr-1" />
-                            Reject
+                            {isPending ? "Processing...": "Reject"}
                           </Button>
                         </div>
                       )}

@@ -38,14 +38,12 @@ const Profile = () => {
   // Handle authentication check
   useEffect(() => {
     if (!session) {
-      console.log('Redirecting to login - no user found');
       router.push('/login');
     }
   }, [session, router]);
 
   // Show loading state
   if (isPending) {
-    console.log('Showing loading state');
     return (
       <div className="min-h-screen bg-light-gray flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
@@ -55,7 +53,6 @@ const Profile = () => {
 
   // Don't render if no user (will redirect)
   if (!session) {
-    console.log('No user, returning null');
     return null;
   }
 
