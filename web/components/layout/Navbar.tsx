@@ -35,8 +35,6 @@ export const Navbar = () => {
   };
 
   const handleLogout = async () => {
-    // logout();
-    // router.push('/');
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {

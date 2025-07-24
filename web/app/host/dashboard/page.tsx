@@ -138,7 +138,7 @@ const HostDashboard = () => {
     queryFn: () => getPropertyQueries(userId),
     enabled: !!userId,
   });
-  const queries: HostRequest[] = queriesData?.data;
+  const queries: HostRequest[] = queriesData?.data || [];
 
   const {mutate, isPending} = useMutation({
       mutationFn: ({ endpoint, queryId }: { endpoint: string; queryId: string }) => handlePropertyQueries(endpoint, queryId),
@@ -357,6 +357,11 @@ const HostDashboard = () => {
                   {loading && (
                     <div className="text-center text-gray-500">
                       Loading queries...
+                    </div>
+                  )}
+                  {!loading && queries.length === 0 && (
+                    <div className="text-center text-gray-500">
+                      No queries found...
                     </div>
                   )}
                   {!loading && queries?.map((query) => (

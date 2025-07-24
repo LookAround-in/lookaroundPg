@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { PropertyCard } from "components/properties/PropertyCard";
 import { Button } from "components/ui/button";
 import { Badge } from "components/ui/badge";
@@ -20,12 +21,12 @@ import {
   Shield,
   Award,
   MessageSquareDot,
-  Loader2,
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { ExploreApiResponse } from "@/interfaces/property";
 import { useQuery } from "@tanstack/react-query";
+import PropertySkeleton from "@/components/properties/PropertySkeleton";
 
 const fetchHostProperties = async (
   hostId: string
@@ -54,42 +55,10 @@ const HostProperties = () => {
 
   const hostProperties = hostPropertiesData.data?.data || [];
 
-  if (hostPropertiesData.isLoading || hostPropertiesData.isFetching) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-light-gray">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <h1 className="text-2xl font-bold mb-4">Loading properties...</h1>
-          <p className="text-gray-600">
-            Please wait while we fetch the properties.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (hostPropertiesData.isError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-light-gray">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4 text-red-600">
-            Error loading property
-          </h1>
-          <p className="text-gray-600 mb-4">
-            {(hostPropertiesData.error as Error)?.message ||
-              "Failed to load property details"}
-          </p>
-          <div className="space-x-4">
-            <Button onClick={() => hostPropertiesData.refetch()}>
-              Try Again
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!hostProperties.length && !hostPropertiesData.isLoading) {
+  if (!hostPropertiesData.isLoading && 
+      !hostPropertiesData.isPending && 
+      !hostPropertiesData.isError && 
+      hostProperties.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-white">
         <Card className="text-center p-8">
@@ -149,9 +118,13 @@ const HostProperties = () => {
                     <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
                       {hostProperties.length > 0 &&
                       hostProperties[0].Host.userId ? (
-                        <img
-                          src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800'
+                        <Image
+                          placeholder="blur"
+                          blurDataURL='/blurImg.png'
+                          src='/boss.png'
                           alt={hostProperties[0].Host.userId}
+                          width={32}
+                          height={32}
                           className="w-20 h-20 rounded-full object-cover"
                         />
                       ) : (
@@ -170,9 +143,13 @@ const HostProperties = () => {
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4">
                     <div>
                       <h1 className="text-2xl lg:text-3xl font-bold text-charcoal mb-2 tracking-tight">
-                        {hostProperties.length > 0
-                          ? hostProperties[0].Host.userId
-                          : "Loading..."}
+                        {(hostPropertiesData.isLoading || hostPropertiesData.isPending) ? (
+                          <div className="h-8 bg-gray-200 rounded w-48 animate-pulse"></div>
+                        ) : hostProperties.length > 0 ? (
+                          hostProperties[0].Host.userId
+                        ) : (
+                          "Unknown Host"
+                        )}
                       </h1>
                       <div className="flex items-center space-x-2 mb-3">
                         <Badge
@@ -207,7 +184,10 @@ const HostProperties = () => {
                       </div>
                     </div>
 
-                    {hostProperties.length > 0 && hostProperties[0].rating && (
+                    {!hostPropertiesData.isLoading && 
+                     !hostPropertiesData.isPending && 
+                     hostProperties.length > 0 && 
+                     hostProperties[0].rating && (
                       <div className="flex items-center space-x-2 mt-4 sm:mt-0 bg-yellow-50 px-3 py-2 rounded-lg">
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
                         <span className="text-lg font-bold">
@@ -343,15 +323,45 @@ const HostProperties = () => {
 
             {/* Properties Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
-              {hostProperties.map((property, index) => (
-                <div
-                  key={property.id}
-                  className="animate-fadeInUp"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <PropertyCard property={property} className="h-full" />
+              
+              {/* Skeleton Cards for better UX while data is still loading */}
+              {(hostPropertiesData.isLoading || hostPropertiesData.isPending) &&
+                // Show skeleton cards
+                Array.from({ length: 6 }).map((_, index) => (
+                  <PropertySkeleton key={`skeleton-${index}`} />
+                ))}
+                {/* Error State */}
+              {hostPropertiesData.isError && (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <h1 className="text-2xl font-bold mb-4 text-red-600">
+                      Error loading properties
+                    </h1>
+                    <p className="text-gray-600 mb-4">
+                      {(hostPropertiesData.error as Error)?.message ||
+                        "Failed to load property details"}
+                    </p>
+                    <div className="space-x-4">
+                      <Button onClick={() => hostPropertiesData.refetch()}>
+                        Try Again
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              ))}
+              )}
+              {!hostPropertiesData.isLoading &&
+                !hostPropertiesData.isPending &&
+                !hostPropertiesData.isError &&
+                hostProperties &&
+                hostProperties.map((property, index) => (
+                  <div
+                    key={property.id}
+                    className="animate-fadeInUp"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <PropertyCard property={property} className="h-full" />
+                  </div>
+                ))}
             </div>
           </TabsContent>
 

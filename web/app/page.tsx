@@ -7,6 +7,7 @@ import { PropertyCard } from "components/properties/PropertyCard";
 import { Shield, Search, Star, Users, Loader2 } from "lucide-react";
 import { ExploreApiResponse } from "@/interfaces/property";
 import { useQuery } from "@tanstack/react-query";
+import PropertySkeleton from "@/components/properties/PropertySkeleton";
 
 const fetchFeaturedProperties = async (): Promise<ExploreApiResponse> => {
   const response = await fetch("/api/v1/pg/getFeaturedPg", {
@@ -176,63 +177,83 @@ const Index = () => {
             </Link>
           </div>
 
-          {(featuredPropertiesData.isLoading ||
-            featuredPropertiesData.isPending) && (
-            <div className="min-h-screen flex items-center justify-center bg-light-gray">
-              <div className="text-center">
-                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-                <h1 className="text-2xl font-bold mb-4">
-                  Loading properties...
-                </h1>
-                <p className="text-gray-600">
-                  Please wait while we fetch the properties.
-                </p>
+          {/* Loading State */}
+          {(featuredPropertiesData.isLoading || featuredPropertiesData.isPending) && (
+            <>
+              {/* Mobile Horizontal Scroll Skeleton */}
+              <div className="md:hidden">
+                <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <div key={`mobile-skeleton-${index}`} className="flex-shrink-0 w-80">
+                      <PropertySkeleton />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+
+              {/* Desktop Grid Skeleton */}
+              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <PropertySkeleton key={`desktop-skeleton-${index}`} />
+                ))}
+              </div>
+            </>
           )}
 
-          { (featuredPropertiesData.isError) && (
-            <div className="min-h-screen flex items-center justify-center bg-light-gray">
+          {/* Error State */}
+          {featuredPropertiesData.isError && (
+            <div className="flex items-center justify-center py-12">
               <div className="text-center">
-                <h1 className="text-2xl font-bold mb-4 text-red-600">Error loading property</h1>
+                <h1 className="text-2xl font-bold mb-4 text-red-600">
+                  Error loading properties
+                </h1>
                 <p className="text-gray-600 mb-4">
-                  {(featuredPropertiesData.error as Error)?.message || 'Failed to load property details'}
+                  {(featuredPropertiesData.error as Error)?.message ||
+                    "Failed to load property details"}
                 </p>
                 <div className="space-x-4">
                   <Button onClick={() => featuredPropertiesData.refetch()}>
                     Try Again
                   </Button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-          {/* Mobile Horizontal Scroll */}
-          <div className="md:hidden">
-            <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
-              {featuredProperties.map((property, index) => (
-                <div
-                  key={property.id}
-                  className="flex-shrink-0 w-80 animate-fadeInUp"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <PropertyCard property={property} />
                 </div>
-              ))}
-            </div>
-          </div>
-          {/* Desktop Grid */}
-          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredProperties.map((property, index) => (
-              <div
-                key={property.id}
-                className="animate-fadeInUp"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <PropertyCard property={property} />
               </div>
-            ))}
-          </div>
+            </div>
+          )}
+
+          {/* Success State */}
+          {!featuredPropertiesData.isLoading &&
+            !featuredPropertiesData.isPending &&
+            !featuredPropertiesData.isError && (
+            <>
+              {/* Mobile Horizontal Scroll */}
+              <div className="md:hidden">
+                <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+                  {featuredProperties.map((property, index) => (
+                    <div
+                      key={property.id}
+                      className="flex-shrink-0 w-80 animate-fadeInUp"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <PropertyCard property={property} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Desktop Grid */}
+              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredProperties.map((property, index) => (
+                  <div
+                    key={property.id}
+                    className="animate-fadeInUp"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <PropertyCard property={property} />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -255,64 +276,83 @@ const Index = () => {
             </Link>
           </div>
 
-          {(trendingPropertiesData.isLoading ||
-            trendingPropertiesData.isPending) && (
-            <div className="min-h-screen flex items-center justify-center bg-light-gray">
-              <div className="text-center">
-                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-                <h1 className="text-2xl font-bold mb-4">
-                  Loading properties...
-                </h1>
-                <p className="text-gray-600">
-                  Please wait while we fetch the properties.
-                </p>
+          {/* Loading State */}
+          {(trendingPropertiesData.isLoading || trendingPropertiesData.isPending) && (
+            <>
+              {/* Mobile Horizontal Scroll Skeleton */}
+              <div className="md:hidden">
+                <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <div key={`mobile-trending-skeleton-${index}`} className="flex-shrink-0 w-80">
+                      <PropertySkeleton />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+
+              {/* Desktop Grid Skeleton */}
+              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <PropertySkeleton key={`desktop-trending-skeleton-${index}`} />
+                ))}
+              </div>
+            </>
           )}
 
-          { (trendingPropertiesData.isError) && (
-            <div className="min-h-screen flex items-center justify-center bg-light-gray">
+          {/* Error State */}
+          {trendingPropertiesData.isError && (
+            <div className="flex items-center justify-center py-12">
               <div className="text-center">
-                <h1 className="text-2xl font-bold mb-4 text-red-600">Error loading property</h1>
+                <h1 className="text-2xl font-bold mb-4 text-red-600">
+                  Error loading properties
+                </h1>
                 <p className="text-gray-600 mb-4">
-                  {(trendingPropertiesData.error as Error)?.message || 'Failed to load property details'}
+                  {(trendingPropertiesData.error as Error)?.message ||
+                    "Failed to load property details"}
                 </p>
                 <div className="space-x-4">
                   <Button onClick={() => trendingPropertiesData.refetch()}>
                     Try Again
                   </Button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-          {/* Mobile Horizontal Scroll */}
-          <div className="md:hidden">
-            <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
-              {trendingProperties.map((property, index) => (
-                <div
-                  key={property.id}
-                  className="flex-shrink-0 w-80 animate-fadeInUp"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <PropertyCard property={property} />
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Desktop Grid */}
-          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {trendingProperties.map((property, index) => (
-              <div
-                key={property.id}
-                className="animate-fadeInUp"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <PropertyCard property={property} />
               </div>
-            ))}
-          </div>
+            </div>
+          )}
+
+          {/* Success State */}
+          {!trendingPropertiesData.isLoading &&
+            !trendingPropertiesData.isPending &&
+            !trendingPropertiesData.isError && (
+            <>
+              {/* Mobile Horizontal Scroll */}
+              <div className="md:hidden">
+                <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+                  {trendingProperties.map((property, index) => (
+                    <div
+                      key={property.id}
+                      className="flex-shrink-0 w-80 animate-fadeInUp"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <PropertyCard property={property} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Desktop Grid */}
+              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {trendingProperties.map((property, index) => (
+                  <div
+                    key={property.id}
+                    className="animate-fadeInUp"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <PropertyCard property={property} />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
 

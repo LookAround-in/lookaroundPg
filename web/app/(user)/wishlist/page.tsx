@@ -32,6 +32,7 @@ const Wishlist = () => {
     );
   }
 
+  //add skeleton loading state
   const wishlistProperties = []
 
   return (
