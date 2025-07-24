@@ -404,9 +404,13 @@ const PropertyDetails = () => {
             {/* Image Gallery */}
             <Card className="overflow-hidden">
               <div className="relative aspect-[16/10]">
-                <img
+                <Image
+                  placeholder="blur"
+                  blurDataURL="/blurImg.png"
+                  width={800}
+                  height={600}
                   src={
-                    property.images?.[currentImageIndex] || "/placeholder.svg"
+                    property.images?.[currentImageIndex] || '/placeholder.svg'
                   }
                   alt={property.title}
                   className="w-full h-full object-cover"
@@ -860,7 +864,7 @@ const PropertyDetails = () => {
                       >
                         <div className="flex items-start space-x-4">
                           <img
-                            src={review.avatar}
+                            src="/user.png"
                             alt={review.name}
                             className="w-10 h-10 rounded-full bg-gray-200"
                           />
@@ -907,7 +911,9 @@ const PropertyDetails = () => {
                   <div className="w-16 h-16 bg-gradient-cool rounded-full flex items-center justify-center mx-auto">
                     {property.hostId ? (
                       <Image
-                        src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800"
+                        placeholder="blur"
+                        blurDataURL='/blurImg.png'
+                        src='/boss.png'
                         alt={property.hostId}
                         width={32}
                         height={32}

@@ -46,7 +46,13 @@ const HostLogin = () => {
         <div className="text-center">
           <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
             <div className="w-8 h-8 rounded-full flex items-center justify-center">
-              <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-full h-full object-contain"/>
+              <Image
+                src="/logo.png"
+                width={32}
+                height={32}
+                alt="LookaroundPG"
+                className="w-full h-full object-contain"
+              />
             </div>
             <span className="font-bold text-xl text-primary">LookaroundPG</span>
           </Link>
