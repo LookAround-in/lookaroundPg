@@ -6,10 +6,10 @@ import { Input } from 'components/ui/input';
 import { Label } from 'components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
 import { User, Mail, Phone, Settings, Heart, LogOut, Trash } from 'lucide-react';
-import { useAuth } from 'contexts/AuthContext';
 import { useWishlist } from 'contexts/WishlistContext';
 import { useToast } from 'hooks/use-toast';
 import { authClient } from 'lib/auth-client';
+import Link from 'next/link';
 
 const Profile = () => {
   const {data: session, isPending} = authClient.useSession();
@@ -53,7 +53,24 @@ const Profile = () => {
 
   // Don't render if no user (will redirect)
   if (!session) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-light-gray">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Heart className="h-8 w-8 text-gray-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-600 mb-4">
+            Login Required
+          </h2>
+          <p className="text-gray-500 mb-6">
+            Please login to view your wishlist
+          </p>
+          <Link href="/login">
+            <Button>Login</Button>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const handleSave = () => {
@@ -248,7 +265,7 @@ const Profile = () => {
                 <Button
                   variant="outline"
                   className="w-full justify-start text-red-600 hover:text-red-700"
-                  onClick={handleLogout}
+                  onClick={() => handleLogout()}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Log Out
@@ -257,7 +274,7 @@ const Profile = () => {
                 <Button
                   variant="destructive"
                   className="w-full justify-start"
-                  onClick={handleDeleteAccount}
+                  onClick={() => handleDeleteAccount()}
                 >
                   <Trash className="h-4 w-4 mr-2" />
                   Delete Account

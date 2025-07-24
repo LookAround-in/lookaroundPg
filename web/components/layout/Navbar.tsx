@@ -35,8 +35,6 @@ export const Navbar = () => {
   };
 
   const handleLogout = async () => {
-    // logout();
-    // router.push('/');
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
@@ -54,7 +52,13 @@ export const Navbar = () => {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 rounded-full flex items-center justify-center">
-                 <Image src='/logo.png' width={32} height={32} alt='LookaroundPG' className="w-full h-full object-contain"/>
+                 <Image
+                   src="/logo.png"
+                   width={32}
+                   height={32}
+                   alt="LookaroundPG"
+                   className="w-full h-full object-contain"
+                 />
               </div>
               <span className="font-bold text-xl text-gradient-cool">LookaroundPG</span>
             </Link>

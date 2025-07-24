@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Heart, MapPin, User, Star } from 'lucide-react';
 import { Button } from 'components/ui/button';
@@ -41,15 +41,23 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+  //to show the lowest possible price to the consumer
+  const propertyPrice = useMemo(() => {
+    return property.sharingTypes.sort((a, b) => a.pricePerMonth - b.pricePerMonth)[0];
+  }, [property.sharingTypes]);
 
   return (
     <div className={`property-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden ${className}`}>
       {/* Image Section */}
       <div className="relative aspect-[4/3] overflow-hidden">
         <Link href={`/property/${property.id}`}>
-          <img
+          <Image
+            placeholder='blur'
+            blurDataURL='/blurImg.png'
             src={property.images[0] || '/placeholder.svg'}
             alt={property.title}
+            width={400}
+            height={300}
             className={`w-full h-full object-cover transition-all duration-300 hover:scale-105 ${
               imageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
@@ -99,7 +107,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
           {/* Price */}
           <div className="mb-3">
             <span className="text-2xl font-bold text-primary">
-              ₹{property.sharingTypes[0].pricePerMonth.toLocaleString()}
+              ₹{propertyPrice.pricePerMonth.toLocaleString()}
             </span>
             <span className="text-gray-600 text-sm ml-1">/month</span>
           </div>
@@ -132,14 +140,16 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
         {/* Host Info */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+            <div className="w-6 h-6 rounded-full flex items-center justify-center">
               {property.hostId ? (
-                <Image 
-                src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800' 
-                alt={property.hostId} 
-                width={32} 
-                height={32} 
-                className="w-full h-full rounded-full" 
+                <Image
+                  placeholder="blur"
+                  blurDataURL="/blurImg.png"
+                  src="/profile.png"
+                  alt={property.hostId}
+                  width={32}
+                  height={32}
+                  className="w-full h-full rounded-full"
                 />
               ) : (
                 <User className="h-3 w-3 text-white" />

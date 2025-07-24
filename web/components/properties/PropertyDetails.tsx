@@ -146,15 +146,15 @@ const PropertyDetails = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showVirtualTourModal, setShowVirtualTourModal] = useState(false);
   const { data: session, error, refetch } = authClient.useSession();
-  const queryClient = useQueryClient(); //Direct method to interact with cache
+  const queryClient = useQueryClient();
 
   const data = useQuery({
     queryKey: ["property", propertyId],
     queryFn: () => fetchPropertyById(propertyId),
-    enabled: !!propertyId, //only run when proprtyID is truthy
+    enabled: !!propertyId,
   });
 
-  const { mutate, isPending} = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: createPropertyRequest,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["pgRequests"] });
@@ -189,7 +189,6 @@ const PropertyDetails = () => {
     const response = data.data;
 
     if (response.success && response.data) {
-      // Handle both single object and array responses
       const propertyData = Array.isArray(response.data)
         ? response.data[0]
         : response.data;
@@ -235,7 +234,7 @@ const PropertyDetails = () => {
       (st) => st.type === targetType
     );
 
-    return sharingTypeData || property.sharingTypes[0]; // Fallback to first available
+    return sharingTypeData || property.sharingTypes[0];
   }, [property?.sharingTypes, selectedSharingType]);
 
   useEffect(() => {
@@ -251,18 +250,80 @@ const PropertyDetails = () => {
 
   if (data.isLoading || data.isPending) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-light-gray">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <h1 className="text-2xl font-bold mb-4">Loading property...</h1>
-          <p className="text-gray-600">
-            Please wait while we fetch the property details.
-          </p>
+      <div className="min-h-screen bg-light-gray transition-colors duration-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Loading skeleton */}
+          <div className="flex justify-between items-center mb-6">
+            <div className="h-10 bg-gray-200 rounded w-20 animate-pulse"></div>
+            <div className="h-10 bg-gray-200 rounded w-24 animate-pulse"></div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content Skeleton */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Image Gallery Skeleton */}
+              <div className="bg-white rounded-lg overflow-hidden">
+                <div className="aspect-[16/10] bg-gray-200 animate-pulse"></div>
+              </div>
+
+              {/* Property Info Skeleton */}
+              <div className="bg-white rounded-lg p-6">
+                <div className="space-y-4">
+                  <div className="h-8 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-100 rounded-lg">
+                    <div className="h-16 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-16 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                  <div className="flex gap-3">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div key={index} className="h-10 bg-gray-200 rounded w-24 animate-pulse"></div>
+                    ))}
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="h-10 bg-gray-200 rounded w-32 animate-pulse"></div>
+                    <div className="h-6 bg-gray-200 rounded w-20 animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional skeleton cards */}
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="bg-white rounded-lg p-6">
+                  <div className="h-6 bg-gray-200 rounded w-1/3 mb-4 animate-pulse"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Sidebar Skeleton */}
+            <div className="space-y-6">
+              {/* Host Profile Skeleton */}
+              <div className="bg-white rounded-lg p-6">
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto animate-pulse"></div>
+                  <div className="h-6 bg-gray-200 rounded w-1/2 mx-auto animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/3 mx-auto animate-pulse"></div>
+                  <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+              </div>
+
+              {/* Action Buttons Skeleton */}
+              <div className="space-y-3">
+                <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
-
+  // Show error state
   if (data.isError) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-gray">
@@ -284,7 +345,7 @@ const PropertyDetails = () => {
       </div>
     );
   }
-
+  // Show not found state when data is loaded but property is null
   if (!property) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-gray">
@@ -297,9 +358,7 @@ const PropertyDetails = () => {
       </div>
     );
   }
-
-  const isInWishlist = wishlist.includes(property.id);
-
+  const isInWishlist = wishlist.includes(property.id || "");
   const handleWishlistToggle = () => {
     if (!session) {
       toast({
@@ -310,7 +369,6 @@ const PropertyDetails = () => {
       router.push("/login");
       return;
     }
-
     if (isInWishlist) {
       removeFromWishlist(property.id);
       toast({
@@ -384,8 +442,6 @@ const PropertyDetails = () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
-
-          {/* Virtual Tour Button - Mobile Top Right */}
           {property.virtualTourUrl && (
             <Button
               onClick={() => setShowVirtualTourModal(true)}
@@ -404,11 +460,15 @@ const PropertyDetails = () => {
             {/* Image Gallery */}
             <Card className="overflow-hidden">
               <div className="relative aspect-[16/10]">
-                <img
+                <Image
+                  placeholder="blur"
+                  blurDataURL="/blurImg.png"
+                  width={800}
+                  height={600}
                   src={
-                    property.images?.[currentImageIndex] || "/placeholder.svg"
+                    property.images?.[currentImageIndex] || '/placeholder.svg'
                   }
-                  alt={property.title}
+                  alt={property.title || 'Property image'}
                   className="w-full h-full object-cover"
                 />
 
@@ -667,7 +727,7 @@ const PropertyDetails = () => {
                     </div>
                   </div>
 
-                  {/* Pricing Details with Refundable Deposit - Add safety check */}
+                  {/* Pricing Details with Refundable Deposit */}
                   {getCurrentSharingTypeData && (
                     <div className="mt-6 p-4 bg-gray-200 rounded-lg">
                       <h3 className="text-lg font-semibold mb-3">
@@ -740,7 +800,7 @@ const PropertyDetails = () => {
               </CardContent>
             </Card>
 
-            {/* Furniture List - Add safety check */}
+            {/* Furniture List */}
             {property.furnitures && property.furnitures.length > 0 && (
               <Card>
                 <CardContent className="p-6">
@@ -793,7 +853,7 @@ const PropertyDetails = () => {
               </CardContent>
             </Card>
 
-            {/* Amenities - Add safety check */}
+            {/* Amenities*/}
             {property.amenities && property.amenities.length > 0 && (
               <Card className="">
                 <CardContent className="p-6">
@@ -815,7 +875,7 @@ const PropertyDetails = () => {
               </Card>
             )}
 
-            {/* House Rules - Add safety check */}
+            {/* House Rules */}
             {property.pgRules && (
               <Card className="">
                 <CardContent className="p-6">
@@ -833,7 +893,7 @@ const PropertyDetails = () => {
               </Card>
             )}
 
-            {/* Reviews Section - Add safety check */}
+            {/* Reviews Section */}
             {property.rating && (
               <Card className="">
                 <CardContent className="p-6">
@@ -860,7 +920,7 @@ const PropertyDetails = () => {
                       >
                         <div className="flex items-start space-x-4">
                           <img
-                            src={review.avatar}
+                            src="/user.png"
                             alt={review.name}
                             className="w-10 h-10 rounded-full bg-gray-200"
                           />
@@ -907,7 +967,9 @@ const PropertyDetails = () => {
                   <div className="w-16 h-16 bg-gradient-cool rounded-full flex items-center justify-center mx-auto">
                     {property.hostId ? (
                       <Image
-                        src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800"
+                        placeholder="blur"
+                        blurDataURL='/blurImg.png'
+                        src='/boss.png'
                         alt={property.hostId}
                         width={32}
                         height={32}
