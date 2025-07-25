@@ -201,6 +201,7 @@ export class PgServices {
                 select: {
                   name: true,
                   email: true,
+                  image: true
                 },
               },
             },
@@ -306,6 +307,7 @@ export class PgServices {
                 select: {
                   name: true,
                   email: true,
+                  image: true
                 },
               },
             },
@@ -385,6 +387,7 @@ export class PgServices {
                 select: {
                   name: true,
                   email: true,
+                  image: true
                 },
               },
             },
@@ -424,7 +427,19 @@ export class PgServices {
       const pg = await this.prismaClient.pgData.findUnique({
         where: { id: pgId },
         include: {
-          Host: true,
+          Host: {
+            select: {
+              id: true,
+              contactNumber: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                  image: true
+                },
+              },
+            },
+          },
           furnitures: true,
           amenities: true,
           sharingTypes: true,
