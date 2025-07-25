@@ -164,16 +164,65 @@ export class PgServices {
 
   async getFeaturedPgs() {
     try {
+      // Featured PGs should be high-rated properties with good reviews
+      // Logic: Rating >= 4.0, has at least some reviews, and available rooms
       const featuredPgs = await this.prismaClient.pgData.findMany({
-        take: 3,
-        orderBy: {
-          rating: "desc",
+        where: {
+          rating: {
+            gte: 4.0, // Minimum 4.0 rating
+          },
+          sharingTypes: {
+            some: {
+              availability: {
+                gt: 0, // Has available rooms
+              },
+            },
+          },
+          // Properties with images are more likely to be featured
+          images: {
+            isEmpty: false,
+          },
         },
+        take: 6, // Increased to show more featured properties
+        orderBy: [
+          {
+            rating: "desc", // Primary: Highest rated first
+          },
+          {
+            createdAt: "desc", // Tertiary: Most recent
+          },
+        ],
         include: {
-          Host: true,
+          Host: {
+            select: {
+              id: true,
+              contactNumber: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
           furnitures: true,
           amenities: true,
-          sharingTypes: true,
+          sharingTypes: {
+            where: {
+              availability: {
+                gt: 0, // Only show available sharing types
+              },
+            },
+            orderBy: {
+              pricePerMonth: "asc", // Show cheapest option first
+            },
+          },
+          _count: {
+            select: {
+              PgRequest: true, // Count of requests for popularity
+              wishList: true, // Count of wishlists for popularity
+            },
+          },
         },
       });
       return featuredPgs;
@@ -185,16 +234,100 @@ export class PgServices {
 
   async getTrendingPgs() {
     try {
+      // Trending PGs should be recently active with good engagement
+      // Logic: Recent properties, high wishlist count, recent requests
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
       const trendingPgs = await this.prismaClient.pgData.findMany({
-        take: 3,
-        orderBy: {
-          createdAt: "desc",
+        where: {
+          OR: [
+            {
+              // Recently created properties
+              createdAt: {
+                gte: oneWeekAgo,
+              },
+            },
+            {
+              // Properties with recent activity (requests)
+              PgRequest: {
+                some: {
+                  createdAt: {
+                    gte: oneWeekAgo,
+                  },
+                },
+              },
+            },
+            {
+              // Properties recently added to wishlists
+              wishList: {
+                some: {
+                  createdAt: {
+                    gte: oneWeekAgo,
+                  },
+                },
+              },
+            },
+          ],
+          // Must have available rooms
+          sharingTypes: {
+            some: {
+              availability: {
+                gt: 0,
+              },
+            },
+          },
         },
+        take: 6,
+        orderBy: [
+          {
+            wishList: {
+              _count: "desc", // Most wishlisted
+            },
+          },
+          {
+            PgRequest: {
+              _count: "desc", // Most requested
+            },
+          },
+          {
+            createdAt: "desc", // Most recent
+          },
+          {
+            rating: "desc", // Good rating as tiebreaker
+          },
+        ],
         include: {
-          Host: true,
+          Host: {
+            select: {
+              id: true,
+              contactNumber: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
           furnitures: true,
           amenities: true,
-          sharingTypes: true,
+          sharingTypes: {
+            where: {
+              availability: {
+                gt: 0,
+              },
+            },
+            orderBy: {
+              pricePerMonth: "asc",
+            },
+          },
+          _count: {
+            select: {
+              PgRequest: true,
+              wishList: true,
+            },
+          },
         },
       });
       return trendingPgs;
@@ -207,17 +340,78 @@ export class PgServices {
   async getExplorePgs() {
     try {
       const explorePgs = await this.prismaClient.pgData.findMany({
-        take: 10,
-        orderBy: {
-          rating: "desc",
+        where: {
+          // Must have available rooms
+          sharingTypes: {
+            some: {
+              availability: {
+                gt: 0,
+              },
+            },
+          },
+          // Must have basic information
+          description: {
+            not: null,
+          },
+          address: {
+            not: "",
+          },
         },
+        take: 12, // Show more options for exploration
+        orderBy: [
+          {
+            rating: "desc", // Quality first
+          },
+          {
+            sharingTypes: {
+              _count: "desc", // Variety of options
+            },
+          },
+          {
+            amenities: {
+              _count: "desc", // More amenities
+            },
+          },
+          {
+            createdAt: "desc", // Freshness
+          },
+        ],
         include: {
-          Host: true,
+          Host: {
+            select: {
+              id: true,
+              contactNumber: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
           furnitures: true,
           amenities: true,
-          sharingTypes: true,
+          sharingTypes: {
+            where: {
+              availability: {
+                gt: 0,
+              },
+            },
+            orderBy: {
+              pricePerMonth: "asc",
+            },
+          },
+          _count: {
+            select: {
+              PgRequest: true,
+              wishList: true,
+              sharingTypes: true,
+              amenities: true,
+            },
+          },
         },
       });
+
       return explorePgs;
     } catch (error) {
       console.error("Error fetching explore Pgs:", error);
