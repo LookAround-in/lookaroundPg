@@ -55,10 +55,12 @@ const HostProperties = () => {
 
   const hostProperties = hostPropertiesData.data?.data || [];
 
-  if (!hostPropertiesData.isLoading && 
-      !hostPropertiesData.isPending && 
-      !hostPropertiesData.isError && 
-      hostProperties.length === 0) {
+  if (
+    !hostPropertiesData.isLoading &&
+    !hostPropertiesData.isPending &&
+    !hostPropertiesData.isError &&
+    hostProperties.length === 0
+  ) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-white">
         <Card className="text-center p-8">
@@ -117,12 +119,12 @@ const HostProperties = () => {
                   <div className="w-24 h-24 bg-gradient-cool rounded-full flex items-center justify-center flex-shrink-0 p-1">
                     <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
                       {hostProperties.length > 0 &&
-                      hostProperties[0].Host.userId ? (
+                      hostProperties[0].Host.user ? (
                         <Image
                           placeholder="blur"
-                          blurDataURL='/blurImg.png'
-                          src='/boss.png'
-                          alt={hostProperties[0].Host.userId}
+                          blurDataURL="/blurImg.png"
+                          src={`https://ui-avatars.com/api/?name=${hostProperties[0].Host.user.name}&background=random&color=fff`}
+                          alt={hostProperties[0].Host.user.name}
                           width={32}
                           height={32}
                           className="w-20 h-20 rounded-full object-cover"
@@ -143,10 +145,11 @@ const HostProperties = () => {
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4">
                     <div>
                       <h1 className="text-2xl lg:text-3xl font-bold text-charcoal mb-2 tracking-tight">
-                        {(hostPropertiesData.isLoading || hostPropertiesData.isPending) ? (
+                        {hostPropertiesData.isLoading ||
+                        hostPropertiesData.isPending ? (
                           <div className="h-8 bg-gray-200 rounded w-48 animate-pulse"></div>
                         ) : hostProperties.length > 0 ? (
-                          hostProperties[0].Host.userId
+                          hostProperties[0].Host.user.name
                         ) : (
                           "Unknown Host"
                         )}
@@ -184,36 +187,49 @@ const HostProperties = () => {
                       </div>
                     </div>
 
-                    {!hostPropertiesData.isLoading && 
-                     !hostPropertiesData.isPending && 
-                     hostProperties.length > 0 && 
-                     hostProperties[0].rating && (
-                      <div className="flex items-center space-x-2 mt-4 sm:mt-0 bg-yellow-50 px-3 py-2 rounded-lg">
-                        <Star className="h-5 w-5 text-yellow-400 fill-current" />
-                        <span className="text-lg font-bold">
-                          {hostStats.averageRating}
-                        </span>
-                        <span className="text-gray-600 text-sm">
-                          ({hostStats.totalReviews} reviews)
-                        </span>
-                      </div>
-                    )}
+                    {!hostPropertiesData.isLoading &&
+                      !hostPropertiesData.isPending &&
+                      hostProperties.length > 0 &&
+                      hostProperties[0].rating && (
+                        <div className="flex items-center space-x-2 mt-4 sm:mt-0 bg-yellow-50 px-3 py-2 rounded-lg">
+                          <Star className="h-5 w-5 text-yellow-400 fill-current" />
+                          <span className="text-lg font-bold">
+                            {hostStats.averageRating}
+                          </span>
+                          <span className="text-gray-600 text-sm">
+                            ({hostStats.totalReviews} reviews)
+                          </span>
+                        </div>
+                      )}
                   </div>
 
                   {/* Contact Buttons */}
                   <div className="flex flex-wrap gap-3">
-                    <Button className="bg-gradient-cool text-white hover:opacity-90 font-medium">
-                      <Phone className="h-4 w-4 mr-2" />
-                      Call Host
-                    </Button>
-                    <Button variant="outline" className="font-medium">
-                      <Mail className="h-4 w-4 mr-2" />
-                      Send Message
-                    </Button>
-                    <Button className="bg-green-500 text-white hover:bg-green-600 border-green-500 font-medium">
-                      <MessageSquareDot className="h-4 w-4 mr-2" />
-                      WhatsApp
-                    </Button>
+                    <a href={`tel:${hostProperties[0]?.Host.contactNumber}`}>
+                      <Button className="bg-gradient-cool text-white hover:opacity-90 font-medium">
+                        <Phone className="h-4 w-4 mr-2" />
+                        Call Host
+                      </Button>
+                    </a>
+                    <a href={`mailto:${hostProperties[0]?.Host?.user?.email}`}>
+                      <Button variant="outline" className="font-medium">
+                        <Mail className="h-4 w-4 mr-2" />
+                        Send Message
+                      </Button>
+                    </a>
+                    <a
+                      href={`https://wa.me/${hostProperties[0]?.Host?.contactNumber.replace(
+                        /\D/g,
+                        ""
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button className="bg-green-500 text-white hover:bg-green-600 border-green-500 font-medium">
+                        <MessageSquareDot className="h-4 w-4 mr-2" />
+                        WhatsApp
+                      </Button>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -305,7 +321,7 @@ const HostProperties = () => {
                 <h2 className="text-xl lg:text-2xl font-bold text-charcoal mb-2 tracking-tight">
                   All Properties by{" "}
                   {hostProperties.length > 0
-                    ? hostProperties[0].Host.userId
+                    ? hostProperties[0].Host.user.name
                     : "Loading..."}
                 </h2>
                 <p className="text-gray-600 font-medium">
@@ -323,14 +339,13 @@ const HostProperties = () => {
 
             {/* Properties Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
-              
               {/* Skeleton Cards for better UX while data is still loading */}
               {(hostPropertiesData.isLoading || hostPropertiesData.isPending) &&
                 // Show skeleton cards
                 Array.from({ length: 6 }).map((_, index) => (
                   <PropertySkeleton key={`skeleton-${index}`} />
                 ))}
-                {/* Error State */}
+              {/* Error State */}
               {hostPropertiesData.isError && (
                 <div className="flex items-center justify-center py-12">
                   <div className="text-center">
@@ -388,14 +403,14 @@ const HostProperties = () => {
                 <h3 className="text-xl font-bold text-charcoal mb-4">
                   About{" "}
                   {hostProperties.length > 0
-                    ? hostProperties[0].Host.userId
+                    ? hostProperties[0].Host.user.name
                     : "Loading..."}
                 </h3>
                 <div className="prose max-w-none">
                   <p className="text-gray-600 leading-relaxed mb-4">
                     Welcome! I'm{" "}
                     {hostProperties.length > 0
-                      ? hostProperties[0].Host.userId
+                      ? hostProperties[0].Host.user.name
                       : "Loading..."}
                     , a dedicated property host with over{" "}
                     {hostStats.yearsHosting} years of experience in providing

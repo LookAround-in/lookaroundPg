@@ -6,7 +6,6 @@ import { Input } from 'components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from 'components/ui/dropdown-menu';
 import { Badge } from 'components/ui/badge';
-import { useAuth } from 'contexts/AuthContext';
 import { useWishlist } from 'contexts/WishlistContext';
 import { Search, Heart, User, LogOut, Menu, X } from 'lucide-react';
 import Image from 'next/image';
@@ -15,7 +14,6 @@ import { authClient } from 'lib/auth-client';
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { user, logout } = useAuth();
   const { wishlist } = useWishlist();
   const router = useRouter();
   const {
@@ -24,6 +22,7 @@ export const Navbar = () => {
     error,
     refetch
   } = authClient.useSession()
+  const user = session?.user;
 
 
   const handleSearch = (e: React.FormEvent) => {

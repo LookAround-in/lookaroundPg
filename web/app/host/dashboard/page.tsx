@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import { Button } from "components/ui/button";
 import {
@@ -23,11 +23,13 @@ import {
   Plus,
   Minus,
   Clock,
+  ExternalLink,
 } from "lucide-react";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { PropertyRequestsApiResponse } from "@/interfaces/property";
 import { HostRequest } from "@/interfaces/property";
 import { error } from "console";
+import { useRouter } from "next/navigation";
 
 interface UserQuery {
   id: string;
@@ -57,43 +59,46 @@ interface PropertyAvailability {
   };
 }
 
-const getPropertyQueries = async (hostId: string): Promise<PropertyRequestsApiResponse> => {
-  if(!hostId){
+const getPropertyQueries = async (
+  hostId: string
+): Promise<PropertyRequestsApiResponse> => {
+  if (!hostId) {
     throw new Error("Host ID is required to fetch property queries.");
   }
   const response = await fetch(`/api/v1/pgrequest/${hostId}`, {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
   if (!response.ok) {
     throw new Error("Failed to fetch property queries");
   }
   return response.json();
-}
+};
 const handlePropertyQueries = async (endpoint: string, queryId: string) => {
-  if(!endpoint){
+  if (!endpoint) {
     throw new Error("Endpoint is required to handle property queries.");
   }
-  if (!queryId){
+  if (!queryId) {
     throw new Error("Query ID is required to handle property queries.");
   }
   const response = await fetch(`/api/v1/pgrequest/${endpoint}/${queryId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to ${endpoint} query: ${errorText}`);
-      }
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to ${endpoint} query: ${errorText}`);
+  }
   return response.json();
-}
+};
 
 const HostDashboard = () => {
+  const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -131,44 +136,55 @@ const HostDashboard = () => {
   ]);
 
   // TODO: Replace with actual user ID from context or auth
-  const userId = "hostprofile-003";
+  const userId = "2b08f2f3-940c-4b5e-b3da-aa8f25f85cc9";
 
-  const {data: queriesData, isLoading: loading} = useQuery({
+  const { data: queriesData, isLoading: loading } = useQuery({
     queryKey: ["propertyQueries", userId],
     queryFn: () => getPropertyQueries(userId),
     enabled: !!userId,
   });
   const queries: HostRequest[] = queriesData?.data || [];
 
-  const {mutate, isPending} = useMutation({
-      mutationFn: ({ endpoint, queryId }: { endpoint: string; queryId: string }) => handlePropertyQueries(endpoint, queryId),
-      onSuccess: async (data, variables)=>{
-        const action = variables.endpoint === "accept" ? "APPROVE" : "REJECT";
-        toast({
-          title: `Query ${action === "APPROVE" ? "Approved" : "Rejected"}`,
-          description: `User query has been ${action === "APPROVE" ? "approved" : "rejected"} successfully.`,
-        });
-        await queryClient.invalidateQueries({ 
-          queryKey: ["propertyQueries", userId],
-          exact: true, 
-        });
-      },
-      onError: (error: Error)=>{
-        console.error(`Error query:`, error);
-        toast({
-          title: "Error",
-          description: `Failed to process the query. Please try again.`,
-          variant: "destructive",
-        });
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries({ 
-          queryKey: ["propertyQueries", userId],
-        });
-      }
-    })
+  const { mutate, isPending } = useMutation({
+    mutationFn: ({
+      endpoint,
+      queryId,
+    }: {
+      endpoint: string;
+      queryId: string;
+    }) => handlePropertyQueries(endpoint, queryId),
+    onSuccess: async (data, variables) => {
+      const action = variables.endpoint === "accept" ? "APPROVE" : "REJECT";
+      toast({
+        title: `Query ${action === "APPROVE" ? "Approved" : "Rejected"}`,
+        description: `User query has been ${
+          action === "APPROVE" ? "approved" : "rejected"
+        } successfully.`,
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["propertyQueries", userId],
+        exact: true,
+      });
+    },
+    onError: (error: Error) => {
+      console.error(`Error query:`, error);
+      toast({
+        title: "Error",
+        description: `Failed to process the query. Please try again.`,
+        variant: "destructive",
+      });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["propertyQueries", userId],
+      });
+    },
+  });
 
-  const handleQueryAction = async (queryId: string, action: "APPROVE" | "REJECT") => {
+  const handleQueryAction = async (
+    queryId: string,
+    action: "APPROVE" | "REJECT"
+  ) => {
     const endpoint = action === "APPROVE" ? "accept" : "reject";
     mutate({ endpoint, queryId });
   };
@@ -240,9 +256,7 @@ const HostDashboard = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-charcoal">
-              Host Dashboard
-            </h1>
+            <h1 className="text-3xl font-bold text-charcoal">Host Dashboard</h1>
             <p className="text-gray-600 mt-2">
               Welcome back! Manage your properties and guest queries.
             </p>
@@ -319,28 +333,13 @@ const HostDashboard = () => {
 
         <Tabs defaultValue="queries" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger
-              value="queries"
-              
-            >
-              User Queries
-            </TabsTrigger>
-            <TabsTrigger
-              value="availability"
-              
-            >
-              Manage Availability
-            </TabsTrigger>
-            <TabsTrigger
-              value="analytics"
-              
-            >
-              Analytics
-            </TabsTrigger>
+            <TabsTrigger value="queries">User Queries</TabsTrigger>
+            <TabsTrigger value="availability">Availability</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
 
           <TabsContent value="queries" className="space-y-6">
-            <Card >
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-gradient-cool rounded-lg flex items-center justify-center">
@@ -348,7 +347,7 @@ const HostDashboard = () => {
                   </div>
                   User Queries & Requests
                 </CardTitle>
-                <CardDescription >
+                <CardDescription>
                   Manage incoming queries from potential guests
                 </CardDescription>
               </CardHeader>
@@ -364,82 +363,98 @@ const HostDashboard = () => {
                       No queries found...
                     </div>
                   )}
-                  {!loading && queries?.map((query) => (
-                    <div
-                      key={query.id}
-                      className="border rounded-lg p-4 space-y-3"
-                    >
-                      <div className="flex justify-between items-start">
+                  {!loading &&
+                    queries?.map((query) => (
+                      <div
+                        key={query.id}
+                        className="border rounded-lg p-4 space-y-3"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-semibold text-charcoal">
+                              {query.user.name}
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                              {query.user.email}
+                            </p>
+                          </div>
+                            <Badge
+                              variant={
+                                query.status === "PENDING"
+                                  ? "default"
+                                  : query.status === "APPROVED"
+                                  ? "default"
+                                  : "destructive"
+                              }
+                            >
+                              {query.status}
+                          </Badge>
+                        </div>
+
                         <div>
-                          <h4 className="font-semibold text-charcoal">
-                            {query.user.name}
-                          </h4>
+                          <p className="text-sm font-medium text-gray-700">
+                            {query.pgData.title}
+                          </p>
                           <p className="text-sm text-gray-600">
-                            {query.user.email}
+                            Interested in:{" "}
+                            <span className="font-medium capitalize">
+                              {query.pgData.propertyType} sharing
+                            </span>
                           </p>
                         </div>
-                        <Badge
-                          variant={
-                            query.status === "PENDING"
-                              ? "default"
-                              : query.status === "APPROVED"
-                              ? "default"
-                              : "destructive"
-                          }
-                        >
-                          {query.status}
-                        </Badge>
-                      </div>
 
-                      <div>
-                        <p className="text-sm font-medium text-gray-700">
-                          {query.pgData.title}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Interested in:{" "}
-                          <span className="font-medium capitalize">
-                            {query.pgData.propertyType} sharing
-                          </span>
-                        </p>
-                      </div>
-
-                      {/* <p className="text-sm bg-gray-50 p-3 rounded">
+                        {/* <p className="text-sm bg-gray-50 p-3 rounded">
                         {query.}
                       </p> */}
 
-                      {query.status === "PENDING" && (
-                        <div className="flex gap-2">
+                        {query.status === "PENDING" && (
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() =>
+                                handleQueryAction(query.id, "APPROVE")
+                              }
+                              className="bg-green-500 hover:bg-green-600 rounded-full"
+                            >
+                              <Check className="w-4 h-4 mr-1" />
+                              {isPending ? "Processing..." : "Approve"}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() =>
+                                handleQueryAction(query.id, "REJECT")
+                              }
+                              className="rounded-full"
+                            >
+                              <X className="w-4 h-4 mr-1" />
+                              {isPending ? "Processing..." : "Reject"}
+                            </Button>
+                            
+                          </div>
+                        )}
+                        <div className="flex flex-col sm:flex-row gap-2">
                           <Button
-                            size="sm"
-                            onClick={() =>
-                              handleQueryAction(query.id, "APPROVE")
-                            }
-                            className="bg-green-500 hover:bg-green-600"
-                          >
-                            <Check className="w-4 h-4 mr-1" />
-                            {isPending ? "Processing...": "Approve"}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() =>
-                              handleQueryAction(query.id, "REJECT")
-                            }
-                          >
-                            <X className="w-4 h-4 mr-1" />
-                            {isPending ? "Processing...": "Reject"}
-                          </Button>
+                              size="sm"
+                              onClick={() => {
+                                router.push(`/property/${query.pgId}`);
+                              }}
+                              className="bg-gradient-cool hover:bg-primary rounded-full"
+                            >
+                              {"Property"}
+                              <ExternalLink className="w-4 h-4 mr-1" />
+                            </Button>
                         </div>
-                      )}
-                    </div>
-                  ))}
+                        
+                      </div>
+                    ))}
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="availability" className="space-y-6">
-            <Card >
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-gradient-cool rounded-lg flex items-center justify-center">
@@ -447,17 +462,14 @@ const HostDashboard = () => {
                   </div>
                   Property Availability Management
                 </CardTitle>
-                <CardDescription >
+                <CardDescription>
                   Update room availability and capacity for your properties
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
                   {properties.map((property) => (
-                    <div
-                      key={property.id}
-                      className="border rounded-lg p-4"
-                    >
+                    <div key={property.id} className="border rounded-lg p-4">
                       <h4 className="font-semibold text-charcoal mb-4">
                         {property.title}
                       </h4>
@@ -492,7 +504,6 @@ const HostDashboard = () => {
                                 handleCapacityChange(property.id, "single", -1)
                               }
                               disabled={property.capacity.single === 0}
-                              
                             >
                               <Minus className="h-4 w-4" />
                             </Button>
@@ -505,7 +516,6 @@ const HostDashboard = () => {
                               onClick={() =>
                                 handleCapacityChange(property.id, "single", 1)
                               }
-                              
                             >
                               <Plus className="h-4 w-4" />
                             </Button>
@@ -545,7 +555,6 @@ const HostDashboard = () => {
                                 handleCapacityChange(property.id, "double", -1)
                               }
                               disabled={property.capacity.double === 0}
-                              
                             >
                               <Minus className="h-4 w-4" />
                             </Button>
@@ -558,7 +567,6 @@ const HostDashboard = () => {
                               onClick={() =>
                                 handleCapacityChange(property.id, "double", 1)
                               }
-                              
                             >
                               <Plus className="h-4 w-4" />
                             </Button>
@@ -598,7 +606,6 @@ const HostDashboard = () => {
                                 handleCapacityChange(property.id, "triple", -1)
                               }
                               disabled={property.capacity.triple === 0}
-                              
                             >
                               <Minus className="h-4 w-4" />
                             </Button>
@@ -611,7 +618,6 @@ const HostDashboard = () => {
                               onClick={() =>
                                 handleCapacityChange(property.id, "triple", 1)
                               }
-                              
                             >
                               <Plus className="h-4 w-4" />
                             </Button>
@@ -630,7 +636,7 @@ const HostDashboard = () => {
 
           <TabsContent value="analytics" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card >
+              <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <div className="w-8 h-8 bg-gradient-cool rounded-lg flex items-center justify-center">
@@ -638,7 +644,7 @@ const HostDashboard = () => {
                     </div>
                     Query Analytics
                   </CardTitle>
-                  <CardDescription >
+                  <CardDescription>
                     Track your property inquiry performance
                   </CardDescription>
                 </CardHeader>
@@ -687,9 +693,7 @@ const HostDashboard = () => {
                       <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
                         <X className="w-4 h-4 text-red-600" />
                       </div>
-                      <div className="text-2xl font-bold text-red-600">
-                        7
-                      </div>
+                      <div className="text-2xl font-bold text-red-600">7</div>
                       <div className="text-xs font-medium text-red-700">
                         Rejected
                       </div>
@@ -698,7 +702,7 @@ const HostDashboard = () => {
                 </CardContent>
               </Card>
 
-              <Card >
+              <Card>
                 <CardHeader>
                   <CardTitle className=" flex items-center gap-2">
                     <div className="w-8 h-8 bg-gradient-cool rounded-lg flex items-center justify-center">
@@ -711,10 +715,8 @@ const HostDashboard = () => {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <div className="flex justify-between text-lg">
-                        <span >
-                          Single Sharing
-                        </span>
-                        <span >45%</span>
+                        <span>Single Sharing</span>
+                        <span>45%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
@@ -725,10 +727,8 @@ const HostDashboard = () => {
                     </div>
                     <div className="space-y-2">
                       <div className="flex justify-between text-lg">
-                        <span >
-                          Double Sharing
-                        </span>
-                        <span >35%</span>
+                        <span>Double Sharing</span>
+                        <span>35%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
@@ -739,10 +739,8 @@ const HostDashboard = () => {
                     </div>
                     <div className="space-y-2">
                       <div className="flex justify-between text-lg">
-                        <span >
-                          Triple Sharing
-                        </span>
-                        <span >20%</span>
+                        <span>Triple Sharing</span>
+                        <span>20%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div

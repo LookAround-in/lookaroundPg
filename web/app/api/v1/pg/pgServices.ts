@@ -183,7 +183,7 @@ export class PgServices {
             isEmpty: false,
           },
         },
-        take: 6, // Increased to show more featured properties
+        take: 3, // Increased to show more featured properties
         orderBy: [
           {
             rating: "desc", // Primary: Highest rated first
@@ -278,7 +278,7 @@ export class PgServices {
             },
           },
         },
-        take: 6,
+        take: 3,
         orderBy: [
           {
             wishList: {
@@ -424,10 +424,38 @@ export class PgServices {
       const pg = await this.prismaClient.pgData.findUnique({
         where: { id: pgId },
         include: {
-          Host: true,
+          Host: {
+            select: {
+              id: true,
+              contactNumber: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
           furnitures: true,
           amenities: true,
-          sharingTypes: true,
+          sharingTypes: {
+            where: {
+              availability: {
+                gt: 0,
+              },
+            },
+            orderBy: {
+              pricePerMonth: "asc",
+            },
+          },
+          _count: {
+            select: {
+              PgRequest: true,
+              wishList: true,
+              sharingTypes: true,
+              amenities: true,
+            },
+          },
         },
       });
 
@@ -447,10 +475,30 @@ export class PgServices {
       const pgs = await this.prismaClient.pgData.findMany({
         where: { hostId },
         include: {
-          Host: true,
+          Host: {
+            select: {
+              id: true,
+              contactNumber: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
           furnitures: true,
           amenities: true,
-          sharingTypes: true,
+          sharingTypes: {
+            where: {
+              availability: {
+                gt: 0,
+              },
+            },
+            orderBy: {
+              pricePerMonth: "asc",
+            },
+          },
         },
       });
 
