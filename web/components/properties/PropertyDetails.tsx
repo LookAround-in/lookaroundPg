@@ -484,15 +484,13 @@ const PropertyDetails = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={`absolute top-4 right-4 p-2 h-10 w-10 bg-white/80 hover:bg-white wishlist-heart ${
-                    isInWishlist ? "active" : ""
-                  }`}
+                  className={`absolute top-4 right-4 p-2 h-10 w-10 bg-white/80 hover:bg-white wishlist-heart ${isInWishlist ? "active" : ""
+                    }`}
                   onClick={handleWishlistToggle}
                 >
                   <Heart
-                    className={`h-5 w-5 ${
-                      isInWishlist ? "fill-current text-red-500" : ""
-                    }`}
+                    className={`h-5 w-5 ${isInWishlist ? "fill-current text-red-500" : ""
+                      }`}
                   />
                 </Button>
 
@@ -533,11 +531,10 @@ const PropertyDetails = () => {
                       {property.images.map((_, index) => (
                         <button
                           key={index}
-                          className={`w-2 h-2 rounded-full ${
-                            index === currentImageIndex
+                          className={`w-2 h-2 rounded-full ${index === currentImageIndex
                               ? "bg-white"
                               : "bg-white/50"
-                          }`}
+                            }`}
                           onClick={() => setCurrentImageIndex(index)}
                         />
                       ))}
@@ -620,10 +617,10 @@ const PropertyDetails = () => {
                             {type === "single"
                               ? "Single"
                               : type === "double"
-                              ? "Double"
-                              : type === "triple"
-                              ? "Triple"
-                              : "Quad"}{" "}
+                                ? "Double"
+                                : type === "triple"
+                                  ? "Triple"
+                                  : "Quad"}{" "}
                             Sharing
                           </Button>
                         ))}
@@ -651,8 +648,8 @@ const PropertyDetails = () => {
                           {property.sharingTypes[0].availability > 5
                             ? "Available"
                             : property.sharingTypes[0].availability > 0
-                            ? "Limited Availability"
-                            : "Full"}
+                              ? "Limited Availability"
+                              : "Full"}
                         </Badge>
                       )}
                   </div>
@@ -666,8 +663,8 @@ const PropertyDetails = () => {
                       {property.propertyType === "COLIVE"
                         ? "Co-living"
                         : property.propertyType === "MEN"
-                        ? "Men Only"
-                        : "Women Only"}
+                          ? "Men Only"
+                          : "Women Only"}
                     </Badge>
                     {property.virtualTourUrl && (
                       <Badge variant="outline" className="">
@@ -935,11 +932,10 @@ const PropertyDetails = () => {
                               {[...Array(5)].map((_, i) => (
                                 <Star
                                   key={i}
-                                  className={`h-4 w-4 ${
-                                    i < review.rating
+                                  className={`h-4 w-4 ${i < review.rating
                                       ? "text-yellow-400 fill-current"
                                       : "text-gray-300"
-                                  }`}
+                                    }`}
                                 />
                               ))}
                             </div>
@@ -965,11 +961,9 @@ const PropertyDetails = () => {
               <CardContent className="p-6">
                 <div className="text-center space-y-4">
                   <div className="w-16 h-16 bg-gradient-cool rounded-full flex items-center justify-center mx-auto">
-                    {property.hostId ? (
-                      <Image
-                        placeholder="blur"
-                        blurDataURL='/blurImg.png'
-                        src='/boss.png'
+                    {property.Host.user.image ? (
+                      <img
+                        src={property.Host.user.image}
                         alt={property.hostId}
                         width={32}
                         height={32}
@@ -981,7 +975,7 @@ const PropertyDetails = () => {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-lg">{property.hostId}</h3>
+                    <h3 className="font-semibold text-lg">{property.Host.user.name}</h3>
                     <p className="text-gray-600">Property Host</p>
                   </div>
 
@@ -1071,9 +1065,8 @@ const PropertyDetails = () => {
                 className="w-full"
               >
                 <Heart
-                  className={`h-4 w-4 mr-2 ${
-                    isInWishlist ? "fill-current text-red-500" : ""
-                  }`}
+                  className={`h-4 w-4 mr-2 ${isInWishlist ? "fill-current text-red-500" : ""
+                    }`}
                 />
                 {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
               </Button>
