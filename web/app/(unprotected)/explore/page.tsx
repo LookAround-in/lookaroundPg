@@ -27,22 +27,28 @@ import { useQuery } from "@tanstack/react-query";
 import { ExploreApiResponse } from "@/interfaces/property";
 import { SharingType } from "@/interfaces/pg";
 import PropertySkeleton from "@/components/properties/PropertySkeleton";
+import formatText from "@/utils/formatText";
 
 const availableAmenities = [
-  "WiFi",
-  "AC",
-  "Meals",
-  "Parking",
-  "Security",
-  "Gym",
-  "Laundry",
-  "Housekeeping",
-  "Common Area",
-  "Power Backup",
-  "Refrigerator",
-  "Microwave",
-  "Balcony",
-  "Study Room",
+  "PARKING",
+  "WIFI",
+  "GYM",
+  "SWIMMING_POOL",
+  "SECURITY",
+  "POWER_BACKUP",
+  "LIFT",
+  "PET_FRIENDLY",
+  "GARDEN",
+  "PLAY_AREA",
+  "CLUBHOUSE",
+  "HOUSEKEEPING",
+  "MAINTENANCE",
+  "CCTV",
+  "COMMON_AREA",
+  "LAUNDRY",
+  "GARBAGE_DISPOSAL",
+  "COMMUNITY_EVENTS",
+  "AMENITIES_OTHER",
 ];
 
 const cities = [
@@ -484,7 +490,7 @@ const Explore = () => {
                   className="border-2"
                 />
                 <Label htmlFor={amenity} className="text-sm cursor-pointer">
-                  {amenity}
+                  {formatText(amenity)}
                 </Label>
               </div>
             ))}
