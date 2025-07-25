@@ -201,6 +201,7 @@ export class PgServices {
                 select: {
                   name: true,
                   email: true,
+                  image: true
                 },
               },
             },
@@ -306,6 +307,7 @@ export class PgServices {
                 select: {
                   name: true,
                   email: true,
+                  image: true
                 },
               },
             },
@@ -385,6 +387,7 @@ export class PgServices {
                 select: {
                   name: true,
                   email: true,
+                  image: true
                 },
               },
             },
