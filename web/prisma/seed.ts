@@ -6,7 +6,8 @@ import {
   MoveInStatus, 
   SharingTypeEnum, 
   FurnitureType, 
-  AmenityType 
+  AmenityType,
+  PgRequestStatus
 } from '../generated/prisma/index.js'
 
 const prisma = new PrismaClient()
@@ -16,6 +17,8 @@ async function main() {
 
   // Clear existing data (in reverse order due to foreign key constraints)
   console.log('🧹 Cleaning existing data...')
+  await prisma.wishList.deleteMany()
+  await prisma.pgRequest.deleteMany()
   await prisma.amenity.deleteMany()
   await prisma.furniture.deleteMany()
   await prisma.sharingType.deleteMany()
@@ -26,41 +29,16 @@ async function main() {
   await prisma.session.deleteMany()
   await prisma.user.deleteMany()
 
-  // Create Users
-  console.log('👥 Creating users...')
+  console.log('⚠️  Note: Users should be created through Better Auth authentication flow')
+  console.log('⚠️  This seed will only create sample data that depends on existing users')
+  
+  // Since you're using Better Auth, we'll create some sample users for demonstration
+  // In production, these would be created through your auth flow
+  console.log('👥 Creating sample users for demonstration...')
   const users = await Promise.all([
-    // Super Admin
+    // Sample Host Users (these would normally be created via Better Auth)
     prisma.user.create({
       data: {
-        id: 'superadmin-001',
-        role: UserRole.SUPER_ADMIN,
-        name: 'Super Administrator',
-        email: 'superadmin@lookaroundpg.com',
-        emailVerified: true,
-        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }
-    }),
-
-    // Admin
-    prisma.user.create({
-      data: {
-        id: 'admin-001',
-        role: UserRole.ADMIN,
-        name: 'Admin User',
-        email: 'admin@lookaroundpg.com',
-        emailVerified: true,
-        image: 'https://images.unsplash.com/photo-1494790108755-2616b612b550?w=150',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }
-    }),
-
-    // Host Users
-    prisma.user.create({
-      data: {
-        id: 'host-001',
         role: UserRole.HOST,
         name: 'Rajesh Kumar',
         email: 'rajesh.kumar@gmail.com',
@@ -73,7 +51,6 @@ async function main() {
 
     prisma.user.create({
       data: {
-        id: 'host-002',
         role: UserRole.HOST,
         name: 'Priya Sharma',
         email: 'priya.sharma@gmail.com',
@@ -86,7 +63,6 @@ async function main() {
 
     prisma.user.create({
       data: {
-        id: 'host-003',
         role: UserRole.HOST,
         name: 'Arjun Patel',
         email: 'arjun.patel@gmail.com',
@@ -97,10 +73,9 @@ async function main() {
       }
     }),
 
-    // Regular Users
+    // Sample Regular Users
     prisma.user.create({
       data: {
-        id: 'user-001',
         role: UserRole.USER,
         name: 'Amit Singh',
         email: 'amit.singh@gmail.com',
@@ -113,7 +88,6 @@ async function main() {
 
     prisma.user.create({
       data: {
-        id: 'user-002',
         role: UserRole.USER,
         name: 'Sneha Gupta',
         email: 'sneha.gupta@gmail.com',
@@ -122,18 +96,45 @@ async function main() {
         createdAt: new Date(),
         updatedAt: new Date(),
       }
+    }),
+
+    prisma.user.create({
+      data: {
+        role: UserRole.USER,
+        name: 'Vikram Reddy',
+        email: 'vikram.reddy@gmail.com',
+        emailVerified: true,
+        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    }),
+
+    prisma.user.create({
+      data: {
+        role: UserRole.USER,
+        name: 'Kavya Nair',
+        email: 'kavya.nair@gmail.com',
+        emailVerified: true,
+        image: 'https://images.unsplash.com/photo-1494790108755-2616b612b550?w=150',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
     })
   ])
 
-  console.log(`✅ Created ${users.length} users`)
+  console.log(`✅ Created ${users.length} sample users`)
+
+  // Get the host users for creating host profiles
+  const hostUsers = users.filter(user => user.role === UserRole.HOST)
+  const regularUsers = users.filter(user => user.role === UserRole.USER)
 
   // Create Host Profiles
   console.log('🏠 Creating host profiles...')
   const hostProfiles = await Promise.all([
     prisma.hostProfile.create({
       data: {
-        id: 'hostprofile-001',
-        userId: 'host-001',
+        userId: hostUsers[0].id,
         contactNumber: '+91-9876543210',
         alternateContact: '+91-9876543211',
         whatsApp: '+91-9876543210',
@@ -145,8 +146,7 @@ async function main() {
 
     prisma.hostProfile.create({
       data: {
-        id: 'hostprofile-002',
-        userId: 'host-002',
+        userId: hostUsers[1].id,
         contactNumber: '+91-9876543220',
         alternateContact: '+91-9876543221',
         whatsApp: '+91-9876543220',
@@ -158,8 +158,7 @@ async function main() {
 
     prisma.hostProfile.create({
       data: {
-        id: 'hostprofile-003',
-        userId: 'host-003',
+        userId: hostUsers[2].id,
         contactNumber: '+91-9876543230',
         alternateContact: '+91-9876543231',
         whatsApp: '+91-9876543230',
@@ -175,12 +174,11 @@ async function main() {
   // Create PG Data
   console.log('🏘️ Creating PG listings...')
   const pgListings = await Promise.all([
-    // Men's PG by Rajesh Kumar
+    // Men's PG by first host
     prisma.pgData.create({
       data: {
-        id: 'pg-001',
         title: 'Premium Men\'s PG Near Electronic City',
-        hostId: 'hostprofile-001',
+        hostId: hostProfiles[0].id,
         description: 'Fully furnished PG with all modern amenities. Located in a safe and secure area with easy access to IT companies in Electronic City.',
         propertyType: PropertyType.MEN,
         foodIncluded: true,
@@ -207,12 +205,11 @@ async function main() {
       }
     }),
 
-    // Women's PG by Priya Sharma
+    // Women's PG by second host
     prisma.pgData.create({
       data: {
-        id: 'pg-002',
         title: 'Safe Women\'s PG in Koramangala',
-        hostId: 'hostprofile-002',
+        hostId: hostProfiles[1].id,
         description: 'Secure and comfortable PG exclusively for women. 24/7 security, CCTV surveillance, and a homely environment.',
         propertyType: PropertyType.WOMEN,
         foodIncluded: true,
@@ -239,12 +236,11 @@ async function main() {
       }
     }),
 
-    // Co-living Space by Arjun Patel
+    // Co-living Space by third host
     prisma.pgData.create({
       data: {
-        id: 'pg-003',
         title: 'Modern Co-living Space in HSR Layout',
-        hostId: 'hostprofile-003',
+        hostId: hostProfiles[2].id,
         description: 'Contemporary co-living space with shared amenities, perfect for young professionals and students.',
         propertyType: PropertyType.COLIVE,
         foodIncluded: false,
@@ -274,9 +270,8 @@ async function main() {
     // Additional Men's PG
     prisma.pgData.create({
       data: {
-        id: 'pg-004',
         title: 'Budget Men\'s PG Near Whitefield',
-        hostId: 'hostprofile-001',
+        hostId: hostProfiles[0].id,
         description: 'Affordable accommodation for students and working professionals near Whitefield IT hub.',
         propertyType: PropertyType.MEN,
         foodIncluded: true,
@@ -304,9 +299,8 @@ async function main() {
     // Additional Women's PG
     prisma.pgData.create({
       data: {
-        id: 'pg-005',
         title: 'Luxury Women\'s PG in Indiranagar',
-        hostId: 'hostprofile-002',
+        hostId: hostProfiles[1].id,
         description: 'Premium accommodation for women with luxury amenities and personalized services.',
         propertyType: PropertyType.WOMEN,
         foodIncluded: true,
@@ -346,7 +340,7 @@ async function main() {
         description: 'Single occupancy with attached bathroom',
         price: 15000,
         availability: 2,
-        pgDataId: 'pg-001',
+        pgDataId: pgListings[0].id,
         pricePerMonth: 15000,
         pricePerDay: 500,
         deposit: 30000,
@@ -367,7 +361,7 @@ async function main() {
         description: 'Double sharing with common bathroom',
         price: 10000,
         availability: 4,
-        pgDataId: 'pg-001',
+        pgDataId: pgListings[0].id,
         pricePerMonth: 10000,
         pricePerDay: 350,
         deposit: 20000,
@@ -389,7 +383,7 @@ async function main() {
         description: 'Single room with balcony access',
         price: 18000,
         availability: 1,
-        pgDataId: 'pg-002',
+        pgDataId: pgListings[1].id,
         pricePerMonth: 18000,
         pricePerDay: 600,
         deposit: 36000,
@@ -410,7 +404,7 @@ async function main() {
         description: 'Double sharing with study area',
         price: 12000,
         availability: 3,
-        pgDataId: 'pg-002',
+        pgDataId: pgListings[1].id,
         pricePerMonth: 12000,
         pricePerDay: 400,
         deposit: 24000,
@@ -432,7 +426,7 @@ async function main() {
         description: 'Studio apartment style',
         price: 22000,
         availability: 2,
-        pgDataId: 'pg-003',
+        pgDataId: pgListings[2].id,
         pricePerMonth: 22000,
         pricePerDay: 750,
         deposit: 44000,
@@ -453,7 +447,7 @@ async function main() {
         description: 'Shared apartment with kitchen access',
         price: 16000,
         availability: 4,
-        pgDataId: 'pg-003',
+        pgDataId: pgListings[2].id,
         pricePerMonth: 16000,
         pricePerDay: 550,
         deposit: 32000,
@@ -475,7 +469,7 @@ async function main() {
         description: 'Triple sharing budget option',
         price: 8000,
         availability: 6,
-        pgDataId: 'pg-004',
+        pgDataId: pgListings[3].id,
         pricePerMonth: 8000,
         pricePerDay: 280,
         deposit: 16000,
@@ -497,7 +491,7 @@ async function main() {
         description: 'Luxury single room with premium amenities',
         price: 25000,
         availability: 1,
-        pgDataId: 'pg-005',
+        pgDataId: pgListings[4].id,
         pricePerMonth: 25000,
         pricePerDay: 850,
         deposit: 50000,
@@ -519,21 +513,21 @@ async function main() {
   console.log('🪑 Creating furniture entries...')
   const furnitureEntries = []
   
-  const furnitureByPg = {
-    'pg-001': [FurnitureType.BED, FurnitureType.WARDROBE, FurnitureType.TABLE, FurnitureType.CHAIR, FurnitureType.AIR_CONDITIONER],
-    'pg-002': [FurnitureType.BED, FurnitureType.WARDROBE, FurnitureType.TABLE, FurnitureType.CHAIR, FurnitureType.AIR_CONDITIONER, FurnitureType.FRIDGE],
-    'pg-003': [FurnitureType.BED, FurnitureType.WARDROBE, FurnitureType.SOFA, FurnitureType.TABLE, FurnitureType.CHAIR, FurnitureType.TELEVISION, FurnitureType.MICROWAVE],
-    'pg-004': [FurnitureType.BED, FurnitureType.WARDROBE, FurnitureType.TABLE, FurnitureType.CHAIR],
-    'pg-005': [FurnitureType.BED, FurnitureType.WARDROBE, FurnitureType.SOFA, FurnitureType.TABLE, FurnitureType.CHAIR, FurnitureType.AIR_CONDITIONER, FurnitureType.FRIDGE, FurnitureType.TELEVISION, FurnitureType.MICROWAVE]
-  }
+  const furnitureByPg = [
+    [FurnitureType.BED, FurnitureType.WARDROBE, FurnitureType.TABLE, FurnitureType.CHAIR, FurnitureType.AIR_CONDITIONER],
+    [FurnitureType.BED, FurnitureType.WARDROBE, FurnitureType.TABLE, FurnitureType.CHAIR, FurnitureType.AIR_CONDITIONER, FurnitureType.FRIDGE],
+    [FurnitureType.BED, FurnitureType.WARDROBE, FurnitureType.SOFA, FurnitureType.TABLE, FurnitureType.CHAIR, FurnitureType.TELEVISION, FurnitureType.MICROWAVE],
+    [FurnitureType.BED, FurnitureType.WARDROBE, FurnitureType.TABLE, FurnitureType.CHAIR],
+    [FurnitureType.BED, FurnitureType.WARDROBE, FurnitureType.SOFA, FurnitureType.TABLE, FurnitureType.CHAIR, FurnitureType.AIR_CONDITIONER, FurnitureType.FRIDGE, FurnitureType.TELEVISION, FurnitureType.MICROWAVE]
+  ]
 
-  for (const [pgId, furnitureList] of Object.entries(furnitureByPg)) {
-    for (const furnitureType of furnitureList) {
+  for (let i = 0; i < pgListings.length; i++) {
+    for (const furnitureType of furnitureByPg[i]) {
       furnitureEntries.push(
         prisma.furniture.create({
           data: {
             type: furnitureType,
-            pgDataId: pgId,
+            pgDataId: pgListings[i].id,
           }
         })
       )
@@ -547,21 +541,21 @@ async function main() {
   console.log('🏊 Creating amenity entries...')
   const amenityEntries = []
   
-  const amenitiesByPg = {
-    'pg-001': [AmenityType.WIFI, AmenityType.PARKING, AmenityType.SECURITY, AmenityType.LAUNDRY, AmenityType.POWER_BACKUP],
-    'pg-002': [AmenityType.WIFI, AmenityType.PARKING, AmenityType.SECURITY, AmenityType.LAUNDRY, AmenityType.POWER_BACKUP, AmenityType.CCTV, AmenityType.HOUSEKEEPING],
-    'pg-003': [AmenityType.WIFI, AmenityType.PARKING, AmenityType.SECURITY, AmenityType.LAUNDRY, AmenityType.GYM, AmenityType.COMMON_AREA, AmenityType.LIFT],
-    'pg-004': [AmenityType.WIFI, AmenityType.PARKING, AmenityType.SECURITY, AmenityType.LAUNDRY],
-    'pg-005': [AmenityType.WIFI, AmenityType.PARKING, AmenityType.SECURITY, AmenityType.LAUNDRY, AmenityType.GYM, AmenityType.SWIMMING_POOL, AmenityType.HOUSEKEEPING, AmenityType.CCTV, AmenityType.LIFT, AmenityType.CLUBHOUSE]
-  }
+  const amenitiesByPg = [
+    [AmenityType.WIFI, AmenityType.PARKING, AmenityType.SECURITY, AmenityType.LAUNDRY, AmenityType.POWER_BACKUP],
+    [AmenityType.WIFI, AmenityType.PARKING, AmenityType.SECURITY, AmenityType.LAUNDRY, AmenityType.POWER_BACKUP, AmenityType.CCTV, AmenityType.HOUSEKEEPING],
+    [AmenityType.WIFI, AmenityType.PARKING, AmenityType.SECURITY, AmenityType.LAUNDRY, AmenityType.GYM, AmenityType.COMMON_AREA, AmenityType.LIFT],
+    [AmenityType.WIFI, AmenityType.PARKING, AmenityType.SECURITY, AmenityType.LAUNDRY],
+    [AmenityType.WIFI, AmenityType.PARKING, AmenityType.SECURITY, AmenityType.LAUNDRY, AmenityType.GYM, AmenityType.SWIMMING_POOL, AmenityType.HOUSEKEEPING, AmenityType.CCTV, AmenityType.LIFT, AmenityType.CLUBHOUSE]
+  ]
 
-  for (const [pgId, amenityList] of Object.entries(amenitiesByPg)) {
-    for (const amenityType of amenityList) {
+  for (let i = 0; i < pgListings.length; i++) {
+    for (const amenityType of amenitiesByPg[i]) {
       amenityEntries.push(
         prisma.amenity.create({
           data: {
             type: amenityType,
-            pgDataId: pgId,
+            pgDataId: pgListings[i].id,
           }
         })
       )
@@ -570,6 +564,116 @@ async function main() {
 
   await Promise.all(amenityEntries)
   console.log(`✅ Created ${amenityEntries.length} amenity entries`)
+
+  // Create PG Requests
+  console.log('📋 Creating PG requests...')
+  const pgRequests = await Promise.all([
+    prisma.pgRequest.create({
+      data: {
+        userId: regularUsers[0].id,
+        pgId: pgListings[0].id,
+        hostId: hostProfiles[0].id,
+        status: PgRequestStatus.PENDING,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    }),
+
+    prisma.pgRequest.create({
+      data: {
+        userId: regularUsers[1].id,
+        pgId: pgListings[1].id,
+        hostId: hostProfiles[1].id,
+        status: PgRequestStatus.ACCEPTED,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    }),
+
+    prisma.pgRequest.create({
+      data: {
+        userId: regularUsers[2].id,
+        pgId: pgListings[2].id,
+        hostId: hostProfiles[2].id,
+        status: PgRequestStatus.PENDING,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    }),
+
+    prisma.pgRequest.create({
+      data: {
+        userId: regularUsers[3].id,
+        pgId: pgListings[3].id,
+        hostId: hostProfiles[0].id,
+        status: PgRequestStatus.REJECTED,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    })
+  ])
+
+  console.log(`✅ Created ${pgRequests.length} PG requests`)
+
+  // Create Wishlist entries
+  console.log('❤️ Creating wishlist entries...')
+  const wishlistEntries = await Promise.all([
+    prisma.wishList.create({
+      data: {
+        userId: regularUsers[0].id,
+        pgDataId: pgListings[0].id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    }),
+
+    prisma.wishList.create({
+      data: {
+        userId: regularUsers[0].id,
+        pgDataId: pgListings[1].id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    }),
+
+    prisma.wishList.create({
+      data: {
+        userId: regularUsers[1].id,
+        pgDataId: pgListings[2].id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    }),
+
+    prisma.wishList.create({
+      data: {
+        userId: regularUsers[1].id,
+        pgDataId: pgListings[4].id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    }),
+
+    prisma.wishList.create({
+      data: {
+        userId: regularUsers[2].id,
+        pgDataId: pgListings[0].id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    }),
+
+    prisma.wishList.create({
+      data: {
+        userId: regularUsers[3].id,
+        pgDataId: pgListings[3].id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    })
+  ])
+
+  console.log(`✅ Created ${wishlistEntries.length} wishlist entries`)
 
   console.log('🎉 Database seeding completed successfully!')
   
@@ -581,6 +685,8 @@ async function main() {
   console.log(`🛏️ Sharing Types: ${sharingTypes.length}`)
   console.log(`🪑 Furniture Entries: ${furnitureEntries.length}`)
   console.log(`🏊 Amenity Entries: ${amenityEntries.length}`)
+  console.log(`📋 PG Requests: ${pgRequests.length}`)
+  console.log(`❤️ Wishlist Entries: ${wishlistEntries.length}`)
 }
 
 main()
