@@ -28,6 +28,9 @@ model User {
   // Relation with pgRequest
   pgRequest PgRequest[]
 
+  // Relation with wishList
+  wishList WishList[]
+
   @@unique([email])
   @@map("user")
 }
@@ -126,6 +129,20 @@ model PgData {
   rating         Float          @default(0)
   reviews        String[]       @default([])
   PgRequest      PgRequest[]
+  wishList       WishList[]
+}
+
+model WishList {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pgDataId  String
+  pgData    PgData   @relation(fields: [pgDataId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, pgDataId])
+  @@map("wish_list")
 }
 
 model SharingType {
