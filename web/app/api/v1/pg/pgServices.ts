@@ -183,7 +183,7 @@ export class PgServices {
             isEmpty: false,
           },
         },
-        take: 3, // Increased to show more featured properties
+        take: 6, // Increased to show more featured properties
         orderBy: [
           {
             rating: "desc", // Primary: Highest rated first
@@ -278,7 +278,7 @@ export class PgServices {
             },
           },
         },
-        take: 3,
+        take: 6,
         orderBy: [
           {
             wishList: {

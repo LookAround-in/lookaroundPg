@@ -73,7 +73,6 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({
     queryFn: () => getWishListItems(user?.id || ""),
     enabled: !!user?.id,
   });
-  console.log("Wishlist data:", wishListData?.data?.pgData);
 
   // Mutation for adding to wishlist
   const { mutate: addWishListMutation } = useMutation({

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Button } from "components/ui/button";
 import { PropertyCard } from "components/properties/PropertyCard";
 import { Heart, Search } from "lucide-react";
-import { useWishlist } from "contexts/WishlistContext";
 import { authClient } from "@/lib/auth-client";
 import { useQuery } from "@tanstack/react-query";
 import PropertySkeleton from "@/components/properties/PropertySkeleton";
@@ -29,12 +28,16 @@ const getWishListItems = async (userId: string) => {
 };
 
 const Wishlist = () => {
-  const { wishlist } = useWishlist();
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
   const {
     data: wishListData,
+    isLoading,
+    isPending,
+    isError,
+    refetch,
+    error,
   } = useQuery({
     queryKey: ["wishlist", user?.id],
     queryFn: () => getWishListItems(user?.id || ""),
@@ -75,7 +78,8 @@ const Wishlist = () => {
             {wishlistProperties.length} saved properties
           </p>
         </div>
-        {wishlistProperties.isError && (
+        {/* Error loading data */}
+        {isError && (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
               <h1 className="text-2xl font-bold mb-4 text-red-600">
@@ -86,16 +90,14 @@ const Wishlist = () => {
                   "Failed to load property details"}
               </p>
               <div className="space-x-4">
-                <Button onClick={() => wishlistProperties.refetch()}>
-                  Try Again
-                </Button>
+                <Button onClick={() => refetch()}>Try Again</Button>
               </div>
             </div>
           </div>
         )}
         {/* Skeleton Cards for better UX while data is still loading */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {(wishlistProperties.isLoading || wishlistProperties.isPending) &&
+          {(isLoading || isPending) &&
             // Show skeleton cards
             Array.from({ length: 6 }).map((_, index) => (
               <PropertySkeleton key={`skeleton-${index}`} />
@@ -103,7 +105,10 @@ const Wishlist = () => {
         </div>
 
         {/* Content */}
-        {!wishlistProperties.isLoading && !wishlistProperties.isPending && !wishlistProperties.isError &&wishlistProperties.length > 0 ? (
+        {!isLoading &&
+        !isPending &&
+        !isError &&
+        wishlistProperties.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {wishlistProperties.map((property, index) => (
               <div
@@ -116,23 +121,26 @@ const Wishlist = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Heart className="h-8 w-8 text-gray-400" />
+          !isLoading &&
+          !isError && (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="h-8 w-8 text-gray-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                Your wishlist is empty
+              </h3>
+              <p className="text-gray-500 mb-6">
+                Start adding properties you like to see them here
+              </p>
+              <Link href="/explore">
+                <Button>
+                  <Search className="h-4 w-4 mr-2" />
+                  Explore Properties
+                </Button>
+              </Link>
             </div>
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">
-              Your wishlist is empty
-            </h3>
-            <p className="text-gray-500 mb-6">
-              Start adding properties you like to see them here
-            </p>
-            <Link href="/explore">
-              <Button>
-                <Search className="h-4 w-4 mr-2" />
-                Explore Properties
-              </Button>
-            </Link>
-          </div>
+          )
         )}
       </div>
     </div>

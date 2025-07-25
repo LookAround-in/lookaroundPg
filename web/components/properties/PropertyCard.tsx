@@ -20,7 +20,6 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
   const user = session?.user;
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [imageLoaded, setImageLoaded] = useState(false);
-  console.log("wishlist from context:", wishlist);
 
   const isInWishlist = wishlist.includes(property.id);
 
