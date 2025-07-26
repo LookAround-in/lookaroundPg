@@ -1,18 +1,24 @@
-'use client'
-import React, { useState } from 'react';
-import Link from 'next/link'
-import { useRouter } from 'next/navigation';
-import { Button } from 'components/ui/button';
-import { Input } from 'components/ui/input';
-import { Label } from 'components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
-import { useToast } from 'hooks/use-toast';
-import Image from 'next/image';
-import { authClient } from 'lib/auth-client';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "components/ui/button";
+import { Input } from "components/ui/input";
+import { Label } from "components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "components/ui/card";
+import { useToast } from "hooks/use-toast";
+import Image from "next/image";
+import { authClient } from "lib/auth-client";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
@@ -20,41 +26,40 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    const { data, error } = await authClient.signIn.email({
-      email,
-      password,
-      callbackURL: `/`
-    }, {
-      onRequest: (ctx) => {
-        //show loading
-        toast({
-          title: "Signing In!",
-          description: "Your account is being accessed, please wait...",
-        });
+    const { data, error } = await authClient.signIn.email(
+      {
+        email,
+        password,
       },
-      onSuccess: (ctx) => {
-        //hide loading
-        toast({
-          title: "Welcome back!",
-          description: "You have been successfully logged in.",
-        });
-        setIsLoading(false);
-        // router.push('/');
-        setTimeout(() => {
-    router.replace("/profile");
-  }, 100);
-      },
-      onError: (ctx) => {
-        //hide loading
-        setIsLoading(false);
-        toast({
-          title: "Login failed",
-          description: "Please check your credentials and try again.",
-          variant: "destructive",
-        });
+      {
+        onRequest: (ctx) => {
+          //show loading
+          toast({
+            title: "Signing In!",
+            description: "Your account is being accessed, please wait...",
+          });
+        },
+        onSuccess: (ctx) => {
+          //hide loading
+          toast({
+            title: "Welcome back!",
+            description: "You have been successfully logged in.",
+          });
+          setIsLoading(false);
+          router.replace("/");
+        },
+        onError: (ctx) => {
+          //hide loading
+          setIsLoading(false);
+          toast({
+            title: "Login failed",
+            description: `Login error: ${ctx.error.message}. Please check your credentials and try again.`,
+            variant: "destructive",
+          });
+        },
       }
-    })
-  }
+    );
+  };
 
   // const handleGoogleSignIn = async () => {
   //   setIsLoading(true);
@@ -78,7 +83,10 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-light-gray py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
+          <Link
+            href="/"
+            className="flex items-center justify-center space-x-2 mb-8"
+          >
             <div className="w-8 h-8 rounded-full flex items-center justify-center">
               <Image
                 src="/logo.png"
@@ -125,12 +133,8 @@ const Login = () => {
                   required
                 />
               </div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Signing in...' : 'Sign in'}
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Signing in..." : "Sign in"}
               </Button>
               {/* <Button
                 className="w-full"
@@ -143,8 +147,11 @@ const Login = () => {
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Don't have an account?{' '}
-                <Link href="/signup" className="font-medium text-primary hover:text-primary/80">
+                Don't have an account?{" "}
+                <Link
+                  href="/signup"
+                  className="font-medium text-primary hover:text-primary/80"
+                >
                   Sign up
                 </Link>
               </p>

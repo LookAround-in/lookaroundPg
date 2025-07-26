@@ -35,9 +35,6 @@ export async function middleware(req: NextRequest) {
   if (!sessionCookie) {
     const url = req.nextUrl.clone();
     url.pathname = '/login';
-    if (pathname !== '/login' && pathname !== '/signup') {
-      url.searchParams.set('from', pathname);
-    }
     return NextResponse.redirect(url);
   }
 

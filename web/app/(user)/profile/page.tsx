@@ -72,7 +72,7 @@ const Profile = () => {
     });
   };
 
-  return (
+  return ( user && (
     <div className="min-h-screen bg-light-gray">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
@@ -148,7 +148,8 @@ const Profile = () => {
                   </div> */}
                 </div>
 
-                <div className="flex space-x-4 pt-4">
+                {/* No endpoints for editing the user info */}
+                {/* <div className="flex space-x-4 pt-4">
                   {isEditing ? (
                     <>
                       <Button onClick={handleSave}>Save Changes</Button>
@@ -164,7 +165,7 @@ const Profile = () => {
                       Edit Profile
                     </Button>
                   )}
-                </div>
+                </div> */}
               </CardContent>
             </Card>
           </div>
@@ -190,9 +191,15 @@ const Profile = () => {
                     <Mail className="h-4 w-4 text-blue-500" />
                     <span className="text-sm">Email</span>
                   </div>
-                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                  {user?.emailVerified ? (
+                    <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
                     Verified
                   </span>
+                  ) : (
+                    <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
+                      Not Verified
+                    </span>
+                  )}
                 </div>
 
                 {/* <div className="flex items-center justify-between">
@@ -222,14 +229,15 @@ const Profile = () => {
                   View Wishlist
                 </Button>
 
-                <Button
+                {/* No page for account settings yet */}
+                {/* <Button
                   variant="outline"
                   className="w-full justify-start"
                   onClick={() => router.push("/settings")}
                 >
                   <Settings className="h-4 w-4 mr-2" />
                   Account Settings
-                </Button>
+                </Button> */}
 
                 <Button
                   variant="outline"
@@ -254,7 +262,7 @@ const Profile = () => {
         </div>
       </div>
     </div>
-  );
+  ));
 };
 
 export default Profile;

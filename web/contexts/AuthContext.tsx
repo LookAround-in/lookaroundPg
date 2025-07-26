@@ -1,21 +1,20 @@
 import { useToast } from '@/hooks/use-toast';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext } from 'react';
 
 interface User {
   id: string;
   email: string;
   name: string;
-  phone?: string;
-  avatar?: string;
+  emailVerified?: boolean;
+  image?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   logout: () => Promise<void>;
   isLoading: boolean;
-  isInitialized: boolean;
   error?: unknown;
 }
 
@@ -33,21 +32,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const router = useRouter();
   const { toast } = useToast();
   const { data: session, isPending, error } = authClient.useSession();
-  
+
   const user = session?.user || null;
   const isLoading = isPending;
-  const isInitialized = !isPending; // Initialized when not pending
-
-  useEffect(() => {
-    if (isInitialized && !isLoading) {
-      const currentPath = window.location.pathname;
-      
-      // If user just logged in and we're on auth pages, redirect to profile
-      if (user && (currentPath === '/login' || currentPath === '/register')) {
-        router.replace('/profile');
-      }
-    }
-  }, [user, isInitialized, isLoading, router]);
 
   const logout = async () => {
     try {
@@ -82,7 +69,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user, 
       logout, 
       isLoading, 
-      isInitialized,
       error 
     }}>
       {children}
