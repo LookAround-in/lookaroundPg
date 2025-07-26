@@ -12,7 +12,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
 
   // Redirect authenticated users away from auth pages
   useEffect(() => {
-    if (isInitialized && user && !isLoading) {
+    if (isInitialized && user && !isLoading && !error) {
       toast({
         title: "Already authenticated",
         description: "You are already logged in.",
@@ -20,7 +20,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
       });
       router.replace("/profile");
     }
-  }, [user, isLoading, isInitialized, toast, router]);
+  }, [user, isLoading, isInitialized, toast, router, error]);
 
   // Handle error state - show error but don't redirect (we're already on auth page)
   useEffect(() => {
