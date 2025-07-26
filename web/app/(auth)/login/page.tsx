@@ -38,10 +38,15 @@ const Login = () => {
           title: "Welcome back!",
           description: "You have been successfully logged in.",
         });
-        router.push('/');
+        setIsLoading(false);
+        // router.push('/');
+        setTimeout(() => {
+    router.replace("/profile");
+  }, 100);
       },
       onError: (ctx) => {
         //hide loading
+        setIsLoading(false);
         toast({
           title: "Login failed",
           description: "Please check your credentials and try again.",

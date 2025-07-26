@@ -143,7 +143,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
                 <Image
                   placeholder="blur"
                   blurDataURL="/blurImg.png"
-                  src={`https://ui-avatars.com/api/?name=${property.Host?.user?.name}&background=random`}
+                  src={property.Host?.user?.image || `https://ui-avatars.com/api/?name=${property.Host?.user?.name}&background=random`}
                   alt={property.hostId}
                   width={32}
                   height={32}

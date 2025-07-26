@@ -213,7 +213,7 @@ function AddPropertyForm() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-gray-100 border-2 border-pink-600 shadow-lg rounded-lg m-6">
+    <div className="max-w-3xl mx-auto p-6 bg-gray-100 border-2 border-pink-600 shadow-lg rounded-lg m-2 sm:m-6">
       <h2 className="text-2xl font-bold mb-4">Add New Property</h2>
       <Form {...propertyForm}>
         <form onSubmit={propertyForm.handleSubmit(onSubmit)} className="space-y-8">

@@ -51,7 +51,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import formatText from "@/utils/formatText";
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/contexts/AuthContext";
 import { PgRequestData } from "@/interfaces/pg";
 
 //Mock property features data
@@ -125,7 +125,7 @@ const PropertyDetails = () => {
   const [showTermsDialog, setShowTermsDialog] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showVirtualTourModal, setShowVirtualTourModal] = useState(false);
-  const { data: session, error, refetch } = authClient.useSession();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   const data = useQuery({
@@ -340,7 +340,7 @@ const PropertyDetails = () => {
   }
   const isInWishlist = wishlist.includes(property.id || "");
   const handleWishlistToggle = () => {
-    if (!session) {
+    if (!user) {
       toast({
         title: "Login required",
         description: "Please login to add properties to your wishlist.",
@@ -365,7 +365,7 @@ const PropertyDetails = () => {
   };
 
   const handleRevealHostInfo = () => {
-    if (!session) {
+    if (!user) {
       toast({
         title: "Login required",
         description: "Please login to view host contact information.",
@@ -408,7 +408,7 @@ const PropertyDetails = () => {
 
     createPropertyRequestMutation({
       hostId: property.hostId,
-      userId: session?.user?.id,
+      userId: user?.id,
       pgId: property.id,
     });
   };
@@ -949,7 +949,7 @@ const PropertyDetails = () => {
                       <Image
                         placeholder="blur"
                         blurDataURL='/blurImg.png'
-                        src={`https://ui-avatars.com/api/?name=${property.Host?.user?.name}&background=random`}
+                        src={property.Host?.user?.image || `https://ui-avatars.com/api/?name=${property.Host?.user?.name}&background=random`}
                         alt={property.hostId}
                         width={32}
                         height={32}

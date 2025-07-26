@@ -1,5 +1,6 @@
 "use client";
 import { Toaster } from "components/ui/toaster";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster as Sonner } from "components/ui/sonner";
 import { TooltipProvider } from "components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -12,18 +13,20 @@ const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-            <WishlistProvider>
-              <PropertyProvider>
-                <Navbar />
-                {children}
-                <Footer />
-              </PropertyProvider>
-            </WishlistProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <AuthProvider>
+          <WishlistProvider>
+            <PropertyProvider>
+              <Navbar />
+              {children}
+              <Footer />
+            </PropertyProvider>
+          </WishlistProvider>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }

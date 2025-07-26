@@ -21,6 +21,7 @@ const Signup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     const { data, error } = await authClient.signUp.email({
       email,
       password,
@@ -40,11 +41,16 @@ const Signup = () => {
           title: "Account Created!",
           description: "Your Account has been created successfully. You can now log in.",
         });
+        setIsLoading(false);
         router.push('/');
       },
       onError: (ctx) => {
         // display the error message
-        alert(ctx.error.message);
+        setIsLoading(false);
+        toast({
+          title: "Account Creation Failed!",
+          description: `Your Account creation failed with error ${ctx.error.message}. Please try again.`,
+        });
       },
     })
   }

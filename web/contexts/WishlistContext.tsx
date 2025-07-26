@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface WishlistContextType {
@@ -63,8 +63,7 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [wishlist, setWishlist] = useState<string[]>([]);
-  const { data: session } = authClient.useSession();
-  const user = session?.user;
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   // Query to fetch wishlist

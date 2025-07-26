@@ -1,38 +1,64 @@
 "use client";
 import { useToast } from "@/hooks/use-toast";
 import React, { ReactNode, useEffect } from "react";
-import { authClient } from "lib/auth-client";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { Loader } from "lucide-react";
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
   const { toast } = useToast();
   const router = useRouter();
-  const { data: session, error } = authClient.useSession();
+  const { user, isLoading, isInitialized, error } = useAuth(); // Added error from AuthContext
 
+  // Redirect authenticated users away from auth pages
   useEffect(() => {
-    if (session) {
+    if (isInitialized && user && !isLoading) {
       toast({
-        title: "Authentication done",
-        description: "You are now logged in.",
+        title: "Already authenticated",
+        description: "You are already logged in.",
         variant: "default",
       });
-      router.push("/profile");
+      router.replace("/profile");
     }
-  }, [session, toast, router]);
+  }, [user, isLoading, isInitialized, toast, router]);
 
-  // Handle error state
+  // Handle error state - show error but don't redirect (we're already on auth page)
   useEffect(() => {
-    if (error) {
+    if (error && isInitialized) {
       toast({
         title: "Authentication error",
         description:
           "There was an error with your session. Please try logging in again.",
         variant: "destructive",
       });
-      router.push("/login");
     }
-  }, [error, toast, router]);
+  }, [error, isInitialized, toast]);
 
+  // Show loading while checking authentication
+  if (!isInitialized || isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-light-gray">
+        <div className="text-center">
+          <Loader className="animate-spin sm:h-24 sm:w-24 h-16 w-16 text-primary" />
+          <p className="text-gray-900 font-thin text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show redirecting message if user is authenticated
+  if (user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-light-gray">
+        <div className="text-center">
+          <Loader className="animate-spin sm:h-24 sm:w-24 h-16 w-16 text-primary" />
+          <p className="text-gray-900 font-thin text-lg">Redirecting to Profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Render auth pages for unauthenticated users
   return <div>{children}</div>;
 };
 

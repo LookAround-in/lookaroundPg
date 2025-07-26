@@ -123,7 +123,7 @@ const HostProperties = () => {
                         <Image
                           placeholder="blur"
                           blurDataURL="/blurImg.png"
-                          src={`https://ui-avatars.com/api/?name=${hostProperties[0].Host.user.name}&background=random&color=fff`}
+                          src={hostProperties[0].Host.user.image || `https://ui-avatars.com/api/?name=${hostProperties[0].Host.user.name}&background=random&color=fff`}
                           alt={hostProperties[0].Host.user.name}
                           width={32}
                           height={32}
