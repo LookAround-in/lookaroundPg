@@ -1,6 +1,6 @@
 import { useToast } from '@/hooks/use-toast';
 import { authClient } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import React, { createContext, useContext } from 'react';
 
 interface User {
@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
             router.replace("/");
           }
-        }
+        },
       });
     } catch (error) {
       console.error("Logout error:", error);

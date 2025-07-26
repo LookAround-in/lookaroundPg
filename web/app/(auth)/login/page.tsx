@@ -30,6 +30,7 @@ const Login = () => {
       {
         email,
         password,
+        callbackURL: "/"
       },
       {
         onRequest: (ctx) => {
@@ -46,7 +47,6 @@ const Login = () => {
             description: "You have been successfully logged in.",
           });
           setIsLoading(false);
-          router.replace("/");
         },
         onError: (ctx) => {
           //hide loading

@@ -33,6 +33,7 @@ const Signup = () => {
         email,
         password,
         name,
+        callbackURL: "/"
       },
       {
         onRequest: (ctx) => {
@@ -49,7 +50,6 @@ const Signup = () => {
             description: "Your Account has been created successfully.",
           });
           setIsLoading(false);
-          router.replace("/");
         },
         onError: (ctx) => {
           // display the error message
