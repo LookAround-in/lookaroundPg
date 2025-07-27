@@ -156,7 +156,6 @@ const PropertyDetails = () => {
     console.warn("Unexpected API response structure:", response);
     return null;
   }, [data]);
-  console.log("Property data:", property);
 
   const availableSharingTypes = useMemo(() => {
     if (
@@ -788,7 +787,6 @@ const PropertyDetails = () => {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {property.nearbyFacilities.map((facility, index) => {
-                    console.log("Facility data:", facility.icon);
                     return (
                       <div
                         key={index}
@@ -871,9 +869,6 @@ const PropertyDetails = () => {
                   <div className="space-y-6">
                     <Review {...property} />
                   </div>
-                  <Button variant="outline" className="w-full mt-6">
-                    View All Reviews
-                  </Button>
                 </CardContent>
               </Card>
             )}

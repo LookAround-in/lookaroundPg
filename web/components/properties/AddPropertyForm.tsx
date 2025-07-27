@@ -179,7 +179,6 @@ function AddPropertyForm() {
         alert("Please select at least one image");
         return;
       }
-      setIsSubmitting(true);
       const formData = new FormData();
       // Add basic form fields - using validated data from React Hook Form
       formData.append("title", data.title);
@@ -208,7 +207,6 @@ function AddPropertyForm() {
     } catch (error) {
       console.error("Form submission error:", error);
       alert("Error preparing form data. Please try again.");
-      setIsSubmitting(false);
     }
   };
 

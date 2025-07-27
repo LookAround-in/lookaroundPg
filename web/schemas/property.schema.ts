@@ -193,3 +193,17 @@ export type CreatePgData = z.infer<typeof CreatePgDataSchema>;
 export type UpdatePgData = z.infer<typeof UpdatePgDataSchema>;
 export type PgForm = z.infer<typeof PgFormSchema>;
 export type SharingTypeForm = z.infer<typeof SharingTypeFormSchema>;
+
+export const reviewFormSchema = z.object({
+  comment: z
+    .string()
+    .min(10, {
+      message: "Comment must be at least 10 characters.",
+    })
+    .max(160, {
+      message: "Comment must not be longer than 160 characters.",
+    }),
+  rating:  z.number()
+    .min(0, 'Rating must be between 0 and 5')
+    .max(5, 'Rating must be between 0 and 5'),
+})
