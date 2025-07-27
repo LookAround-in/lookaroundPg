@@ -39,13 +39,13 @@ import {
   Hospital,
   PencilRuler,
   PackagePlus,
+  MessageSquareDot
 } from "lucide-react";
 import { useWishlist } from "contexts/WishlistContext";
 import { useToast } from "hooks/use-toast";
 import Image from "next/image";
 import { ExploreApiResponse, Property } from "@/interfaces/property";
 import {
-  QueryClient,
   useMutation,
   useQuery,
   useQueryClient,
@@ -66,35 +66,15 @@ const propertyFeatures = {
   ],
 };
 // Mock reviews data
-const reviews = [
-  {
-    id: 1,
-    name: "Priya Sharma",
-    rating: 5,
-    date: "2 weeks ago",
-    comment:
-      "Excellent PG with all amenities. The host is very responsive and the location is perfect for my office commute.",
-    avatar: "/placeholder.svg",
-  },
-  {
-    id: 2,
-    name: "Rahul Kumar",
-    rating: 4,
-    date: "1 month ago",
-    comment:
-      "Good facilities and clean rooms. WiFi speed could be better but overall satisfied with the stay.",
-    avatar: "/placeholder.svg",
-  },
-  {
-    id: 3,
-    name: "Sneha Patel",
-    rating: 5,
-    date: "2 months ago",
-    comment:
-      "Amazing place! Feels like home. The food is delicious and the common areas are well maintained.",
-    avatar: "/placeholder.svg",
-  },
-];
+// {
+//     id: 1,
+//     name: "Priya Sharma",
+//     rating: 5,
+//     date: "2 weeks ago",
+//     comment:
+//       "Excellent PG with all amenities. The host is very responsive and the location is perfect for my office commute.",
+//     avatar: "/placeholder.svg",
+//   },
 
 const fetchPropertyById = async (
   propertyId: string
@@ -154,7 +134,7 @@ const PropertyDetails = () => {
     enabled: !!propertyId,
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate: createPropertyRequestMutation, isPending } = useMutation({
     mutationFn: createPropertyRequest,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["pgRequests"] });
@@ -426,7 +406,7 @@ const PropertyDetails = () => {
       return;
     }
 
-    mutate({
+    createPropertyRequestMutation({
       hostId: property.hostId,
       userId: session?.user?.id,
       pgId: property.id,
@@ -910,36 +890,37 @@ const PropertyDetails = () => {
                   </div>
 
                   <div className="space-y-6">
-                    {reviews.map((review) => (
+                    {property.reviews.map((review, index) => (
                       <div
-                        key={review.id}
+                        key={index}
                         className="border-b border-gray-200 last:border-b-0 pb-6 last:pb-0"
                       >
                         <div className="flex items-start space-x-4">
                           <img
-                            src="/user.png"
-                            alt={review.name}
+                            src={`https://ui-avatars.com/api/?name=${review}&background=random`}
+                            alt={review}
                             className="w-10 h-10 rounded-full bg-gray-200"
                           />
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold">{review.name}</h4>
+                              <h4 className="font-semibold">{"Google Reviewer"}</h4>
                               <span className="text-sm text-gray-500">
-                                {review.date}
+                                {property.updatedAt}
                               </span>
                             </div>
                             <div className="flex items-center mb-2">
                               {[...Array(5)].map((_, i) => (
                                 <Star
                                   key={i}
-                                  className={`h-4 w-4 ${i < review.rating
+                                  className={`h-4 w-4 ${
+                                    i < property.rating
                                       ? "text-yellow-400 fill-current"
                                       : "text-gray-300"
                                     }`}
                                 />
                               ))}
                             </div>
-                            <p className="text-gray-600">{review.comment}</p>
+                            <p className="text-gray-600">{review}</p>
                           </div>
                         </div>
                       </div>
@@ -961,9 +942,11 @@ const PropertyDetails = () => {
               <CardContent className="p-6">
                 <div className="text-center space-y-4">
                   <div className="w-16 h-16 bg-gradient-cool rounded-full flex items-center justify-center mx-auto">
-                    {property.Host.user.image ? (
-                      <img
-                        src={property.Host.user.image}
+                    {property.hostId ? (
+                      <Image
+                        placeholder="blur"
+                        blurDataURL='/blurImg.png'
+                        src={`https://ui-avatars.com/api/?name=${property.Host?.user?.name}&background=random`}
                         alt={property.hostId}
                         width={32}
                         height={32}
@@ -975,7 +958,7 @@ const PropertyDetails = () => {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-lg">{property.Host.user.name}</h3>
+                    <h3 className="font-semibold text-lg">{property.Host?.user?.name || property.hostId}</h3>
                     <p className="text-gray-600">Property Host</p>
                   </div>
 
@@ -1007,8 +990,8 @@ const PropertyDetails = () => {
                             </Button>
                           </a>
                         )}
-                        {property.Host?.alternateContact && (
-                          <a href={`mailto:${property.Host.alternateContact}`}>
+                        {property.Host?.user?.email && (
+                          <a href={`mailto:${property.Host?.user?.email}`}>
                             <Button variant="outline" className="w-full mt-2">
                               <Mail className="h-4 w-4 mr-2" />
                               Email Host
@@ -1025,6 +1008,7 @@ const PropertyDetails = () => {
                             rel="noopener noreferrer"
                           >
                             <Button className="w-full bg-green-500 hover:bg-green-600 mt-2">
+                              <MessageSquareDot className="h-4 w-4 mr-2" />
                               WhatsApp
                             </Button>
                           </a>

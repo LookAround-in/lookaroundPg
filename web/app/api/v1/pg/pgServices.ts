@@ -435,14 +435,30 @@ export class PgServices {
                 select: {
                   name: true,
                   email: true,
-                  image: true
                 },
               },
             },
           },
           furnitures: true,
           amenities: true,
-          sharingTypes: true,
+          sharingTypes: {
+            where: {
+              availability: {
+                gt: 0,
+              },
+            },
+            orderBy: {
+              pricePerMonth: "asc",
+            },
+          },
+          _count: {
+            select: {
+              PgRequest: true,
+              wishList: true,
+              sharingTypes: true,
+              amenities: true,
+            },
+          },
         },
       });
 
@@ -462,10 +478,30 @@ export class PgServices {
       const pgs = await this.prismaClient.pgData.findMany({
         where: { hostId },
         include: {
-          Host: true,
+          Host: {
+            select: {
+              id: true,
+              contactNumber: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
           furnitures: true,
           amenities: true,
-          sharingTypes: true,
+          sharingTypes: {
+            where: {
+              availability: {
+                gt: 0,
+              },
+            },
+            orderBy: {
+              pricePerMonth: "asc",
+            },
+          },
         },
       });
 

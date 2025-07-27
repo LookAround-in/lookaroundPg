@@ -131,7 +131,7 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Admin */}
+          {/* Host */}
           <div>
             <h3 className="font-semibold text-lg text-gray-50 mb-4">Host</h3>
             <ul className="space-y-2">

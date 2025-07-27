@@ -4,13 +4,17 @@ import { SharingTypeDetails } from "./pg";
 
 export interface Host {
   id: string;
-  userId: string;
   contactNumber: string;
-  alternateContact: string;
-  whatsApp: string;
-  Address: string;
-  createdAt: string;
-  updatedAt: string;
+  user: {
+    name: string;
+    email:string;
+  };
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
 }
 
 export interface Furniture {
@@ -65,11 +69,6 @@ interface PgData {
   propertyType: string;
 }
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
 
 export interface HostRequest {
   id: string;

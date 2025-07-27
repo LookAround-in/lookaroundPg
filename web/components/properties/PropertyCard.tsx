@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Heart, MapPin, User, Star } from 'lucide-react';
 import { Button } from 'components/ui/button';
 import { Badge } from 'components/ui/badge';
-import { useAuth } from 'contexts/AuthContext';
+import { authClient } from '@/lib/auth-client';
 import { useWishlist } from 'contexts/WishlistContext';
 import Image from 'next/image';
 import { Property } from '@/interfaces/property';
@@ -16,10 +16,11 @@ interface PropertyCardProps {
 }
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className = '' }) => {
-  const { user } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [imageLoaded, setImageLoaded] = useState(false);
-  
+
   const isInWishlist = wishlist.includes(property.id);
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
@@ -41,10 +42,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
       default: return 'bg-gray-100 text-gray-800';
     }
   };
-  //to show the lowest possible price to the consumer
-  const propertyPrice = useMemo(() => {
-    return property.sharingTypes.sort((a, b) => a.pricePerMonth - b.pricePerMonth)[0];
-  }, [property.sharingTypes]);
+  //No need to filter as the backend is sending the sharingTypes already sorted by price
 
   return (
     <div className={`property-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden ${className}`}>
@@ -107,7 +105,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
           {/* Price */}
           <div className="mb-3">
             <span className="text-2xl font-bold text-primary">
-              ₹{propertyPrice.pricePerMonth.toLocaleString()}
+              ₹{property.sharingTypes[0]?.pricePerMonth.toLocaleString()}
             </span>
             <span className="text-gray-600 text-sm ml-1">/month</span>
           </div>
@@ -145,7 +143,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
                 <Image
                   placeholder="blur"
                   blurDataURL="/blurImg.png"
-                  src="/profile.png"
+                  src={`https://ui-avatars.com/api/?name=${property.Host?.user?.name}&background=random`}
                   alt={property.hostId}
                   width={32}
                   height={32}
@@ -155,7 +153,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
                 <User className="h-3 w-3 text-white" />
               )}
             </div>
-            <span className="text-sm text-gray-600">{property.hostId}</span>
+            <span className="text-sm text-gray-600">{property.Host?.user?.name}</span>
           </div>
           
           {property.rating && (

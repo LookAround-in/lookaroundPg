@@ -1,36 +1,51 @@
-'use client'
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from 'components/ui/button';
-import { Input } from 'components/ui/input';
-import { Label } from 'components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
-import { User, Mail, Phone, Settings, Heart, LogOut, Trash } from 'lucide-react';
-import { useWishlist } from 'contexts/WishlistContext';
-import { useToast } from 'hooks/use-toast';
-import { authClient } from 'lib/auth-client';
-import Link from 'next/link';
+"use client";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "components/ui/button";
+import { Input } from "components/ui/input";
+import { Label } from "components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "components/ui/card";
+import {
+  User,
+  Mail,
+  Phone,
+  Settings,
+  Heart,
+  LogOut,
+  Trash,
+} from "lucide-react";
+import { useWishlist } from "contexts/WishlistContext";
+import { useToast } from "hooks/use-toast";
+import { authClient } from "lib/auth-client";
+import Link from "next/link";
+import Image from "next/image";
 
 const Profile = () => {
-  const {data: session, isPending} = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   const { wishlist } = useWishlist();
   const { toast } = useToast();
   const router = useRouter();
+  const user = session?.user;
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    name: "",
+    email: "",
     // phone: ''
   });
-
 
   // Update form data when user changes
   useEffect(() => {
     if (session) {
       setFormData({
-        name: session.user.name || '',
-        email: session.user.email || ''
+        name: session.user.name || "",
+        email: session.user.email || "",
       });
     }
   }, [session]);
@@ -38,7 +53,7 @@ const Profile = () => {
   // Handle authentication check
   useEffect(() => {
     if (!session) {
-      router.push('/login');
+      router.push("/login");
     }
   }, [session, router]);
 
@@ -97,11 +112,11 @@ const Profile = () => {
   };
 
   // TODO: Please add additional configs for the required action
-  const handleDeleteAccount = async() => {
+  const handleDeleteAccount = async () => {
     await authClient.deleteUser({
       fetchOptions: {
-        onSuccess: ()=>{
-          router.push("/")
+        onSuccess: () => {
+          router.push("/");
         },
       },
     });
@@ -109,16 +124,14 @@ const Profile = () => {
       title: "Account deleted",
       description: "You have successfully deleted the account.",
     });
-  }
+  };
 
   return (
     <div className="min-h-screen bg-light-gray">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-charcoal mb-2">
-            My Profile
-          </h1>
+          <h1 className="text-3xl font-bold text-charcoal mb-2">My Profile</h1>
           <p className="text-gray-600">
             Manage your account settings and preferences
           </p>
@@ -140,7 +153,15 @@ const Profile = () => {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-center mb-6">
                   <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center">
-                    <User className="h-10 w-10 text-white" />
+                    <Image
+                      placeholder="blur"
+                      blurDataURL="/blurImg.png"
+                      src={`https://ui-avatars.com/api/?name=${user?.name}&background=random`}
+                      alt={user?.name}
+                      width={32}
+                      height={32}
+                      className="w-full h-full rounded-full"
+                    />
                   </div>
                 </div>
 
@@ -150,7 +171,9 @@ const Profile = () => {
                     <Input
                       id="name"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
                       disabled={!isEditing}
                     />
                   </div>
@@ -161,7 +184,9 @@ const Profile = () => {
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
                       disabled={!isEditing}
                     />
                   </div>
@@ -180,9 +205,7 @@ const Profile = () => {
                 <div className="flex space-x-4 pt-4">
                   {isEditing ? (
                     <>
-                      <Button onClick={handleSave}>
-                        Save Changes
-                      </Button>
+                      <Button onClick={handleSave}>Save Changes</Button>
                       <Button
                         variant="outline"
                         onClick={() => setIsEditing(false)}
@@ -247,7 +270,7 @@ const Profile = () => {
                 <Button
                   variant="outline"
                   className="w-full justify-start"
-                  onClick={() => router.push('/wishlist')}
+                  onClick={() => router.push("/wishlist")}
                 >
                   <Heart className="h-4 w-4 mr-2" />
                   View Wishlist
@@ -256,7 +279,7 @@ const Profile = () => {
                 <Button
                   variant="outline"
                   className="w-full justify-start"
-                  onClick={() => router.push('/settings')}
+                  onClick={() => router.push("/settings")}
                 >
                   <Settings className="h-4 w-4 mr-2" />
                   Account Settings
