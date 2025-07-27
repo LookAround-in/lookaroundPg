@@ -37,6 +37,7 @@ import { Plus, Trash2, Upload, X, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useToast } from "@/components/ui/use-toast";
 
 type PgFormType = z.infer<typeof PgFormSchema>;
 
@@ -62,6 +63,7 @@ function AddPropertyForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
+  const {toast} = useToast();
 
   const createPropertyMutation = useMutation({
     mutationFn: createProperty,
@@ -81,7 +83,11 @@ function AddPropertyForm() {
     onError: (error: Error) => {
       console.error("Mutation error:", error);
       setIsSubmitting(false);
-      alert(`Error creating property: ${error.message}`);
+      toast({
+        title: "Error",
+        description: `Failed to create property: ${error.message}`,
+        variant: "destructive",
+      });
     },
   });
 
@@ -172,11 +178,19 @@ function AddPropertyForm() {
   const onSubmit = async (data: PgFormType) => {
     try {
       if (!data.sharingTypes || data.sharingTypes.length === 0) {
-        alert("Please add at least one sharing type");
+        toast({
+          title: "Error",
+          description: "Please add at least one sharing type.",
+          variant: "destructive",
+        });
         return;
       }
       if (selectedImages.length === 0) {
-        alert("Please select at least one image");
+        toast({
+          title: "Error",
+          description: "Please select at least one image.",
+          variant: "destructive",
+        });
         return;
       }
       const formData = new FormData();
@@ -206,7 +220,11 @@ function AddPropertyForm() {
       await createPropertyMutation.mutateAsync(formData);
     } catch (error) {
       console.error("Form submission error:", error);
-      alert("Error preparing form data. Please try again.");
+      toast({
+        title: "Error",
+        description: `Failed to prepare form data: ${error}`,
+        variant: "destructive",
+      });
     }
   };
 

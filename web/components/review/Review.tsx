@@ -20,6 +20,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { reviewFormSchema } from "@/schemas/property.schema";
 import type { Review } from "@/interfaces/property";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
+import { useToast } from "@/hooks/use-toast";
 
 const createReview = async (data: {
   userId: string;
@@ -87,7 +89,13 @@ const deleteReview = async (data: { reviewId: string; userId: string }) => {
   return response.json();
 };
 
-export default function Review(property: Property) {
+export default function Review({
+  property,
+  refetchProperty,
+}: {
+  property: Property;
+  refetchProperty: () => void;
+}) {
   const [showAllReviews, setShowAllReviews] = React.useState(false);
   const [editingReview, setEditingReview] = React.useState<Review | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -96,6 +104,7 @@ export default function Review(property: Property) {
     : property.reviews.slice(0, 3);
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
@@ -106,6 +115,15 @@ export default function Review(property: Property) {
     },
   });
 
+  React.useEffect(() => {
+    if (!editingReview) {
+      form.reset({
+        comment: "",
+        rating: 0,
+      });
+    }
+  }, [editingReview, form]);
+
   const createReviewMutation = useMutation({
     mutationFn: createReview,
     onMutate: () => {
@@ -115,11 +133,16 @@ export default function Review(property: Property) {
       setIsSubmitting(false);
       form.reset();
       queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      refetchProperty();
     },
     onError: (error: Error) => {
       console.error("Mutation error:", error);
       setIsSubmitting(false);
-      alert(`Error creating property: ${error.message}`);
+      toast({
+        title: "Error",
+        description: `Failed to create review: ${error.message}`,
+        variant: "destructive",
+      });
     },
   });
   const updateReviewMutation = useMutation({
@@ -132,11 +155,16 @@ export default function Review(property: Property) {
       form.reset();
       setIsSubmitting(false);
       queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      refetchProperty();
     },
     onError: (error: Error) => {
       console.error("Mutation error:", error);
       setIsSubmitting(false);
-      alert(`Error creating property: ${error.message}`);
+      toast({
+        title: "Error",
+        description: `Failed to update review: ${error.message}`,
+        variant: "destructive",
+      });
     },
   });
   const deleteReviewMutation = useMutation({
@@ -144,25 +172,21 @@ export default function Review(property: Property) {
     onMutate: async () => {},
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      refetchProperty();
     },
     onError: (error: Error) => {
       console.error("Delete mutation error:", error);
-      alert(`Error deleting review: ${error.message}`);
+      toast({
+        title: "Error",
+        description: `Failed to delete review: ${error.message}`,
+        variant: "destructive",
+      });
     },
   });
 
   async function onSubmit(data: z.infer<typeof reviewFormSchema>) {
     try {
       if (editingReview) {
-        // Handle editing an existing review
-        console.log(
-          "Editing review:",
-          editingReview.id,
-          data.comment,
-          data.rating,
-          user.id
-        );
-        // Call API to update the review
         await updateReviewMutation.mutateAsync({
           reviewId: editingReview.id,
           userId: user.id,
@@ -170,14 +194,6 @@ export default function Review(property: Property) {
           comment: data.comment,
         });
       } else {
-        // Handle adding a new review
-        console.log(
-          "Adding new review:",
-          data.comment,
-          data.rating,
-          user.id,
-          property.id
-        );
         await createReviewMutation.mutateAsync({
           userId: user.id,
           pgDataId: property.id,
@@ -189,7 +205,11 @@ export default function Review(property: Property) {
       form.reset();
     } catch (error) {
       console.error("Form submission error:", error);
-      alert("Error preparing form data. Please try again.");
+      toast({
+        title: "Error",
+        description: `Failed to submit review: ${error}`,
+        variant: "destructive",
+      });
     }
   }
 
@@ -201,8 +221,6 @@ export default function Review(property: Property) {
     });
   }
   async function handleDelete(review) {
-    // Call API to delete the review
-    console.log("Deleting review:", review.id);
     await deleteReviewMutation.mutateAsync({
       reviewId: review.id,
       userId: user.id,
@@ -242,9 +260,16 @@ export default function Review(property: Property) {
             className="border-b border-gray-200 last:border-b-0 pb-6 last:pb-0"
           >
             <div className="flex items-start space-x-4">
-              <img
-                src={review.user.image || "/placeholder.svg"}
+              <Image
+                placeholder="blur"
+                blurDataURL="/blurImg.png"
+                src={
+                  review.user.image ||
+                  `https://ui-avatars.com/api/?name=${review.user.name}&background=random`
+                }
                 alt={review.user.name}
+                width={32}
+                height={32}
                 className="w-10 h-10 rounded-full bg-gray-200"
               />
               <div className="flex-1">
@@ -323,7 +348,7 @@ export default function Review(property: Property) {
                   <FormControl>
                     <div className="w-full">
                       <Textarea
-                        placeholder="Tell us a little bit about yourself"
+                        placeholder="Tell us a little bit about your experience"
                         className="resize-none"
                         {...field}
                       />
@@ -353,15 +378,18 @@ export default function Review(property: Property) {
                             className="flex flex-row items-center gap-2"
                           >
                             <FormControl>
-                              <Star
-                                className={`h-6 w-6 cursor-pointer transition-colors ${
-                                  field.value && star <= field.value
-                                    ? "text-yellow-400 fill-current"
-                                    : "text-gray-300"
-                                }`}
-                                onClick={() => field.onChange(star)}
-                                data-testid={`star-${star}`}
-                              />
+                              <label htmlFor={`rating-${star}`}>
+                                <Star
+                                  id={`rating-${star}`}
+                                  className={`h-6 w-6 cursor-pointer transition-colors ${
+                                    form.getValues("rating") >= star
+                                      ? "text-yellow-400 fill-current"
+                                      : "text-gray-300"
+                                  }`}
+                                  onClick={() => form.setValue("rating", star)}
+                                  data-testid={`star-${star}`}
+                                />
+                              </label>
                             </FormControl>
                           </FormItem>
                         )}

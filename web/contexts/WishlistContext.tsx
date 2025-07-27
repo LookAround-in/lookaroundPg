@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 interface WishlistContextType {
   wishlist: string[];
@@ -65,6 +66,7 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({
   const [wishlist, setWishlist] = useState<string[]>([]);
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   // Query to fetch wishlist
   const wishListData = useQuery({
@@ -83,6 +85,11 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({
       // Rollback optimistic update on error
       setWishlist(prev => prev.filter(id => id !== variables.pgDataId));
       console.error("Error adding to wishlist:", error);
+      toast({
+        title: "Error",
+        description: `Failed to add to wishlist: ${error.message}`,
+        variant: "destructive",
+      });
     },
   });
 

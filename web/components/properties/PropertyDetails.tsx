@@ -107,13 +107,13 @@ const PropertyDetails = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  const data = useQuery({
+  const { data, refetch, isLoading, isPending, isError } = useQuery({
     queryKey: ["property", propertyId],
     queryFn: () => fetchPropertyById(propertyId),
     enabled: !!propertyId,
   });
 
-  const { mutate: createPropertyRequestMutation, isPending } = useMutation({
+  const { mutate: createPropertyRequestMutation, isPending: pendingRequest } = useMutation({
     mutationFn: createPropertyRequest,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pgRequests"] });
@@ -135,27 +135,19 @@ const PropertyDetails = () => {
     },
   });
 
-  const property = useMemo(() => {
-    if (data.isLoading || data.isPending) {
+  const property: Property = useMemo(() => {
+    if (isLoading || isPending) {
       return null;
     }
 
-    if (data.isError || !data.data) {
-      console.error("Error fetching property:", data.error);
+    if (isError || !data.data) {
+      console.error("Error fetching property:");
       return null;
     }
-
-    const response = data.data;
-
-    if (response.success && response.data) {
-      const propertyData = Array.isArray(response.data)
-        ? response.data[0]
-        : response.data;
-      return propertyData as Property;
-    }
-    console.warn("Unexpected API response structure:", response);
-    return null;
-  }, [data]);
+    // If data.data is an array, pick the first item; otherwise, use as is
+    const response = Array.isArray(data.data) ? data.data[0] : data.data;
+    return response;
+  }, [data, isLoading, isPending, isError]);
 
   const availableSharingTypes = useMemo(() => {
     if (
@@ -207,7 +199,7 @@ const PropertyDetails = () => {
     }
   }, [availableSharingTypes, selectedSharingType]);
 
-  if (data.isLoading || data.isPending) {
+  if (isLoading || isPending) {
     return (
       <div className="min-h-screen bg-light-gray transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -283,7 +275,7 @@ const PropertyDetails = () => {
     );
   }
   // Show error state
-  if (data.isError) {
+  if (isError) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-gray">
         <div className="text-center">
@@ -291,11 +283,11 @@ const PropertyDetails = () => {
             Error loading property
           </h1>
           <p className="text-gray-600 mb-4">
-            {(data.error as Error)?.message ||
+            {isError || 
               "Failed to load property details"}
           </p>
           <div className="space-x-4">
-            <Button onClick={() => data.refetch()}>Try Again</Button>
+            <Button onClick={() => refetch()}>Try Again</Button>
             <Button variant="outline" onClick={() => router.push("/explore")}>
               Back to Explore
             </Button>
@@ -867,7 +859,7 @@ const PropertyDetails = () => {
                     </div>
                   </div>
                   <div className="space-y-6">
-                    <Review {...property} />
+                    <Review property={property} refetchProperty={refetch} />
                   </div>
                 </CardContent>
               </Card>
@@ -1053,7 +1045,7 @@ const PropertyDetails = () => {
                 disabled={!termsAccepted}
                 className="mb-2 sm:mb-0"
               >
-                {isPending ? (
+                {pendingRequest ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     Processing...
