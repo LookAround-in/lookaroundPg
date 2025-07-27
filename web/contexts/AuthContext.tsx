@@ -32,7 +32,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const router = useRouter();
   const { toast } = useToast();
   const { data: session, isPending, error } = authClient.useSession();
-  console.log("AuthProvider session:", session, "isPending:", isPending, "error:", error);
 
   const user = session?.user || null;
   const isLoading = isPending;

@@ -1,36 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { authClient } from "./auth-client";
 
 
 export async function withAuth(
-    handler: (req: NextRequest) => Promise<NextResponse>, // Ensure the type matches Next.js
+    handler: (req: Request) => Promise<NextResponse>,
     requiredRole?: string
 ) {
     return async (req: NextRequest) => {
-        console.log("Middleware triggered");
         try {
-            console.log(req.headers);
-            const session = await authClient.getSession(req);
-            console.log("Session in middleware:", session);
+            // TODO : 
+            // Get the user role from the request
+            // compare it with the required role
+            // if(req.role !== requiredRole) return error
+            // if (req.role === requiredRole) return handler(req); 
 
-            if (!session) {
-                return NextResponse.json(
-                    { success: false, message: "Unauthorized" },
-                    { status: 401 }
-                );
-            }
-
-            // Role-based access control
-            if (requiredRole && session.user.role !== requiredRole) {
-                return NextResponse.json(
-                    { success: false, message: "Forbidden: Insufficient permissions" },
-                    { status: 403 }
-                );
-            }
-
-            // Call the handler correctly
-            return await handler(req); // Ensure `await` is used here
+            return handler(req);
         } catch (error) {
             console.error("Auth middleware error:", error);
             return NextResponse.json(
@@ -47,10 +31,5 @@ export const isAdmin = (handler: (req: Request) => Promise<NextResponse>) =>
 export const isHost = (handler: (req: Request) => Promise<NextResponse>) =>
     withAuth(handler, "host");
 
-// export const isUser = (handler: (req: Request) => Promise<NextResponse>) =>
-//     withAuth(handler, "USER");
-
-export const isUser = (handler: (req: Request) => Promise<NextResponse>) => {
-    console.log("isUser middleware applied"); // Add this log
-    return withAuth(handler, "USER");
-};
+export const isUser = (handler: (req: Request) => Promise<NextResponse>) =>
+    withAuth(handler, "user");
