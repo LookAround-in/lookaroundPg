@@ -197,7 +197,7 @@ async function main() {
         ],
         nearbyFacilities: [
           {
-            icon: "🚇",
+            icon: "🚇z",
             title: "Metro Station",
             distance: "0.5 km"
           },
