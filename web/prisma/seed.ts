@@ -17,6 +17,7 @@ async function main() {
 
   // Clear existing data (in reverse order due to foreign key constraints)
   console.log('🧹 Cleaning existing data...')
+  await prisma.review.deleteMany()
   await prisma.wishList.deleteMany()
   await prisma.pgRequest.deleteMany()
   await prisma.amenity.deleteMany()
@@ -171,7 +172,7 @@ async function main() {
 
   console.log(`✅ Created ${hostProfiles.length} host profiles`)
 
-  // Create PG Data
+  // Create PG Data with nearbyFacilities as JSON array
   console.log('🏘️ Creating PG listings...')
   const pgListings = await Promise.all([
     // Men's PG by first host
@@ -194,12 +195,34 @@ async function main() {
           'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800',
           'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800'
         ],
-        rating: 4.5,
-        reviews: [
-          'Excellent facilities and very clean',
-          'Great location for IT professionals',
-          'Host is very cooperative'
+        nearbyFacilities: [
+          {
+            icon: "🚇",
+            title: "Metro Station",
+            distance: "0.5 km"
+          },
+          {
+            icon: "🏥",
+            title: "Apollo Hospital",
+            distance: "1.2 km"
+          },
+          {
+            icon: "🛒",
+            title: "Big Bazaar",
+            distance: "800 m"
+          },
+          {
+            icon: "🏧",
+            title: "HDFC ATM",
+            distance: "200 m"
+          },
+          {
+            icon: "🍕",
+            title: "Food Court",
+            distance: "300 m"
+          }
         ],
+        // avgRating and reviewCount will be set automatically when reviews are created
         createdAt: new Date(),
         updatedAt: new Date(),
       }
@@ -225,11 +248,32 @@ async function main() {
           'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800',
           'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800'
         ],
-        rating: 4.8,
-        reviews: [
-          'Very safe and secure place for women',
-          'Excellent food quality',
-          'Great community of working women'
+        nearbyFacilities: [
+          {
+            icon: "🚌",
+            title: "Bus Stop",
+            distance: "100 m"
+          },
+          {
+            icon: "🛍️",
+            title: "Forum Mall",
+            distance: "1.5 km"
+          },
+          {
+            icon: "☕",
+            title: "Cafe Coffee Day",
+            distance: "250 m"
+          },
+          {
+            icon: "💊",
+            title: "Medical Store",
+            distance: "150 m"
+          },
+          {
+            icon: "🏃‍♀️",
+            title: "Ladies Gym",
+            distance: "400 m"
+          }
         ],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -256,11 +300,32 @@ async function main() {
           'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800',
           'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800'
         ],
-        rating: 4.3,
-        reviews: [
-          'Great co-living experience',
-          'Modern amenities and facilities',
-          'Good community atmosphere'
+        nearbyFacilities: [
+          {
+            icon: "🚊",
+            title: "Metro Station",
+            distance: "1.0 km"
+          },
+          {
+            icon: "🏢",
+            title: "Tech Park",
+            distance: "500 m"
+          },
+          {
+            icon: "🍔",
+            title: "McDonald's",
+            distance: "300 m"
+          },
+          {
+            icon: "🏪",
+            title: "24/7 Store",
+            distance: "100 m"
+          },
+          {
+            icon: "🎭",
+            title: "PVR Cinema",
+            distance: "2.0 km"
+          }
         ],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -285,11 +350,27 @@ async function main() {
           'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800',
           'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800'
         ],
-        rating: 4.0,
-        reviews: [
-          'Good value for money',
-          'Close to office locations',
-          'Decent facilities'
+        nearbyFacilities: [
+          {
+            icon: "🏢",
+            title: "ITPL",
+            distance: "800 m"
+          },
+          {
+            icon: "🏧",
+            title: "SBI ATM",
+            distance: "150 m"
+          },
+          {
+            icon: "🚌",
+            title: "BMTC Bus Stop",
+            distance: "200 m"
+          },
+          {
+            icon: "🍛",
+            title: "Mess",
+            distance: "50 m"
+          }
         ],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -316,11 +397,37 @@ async function main() {
           'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800',
           'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800'
         ],
-        rating: 4.9,
-        reviews: [
-          'Exceptional service and facilities',
-          'Very clean and well-maintained',
-          'Perfect for working professionals'
+        nearbyFacilities: [
+          {
+            icon: "🚇",
+            title: "Indiranagar Metro",
+            distance: "600 m"
+          },
+          {
+            icon: "🛍️",
+            title: "Commercial Street",
+            distance: "1.2 km"
+          },
+          {
+            icon: "🏥",
+            title: "Manipal Hospital",
+            distance: "900 m"
+          },
+          {
+            icon: "☕",
+            title: "Starbucks",
+            distance: "300 m"
+          },
+          {
+            icon: "💅",
+            title: "Beauty Salon",
+            distance: "250 m"
+          },
+          {
+            icon: "🏋️‍♀️",
+            title: "Fitness First",
+            distance: "400 m"
+          }
         ],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -565,6 +672,123 @@ async function main() {
   await Promise.all(amenityEntries)
   console.log(`✅ Created ${amenityEntries.length} amenity entries`)
 
+  // Create Reviews (new separate table)
+  console.log('⭐ Creating reviews...')
+  const reviews = await Promise.all([
+    // Reviews for PG-001
+    prisma.review.create({
+      data: {
+        pgDataId: pgListings[0].id,
+        userId: regularUsers[0].id,
+        rating: 5,
+        comment: 'Excellent facilities and very clean. The host is very cooperative and the location is perfect for IT professionals.',
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+        updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      }
+    }),
+
+    prisma.review.create({
+      data: {
+        pgDataId: pgListings[0].id,
+        userId: regularUsers[1].id,
+        rating: 4,
+        comment: 'Great location for IT professionals. Good amenities but could improve the food quality.',
+        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
+        updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+      }
+    }),
+
+    // Reviews for PG-002
+    prisma.review.create({
+      data: {
+        pgDataId: pgListings[1].id,
+        userId: regularUsers[2].id,
+        rating: 5,
+        comment: 'Very safe and secure place for women. Excellent food quality and great community of working women.',
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+        updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      }
+    }),
+
+    prisma.review.create({
+      data: {
+        pgDataId: pgListings[1].id,
+        userId: regularUsers[3].id,
+        rating: 5,
+        comment: 'Perfect for working women. Safe environment and all amenities are top-notch.',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+        updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      }
+    }),
+
+    // Reviews for PG-003
+    prisma.review.create({
+      data: {
+        pgDataId: pgListings[2].id,
+        userId: regularUsers[0].id,
+        rating: 4,
+        comment: 'Great co-living experience. Modern amenities and facilities with good community atmosphere.',
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
+        updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      }
+    }),
+
+    // Reviews for PG-004
+    prisma.review.create({
+      data: {
+        pgDataId: pgListings[3].id,
+        userId: regularUsers[1].id,
+        rating: 4,
+        comment: 'Good value for money. Close to office locations and decent facilities.',
+        createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), // 4 days ago
+        updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+      }
+    }),
+
+    // Reviews for PG-005
+    prisma.review.create({
+      data: {
+        pgDataId: pgListings[4].id,
+        userId: regularUsers[2].id,
+        rating: 5,
+        comment: 'Exceptional service and facilities. Very clean and well-maintained, perfect for working professionals.',
+        createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), // 6 days ago
+        updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+      }
+    }),
+
+    prisma.review.create({
+      data: {
+        pgDataId: pgListings[4].id,
+        userId: regularUsers[3].id,
+        rating: 5,
+        comment: 'Luxury at its best! Premium amenities and excellent location. Highly recommended for women professionals.',
+        createdAt: new Date(), // Today
+        updatedAt: new Date(),
+      }
+    })
+  ])
+
+  console.log(`✅ Created ${reviews.length} reviews`)
+
+  // Update PG ratings based on reviews (calculate avgRating and reviewCount)
+  console.log('📊 Updating PG ratings...')
+  for (const pg of pgListings) {
+    const pgReviews = reviews.filter(review => review.pgDataId === pg.id)
+    if (pgReviews.length > 0) {
+      const avgRating = pgReviews.reduce((sum, review) => sum + review.rating, 0) / pgReviews.length
+      await prisma.pgData.update({
+        where: { id: pg.id },
+        data: {
+          avgRating: Math.round(avgRating * 10) / 10, // Round to 1 decimal place
+          reviewCount: pgReviews.length
+        }
+      })
+    }
+  }
+
+  console.log('✅ Updated PG ratings')
+
   // Create PG Requests
   console.log('📋 Creating PG requests...')
   const pgRequests = await Promise.all([
@@ -685,6 +909,7 @@ async function main() {
   console.log(`🛏️ Sharing Types: ${sharingTypes.length}`)
   console.log(`🪑 Furniture Entries: ${furnitureEntries.length}`)
   console.log(`🏊 Amenity Entries: ${amenityEntries.length}`)
+  console.log(`⭐ Reviews: ${reviews.length}`)
   console.log(`📋 PG Requests: ${pgRequests.length}`)
   console.log(`❤️ Wishlist Entries: ${wishlistEntries.length}`)
 }

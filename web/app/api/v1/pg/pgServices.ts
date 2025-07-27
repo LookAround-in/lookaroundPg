@@ -30,8 +30,7 @@ export class PgServices {
           moveInStatus: pgData.moveInStatus,
           virtualTourUrl: pgData.virtualTourUrl,
           images: pgData.images ?? [],
-          rating: pgData.rating ?? 0,
-          reviews: pgData.reviews ?? [],
+          // nearbyFacilities: pgData.nearbyFacilities ?? [],
 
           furnitures: {
             create:
@@ -72,6 +71,17 @@ export class PgServices {
           furnitures: true,
           amenities: true,
           sharingTypes: true,
+          reviews: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
         },
       });
 
@@ -99,8 +109,8 @@ export class PgServices {
           moveInStatus: pgData.moveInStatus,
           virtualTourUrl: pgData.virtualTourUrl,
           images: pgData.images ?? [],
-          rating: pgData.rating ?? 0,
-          reviews: pgData.reviews ?? [],
+          // nearbyFacilities: pgData.nearbyFacilities ?? [],
+          
           furnitures: {
             deleteMany: {},
             create:
@@ -141,6 +151,17 @@ export class PgServices {
           furnitures: true,
           amenities: true,
           sharingTypes: true,
+          reviews: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
         },
       });
       return updatedPg;
@@ -165,11 +186,14 @@ export class PgServices {
   async getFeaturedPgs() {
     try {
       // Featured PGs should be high-rated properties with good reviews
-      // Logic: Rating >= 4.0, has at least some reviews, and available rooms
+      // Logic: avgRating >= 4.0, has at least some reviews, and available rooms
       const featuredPgs = await this.prismaClient.pgData.findMany({
         where: {
-          rating: {
-            gte: 4.0, // Minimum 4.0 rating
+          avgRating: {
+            gte: 4.0, // Minimum 4.0 average rating
+          },
+          reviewCount: {
+            gt: 0, // Must have at least one review
           },
           sharingTypes: {
             some: {
@@ -183,10 +207,13 @@ export class PgServices {
             isEmpty: false,
           },
         },
-        take: 6, // Increased to show more featured properties
+        take: 6, // Show featured properties
         orderBy: [
           {
-            rating: "desc", // Primary: Highest rated first
+            avgRating: "desc", // Primary: Highest rated first
+          },
+          {
+            reviewCount: "desc", // Secondary: Most reviewed
           },
           {
             createdAt: "desc", // Tertiary: Most recent
@@ -217,6 +244,21 @@ export class PgServices {
             orderBy: {
               pricePerMonth: "asc", // Show cheapest option first
             },
+          },
+          reviews: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+            take: 5, // Include recent reviews
           },
           _count: {
             select: {
@@ -295,7 +337,7 @@ export class PgServices {
             createdAt: "desc", // Most recent
           },
           {
-            rating: "desc", // Good rating as tiebreaker
+            avgRating: "desc", // Good rating as tiebreaker (can be null)
           },
         ],
         include: {
@@ -323,6 +365,21 @@ export class PgServices {
             orderBy: {
               pricePerMonth: "asc",
             },
+          },
+          reviews: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+            take: 3, // Include some recent reviews
           },
           _count: {
             select: {
@@ -362,7 +419,7 @@ export class PgServices {
         take: 12, // Show more options for exploration
         orderBy: [
           {
-            rating: "desc", // Quality first
+            avgRating: "desc", // Quality first (nulls last in PostgreSQL)
           },
           {
             sharingTypes: {
@@ -404,6 +461,21 @@ export class PgServices {
               pricePerMonth: "asc",
             },
           },
+          reviews: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+            take: 3, // Include some recent reviews
+          },
           _count: {
             select: {
               PgRequest: true,
@@ -415,7 +487,9 @@ export class PgServices {
         },
       });
 
-      return explorePgs;
+      // Add some randomization to explore results for variety
+      const shuffledResults = explorePgs.sort(() => Math.random() - 0.5);
+      return shuffledResults;
     } catch (error) {
       console.error("Error fetching explore Pgs:", error);
       throw new Error("Failed to fetch explore Pgs");
@@ -450,6 +524,20 @@ export class PgServices {
             },
             orderBy: {
               pricePerMonth: "asc",
+            },
+          },
+          reviews: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
             },
           },
           _count: {
@@ -502,6 +590,26 @@ export class PgServices {
             },
             orderBy: {
               pricePerMonth: "asc",
+            },
+          },
+          reviews: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
+          _count: {
+            select: {
+              PgRequest: true,
+              wishList: true,
             },
           },
         },

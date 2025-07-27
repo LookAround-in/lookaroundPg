@@ -464,15 +464,13 @@ const PropertyDetails = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={`absolute top-4 right-4 p-2 h-10 w-10 bg-white/80 hover:bg-white wishlist-heart ${
-                    isInWishlist ? "active" : ""
-                  }`}
+                  className={`absolute top-4 right-4 p-2 h-10 w-10 bg-white/80 hover:bg-white wishlist-heart ${isInWishlist ? "active" : ""
+                    }`}
                   onClick={handleWishlistToggle}
                 >
                   <Heart
-                    className={`h-5 w-5 ${
-                      isInWishlist ? "fill-current text-red-500" : ""
-                    }`}
+                    className={`h-5 w-5 ${isInWishlist ? "fill-current text-red-500" : ""
+                      }`}
                   />
                 </Button>
 
@@ -513,11 +511,10 @@ const PropertyDetails = () => {
                       {property.images.map((_, index) => (
                         <button
                           key={index}
-                          className={`w-2 h-2 rounded-full ${
-                            index === currentImageIndex
+                          className={`w-2 h-2 rounded-full ${index === currentImageIndex
                               ? "bg-white"
                               : "bg-white/50"
-                          }`}
+                            }`}
                           onClick={() => setCurrentImageIndex(index)}
                         />
                       ))}
@@ -600,10 +597,10 @@ const PropertyDetails = () => {
                             {type === "single"
                               ? "Single"
                               : type === "double"
-                              ? "Double"
-                              : type === "triple"
-                              ? "Triple"
-                              : "Quad"}{" "}
+                                ? "Double"
+                                : type === "triple"
+                                  ? "Triple"
+                                  : "Quad"}{" "}
                             Sharing
                           </Button>
                         ))}
@@ -631,8 +628,8 @@ const PropertyDetails = () => {
                           {property.sharingTypes[0].availability > 5
                             ? "Available"
                             : property.sharingTypes[0].availability > 0
-                            ? "Limited Availability"
-                            : "Full"}
+                              ? "Limited Availability"
+                              : "Full"}
                         </Badge>
                       )}
                   </div>
@@ -646,8 +643,8 @@ const PropertyDetails = () => {
                       {property.propertyType === "COLIVE"
                         ? "Co-living"
                         : property.propertyType === "MEN"
-                        ? "Men Only"
-                        : "Women Only"}
+                          ? "Men Only"
+                          : "Women Only"}
                     </Badge>
                     {property.virtualTourUrl && (
                       <Badge variant="outline" className="">
@@ -919,7 +916,7 @@ const PropertyDetails = () => {
                                     i < property.rating
                                       ? "text-yellow-400 fill-current"
                                       : "text-gray-300"
-                                  }`}
+                                    }`}
                                 />
                               ))}
                             </div>
@@ -1052,9 +1049,8 @@ const PropertyDetails = () => {
                 className="w-full"
               >
                 <Heart
-                  className={`h-4 w-4 mr-2 ${
-                    isInWishlist ? "fill-current text-red-500" : ""
-                  }`}
+                  className={`h-4 w-4 mr-2 ${isInWishlist ? "fill-current text-red-500" : ""
+                    }`}
                 />
                 {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
               </Button>

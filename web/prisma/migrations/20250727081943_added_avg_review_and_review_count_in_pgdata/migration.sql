@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "PgData" ADD COLUMN     "avgRating" DOUBLE PRECISION,
+ADD COLUMN     "reviewCount" INTEGER NOT NULL DEFAULT 0;
