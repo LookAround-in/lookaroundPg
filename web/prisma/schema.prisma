@@ -127,6 +127,10 @@ model PgData {
   sharingTypes     SharingType[]
   pgRules          String?
   moveInStatus     MoveInStatus
+
+  avgRating       Float?        
+  reviewCount     Int            @default(0) // For efficiency, avoid COUNT queries
+
   nearbyFacilities Json[]         @default([]) // JSON field to store nearby facilities
   virtualTourUrl   String?
   images           String[]       @default([])
