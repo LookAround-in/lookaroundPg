@@ -32,7 +32,8 @@ const Profile = () => {
   const { toast } = useToast();
   const router = useRouter();
   const user = session?.user;
-
+  console.log(user);
+  
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -244,8 +245,8 @@ const Profile = () => {
                     <Mail className="h-4 w-4 text-blue-500" />
                     <span className="text-sm">Email</span>
                   </div>
-                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                    Verified
+                  <span className={`text-xs ${user.emailVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'} px-2 py-1 rounded`}>
+                    {user.emailVerified ? 'Verified' : 'Not Verified'}
                   </span>
                 </div>
 

@@ -30,8 +30,7 @@ export class PgServices {
           moveInStatus: pgData.moveInStatus,
           virtualTourUrl: pgData.virtualTourUrl,
           images: pgData.images ?? [],
-          nearbyFacilities: pgData.nearbyFacilities ?? [],
-          // Don't set avgRating and reviewCount - they start as null/0
+          // nearbyFacilities: pgData.nearbyFacilities ?? [],
 
           furnitures: {
             create:
@@ -110,8 +109,7 @@ export class PgServices {
           moveInStatus: pgData.moveInStatus,
           virtualTourUrl: pgData.virtualTourUrl,
           images: pgData.images ?? [],
-          nearbyFacilities: pgData.nearbyFacilities ?? [],
-          // Don't update avgRating and reviewCount here - they're managed by review operations
+          // nearbyFacilities: pgData.nearbyFacilities ?? [],
           
           furnitures: {
             deleteMany: {},
