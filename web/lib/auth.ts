@@ -17,4 +17,16 @@ export const auth = betterAuth({
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
         },
     },
+    callbacks: {
+        async session({session, user}){
+            const dbUser = await prisma.user.findUnique({
+                where: {id : user.id},
+                select:{ role: true }
+            })
+            if(dbUser){
+                session.user.role = dbUser.role
+            }
+            return session;
+        }
+    }
 });

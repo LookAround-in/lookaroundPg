@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { pgController } from "../../../route";
+import { isUser } from "@/lib/auth-middleware";
 
-export async function GET(request: Request, { params }: { params: Promise<{ hostId: string }> }) {
+export const GET = isUser(async (request: Request) => {
     try {
-        const { hostId } = await params;
+        // Extract hostId from the URL
+        const url = new URL(request.url);
+        const hostId = url.pathname.split("/").pop(); // Assumes hostId is the last segment
 
-        const result = await pgController.getPgsByHostId(request, hostId);
+        const result = await pgController.getPgsByHostId(request, hostId as string);
         return result;
     } catch (error) {
         console.error("Error in getting pg by hostId", error);
@@ -15,4 +18,4 @@ export async function GET(request: Request, { params }: { params: Promise<{ host
             error: error instanceof Error ? error.message : "Unknown error"
         }, { status: 500 });
     }
-}
+})
