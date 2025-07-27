@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Button } from "components/ui/button";
 import { PropertyCard } from "components/properties/PropertyCard";
 import { Heart, Search } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
 import { useQuery } from "@tanstack/react-query";
 import PropertySkeleton from "@/components/properties/PropertySkeleton";
+import { useAuth } from "@/contexts/AuthContext";
 
 const getWishListItems = async (userId: string) => {
   if (!userId) {
@@ -28,8 +28,7 @@ const getWishListItems = async (userId: string) => {
 };
 
 const Wishlist = () => {
-  const { data: session } = authClient.useSession();
-  const user = session?.user;
+  const {user} = useAuth()
 
   const {
     data: wishListData,
@@ -43,29 +42,6 @@ const Wishlist = () => {
     queryFn: () => getWishListItems(user?.id || ""),
     enabled: !!user?.id,
   });
-
-  if (!session) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-light-gray">
-        <div className="text-center max-w-md">
-          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Heart className="h-8 w-8 text-gray-400" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-600 mb-4">
-            Login Required
-          </h2>
-          <p className="text-gray-500 mb-6">
-            Please login to view your wishlist
-          </p>
-          <Link href="/login">
-            <Button>Login</Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  //add skeleton loading state
   const wishlistProperties = wishListData?.data || [];
 
   return (

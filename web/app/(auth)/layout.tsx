@@ -1,38 +1,24 @@
 "use client";
-import { useToast } from "@/hooks/use-toast";
-import React, { ReactNode, useEffect } from "react";
-import { authClient } from "lib/auth-client";
-import { useRouter } from "next/navigation";
+import React, { ReactNode } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Loader } from "lucide-react";
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
-  const { toast } = useToast();
-  const router = useRouter();
-  const { data: session, error } = authClient.useSession();
+  const { isLoading } = useAuth();
 
-  useEffect(() => {
-    if (session) {
-      toast({
-        title: "Authentication done",
-        description: "You are now logged in.",
-        variant: "default",
-      });
-      router.push("/profile");
-    }
-  }, [session, toast, router]);
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-light-gray">
+        <div className="text-center">
+          <Loader className="animate-spin sm:h-24 sm:w-24 h-16 w-16 text-primary" />
+          <p className="text-gray-900 font-thin text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
-  // Handle error state
-  useEffect(() => {
-    if (error) {
-      toast({
-        title: "Authentication error",
-        description:
-          "There was an error with your session. Please try logging in again.",
-        variant: "destructive",
-      });
-      router.push("/login");
-    }
-  }, [error, toast, router]);
-
+  // Render auth pages for unauthenticated users
   return <div>{children}</div>;
 };
 

@@ -23,17 +23,15 @@ import {
 import { useWishlist } from "contexts/WishlistContext";
 import { useToast } from "hooks/use-toast";
 import { authClient } from "lib/auth-client";
-import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Profile = () => {
-  const { data: session, isPending } = authClient.useSession();
   const { wishlist } = useWishlist();
   const { toast } = useToast();
   const router = useRouter();
-  const user = session?.user;
-  console.log(user);
-  
+  const { logout, user } = useAuth();
+
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -43,72 +41,19 @@ const Profile = () => {
 
   // Update form data when user changes
   useEffect(() => {
-    if (session) {
+    if (user) {
       setFormData({
-        name: session.user.name || "",
-        email: session.user.email || "",
+        name: user.name || "",
+        email: user.email || "",
       });
     }
-  }, [session]);
-
-  // Handle authentication check
-  useEffect(() => {
-    if (!session) {
-      router.push("/login");
-    }
-  }, [session, router]);
-
-  // Show loading state
-  if (isPending) {
-    return (
-      <div className="min-h-screen bg-light-gray flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  // Don't render if no user (will redirect)
-  if (!session) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-light-gray">
-        <div className="text-center max-w-md">
-          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Heart className="h-8 w-8 text-gray-400" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-600 mb-4">
-            Login Required
-          </h2>
-          <p className="text-gray-500 mb-6">
-            Please login to view your wishlist
-          </p>
-          <Link href="/login">
-            <Button>Login</Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  }, [user]);
 
   const handleSave = () => {
     setIsEditing(false);
     toast({
       title: "Profile updated",
       description: "Your profile information has been saved successfully.",
-    });
-  };
-
-  const handleLogout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-        },
-      },
-    });
-
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out.",
     });
   };
 
@@ -127,7 +72,7 @@ const Profile = () => {
     });
   };
 
-  return (
+  return ( user && (
     <div className="min-h-screen bg-light-gray">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
@@ -203,7 +148,8 @@ const Profile = () => {
                   </div> */}
                 </div>
 
-                <div className="flex space-x-4 pt-4">
+                {/* No endpoints for editing the user info */}
+                {/* <div className="flex space-x-4 pt-4">
                   {isEditing ? (
                     <>
                       <Button onClick={handleSave}>Save Changes</Button>
@@ -219,7 +165,7 @@ const Profile = () => {
                       Edit Profile
                     </Button>
                   )}
-                </div>
+                </div> */}
               </CardContent>
             </Card>
           </div>
@@ -245,9 +191,15 @@ const Profile = () => {
                     <Mail className="h-4 w-4 text-blue-500" />
                     <span className="text-sm">Email</span>
                   </div>
-                  <span className={`text-xs ${user.emailVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'} px-2 py-1 rounded`}>
-                    {user.emailVerified ? 'Verified' : 'Not Verified'}
+                  {user?.emailVerified ? (
+                    <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                    Verified
                   </span>
+                  ) : (
+                    <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
+                      Not Verified
+                    </span>
+                  )}
                 </div>
 
                 {/* <div className="flex items-center justify-between">
@@ -277,19 +229,20 @@ const Profile = () => {
                   View Wishlist
                 </Button>
 
-                <Button
+                {/* No page for account settings yet */}
+                {/* <Button
                   variant="outline"
                   className="w-full justify-start"
                   onClick={() => router.push("/settings")}
                 >
                   <Settings className="h-4 w-4 mr-2" />
                   Account Settings
-                </Button>
+                </Button> */}
 
                 <Button
                   variant="outline"
                   className="w-full justify-start text-red-600 hover:text-red-700"
-                  onClick={() => handleLogout()}
+                  onClick={logout}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Log Out
@@ -309,7 +262,7 @@ const Profile = () => {
         </div>
       </div>
     </div>
-  );
+  ));
 };
 
 export default Profile;

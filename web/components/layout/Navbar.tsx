@@ -9,20 +9,14 @@ import { Badge } from 'components/ui/badge';
 import { useWishlist } from 'contexts/WishlistContext';
 import { Search, Heart, User, LogOut, Menu, X } from 'lucide-react';
 import Image from 'next/image';
-import { authClient } from 'lib/auth-client';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { wishlist } = useWishlist();
   const router = useRouter();
-  const {
-    data: session,
-    isPending,
-    error,
-    refetch
-  } = authClient.useSession()
-  const user = session?.user;
+  const { logout , user} = useAuth();
 
 
   const handleSearch = (e: React.FormEvent) => {
@@ -31,16 +25,6 @@ export const Navbar = () => {
       router.push(`/explore?search=${encodeURIComponent(searchQuery)}`);
       setSearchQuery('');
     }
-  };
-
-  const handleLogout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-        },
-      },
-    });
   };
 
   return (
@@ -86,7 +70,7 @@ export const Navbar = () => {
             </Link>
 
             {/* Wishlist Icon - Always visible when user is logged in */}
-            {session && (
+            {user && (
               <Link href="/wishlist">
                 <Button variant="ghost" size="sm" className="relative text-charcoal hover:text-primary">
                   <Heart className="w-5 h-5" />
@@ -100,7 +84,7 @@ export const Navbar = () => {
             )}
 
 
-            {session ? (
+            {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -108,7 +92,7 @@ export const Navbar = () => {
                       {/* <AvatarImage src={user.avatar} alt={user.name} />TODO : replace with SESSION.avatar */}
 
                       <AvatarFallback className="bg-gradient-cool text-white">
-                        {session.user.name.charAt(0).toUpperCase()}
+                        {user.name.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -116,9 +100,9 @@ export const Navbar = () => {
                 <DropdownMenuContent className="w-56 bg-white border" align="end" forceMount>
                   <div className="flex items-center justify-start gap-2 p-2">
                     <div className="flex flex-col space-y-1 leading-none">
-                      <p className="font-medium">{session.user.name}</p>
+                      <p className="font-medium">{user.name}</p>
                       <p className="w-[200px] truncate text-sm text-muted-foreground">
-                        {session.user.email}
+                        {user.email}
                       </p>
                     </div>
                   </div>
@@ -130,7 +114,7 @@ export const Navbar = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="" />
-                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
                     Log out
                   </DropdownMenuItem>
@@ -206,7 +190,7 @@ export const Navbar = () => {
                 Explore Properties
               </Link>
 
-              {session?.user ? (
+              {user ? (
                 <>
                   <Link
                     href="/wishlist"
@@ -235,7 +219,7 @@ export const Navbar = () => {
 
                   <button
                     onClick={() => {
-                      handleLogout();
+                      logout();
                       setIsMenuOpen(false);
                     }}
                     className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors font-medium"

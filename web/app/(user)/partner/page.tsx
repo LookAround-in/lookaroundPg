@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'compo
 import { Badge } from 'components/ui/badge';
 import { Home, Users, Star, TrendingUp, CheckCircle, Calendar, Camera, Eye, Crown, Award, PhoneOutgoing } from 'lucide-react';
 import { useToast } from 'hooks/use-toast';
-import { authClient } from '@/lib/auth-client';
 
 const benefits = [
     {
@@ -116,7 +115,6 @@ const Partner = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { data: session } = authClient.useSession();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
