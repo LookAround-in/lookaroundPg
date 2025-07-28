@@ -1,35 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-
+import { authClient } from "./auth-client";
+import { Session, UserRole } from "@/interfaces/session";
 
 export async function withAuth(
-    handler: (req: Request) => Promise<NextResponse>,
-    requiredRole?: string
+  handler: (req: Request) => Promise<NextResponse>,
+  requiredRole?: UserRole
 ) {
-    return async (req: NextRequest) => {
-        try {
-            // TODO : 
-            // Get the user role from the request
-            // compare it with the required role
-            // if(req.role !== requiredRole) return error
-            // if (req.role === requiredRole) return handler(req); 
+  return async (req: NextRequest) => {
+    try {
+      const session = (await authClient.getSession(req)) as unknown as Session;
+      const userRole = session?.user?.role;
+      if (requiredRole && userRole !== requiredRole) {
+        return NextResponse.json(
+          { success: false, message: "Forbidden: Insufficient permissions" },
+          { status: 403 }
+        );
+      }
 
-            return handler(req);
-        } catch (error) {
-            console.error("Auth middleware error:", error);
-            return NextResponse.json(
-                { success: false, message: "Authentication error" },
-                { status: 401 }
-            );
-        }
-    };
+      return handler(req);
+    } catch (error) {
+      console.error("Auth middleware error:", error);
+      return NextResponse.json(
+        { success: false, message: "Authentication error" },
+        { status: 401 }
+      );
+    }
+  };
 }
 
 export const isAdmin = (handler: (req: Request) => Promise<NextResponse>) =>
-    withAuth(handler, "admin");
+  withAuth(handler, UserRole.ADMIN);
 
 export const isHost = (handler: (req: Request) => Promise<NextResponse>) =>
-    withAuth(handler, "host");
+  withAuth(handler, UserRole.HOST);
 
 export const isUser = (handler: (req: Request) => Promise<NextResponse>) =>
-    withAuth(handler, "user");
+  withAuth(handler, UserRole.USER);

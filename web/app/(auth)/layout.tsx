@@ -1,7 +1,6 @@
 "use client";
 import React, { ReactNode } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader } from "lucide-react";
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
   const { isLoading } = useAuth();
