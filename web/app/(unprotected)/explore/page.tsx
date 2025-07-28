@@ -27,7 +27,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ExploreApiResponse } from "@/interfaces/property";
 import { SharingType } from "@/interfaces/pg";
 import PropertySkeleton from "@/components/properties/PropertySkeleton";
-import formatText from "@/utils/formatText";
+import formatText from "@/utils/format";
 
 const availableAmenities = [
   "PARKING",

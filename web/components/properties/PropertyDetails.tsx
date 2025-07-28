@@ -50,7 +50,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import formatText from "@/utils/formatText";
+import formatText, { formatRating } from "@/utils/format";
 import { useAuth } from "@/contexts/AuthContext";
 import { PgRequestData } from "@/interfaces/pg";
 import Review from "../review/Review";
@@ -633,13 +633,13 @@ const PropertyDetails = () => {
                     )}
                   </div>
 
-                  {/*.avgRating */}
+                  {/*Rating */}
                   {property.avgRating && (
                     <div className="flex items-center space-x-2">
                       <div className="flex items-center">
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
                         <span className="ml-1 font-semibold">
-                          {property.avgRating}
+                          {formatRating(property.avgRating)}
                         </span>
                       </div>
                       {property.reviews && (
@@ -850,7 +850,7 @@ const PropertyDetails = () => {
                       <div className="flex items-center">
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
                         <span className="ml-1 font-semibold">
-                          {property.avgRating}
+                          {formatRating(property.avgRating)}
                         </span>
                       </div>
                       <span className="text-gray-600">
@@ -896,7 +896,7 @@ const PropertyDetails = () => {
                   {property.avgRating && (
                     <div className="flex items-center justify-center space-x-1">
                       <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                      <span className="font-medium">{property.avgRating}</span>
+                      <span className="font-medium">{formatRating(property.avgRating)}</span>
                       <span className="text-gray-600">
                         ({property.reviews?.length || 0} reviews)
                       </span>
