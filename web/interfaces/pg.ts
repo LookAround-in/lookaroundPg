@@ -83,8 +83,6 @@ export interface PgData {
   moveInStatus: MoveInStatus;
   virtualTourUrl?: string;
   images: string[];
-  rating: number;
-  reviews: string[];
 }
 
 // Response interfaces
@@ -120,8 +118,6 @@ export interface SharingTypeDetails {
 }
 
 export type PgCreateInput = Omit<PgData, "id" | "createdAt" | "updatedAt"> & {
-  rating?: number;
-  reviews?: string[];
 };
 
 export interface PgRequestData {

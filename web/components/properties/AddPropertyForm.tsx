@@ -36,8 +36,9 @@ import { Switch } from "@/components/ui/switch";
 import { Plus, Trash2, Upload, X, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation , useQuery} from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
+
 
 type PgFormType = z.infer<typeof PgFormSchema>;
 
@@ -57,6 +58,17 @@ const createProperty = async (formData: FormData) => {
   return response.json();
 };
 
+const getAllHosts = async () => {
+  const response = await fetch("/api/v1/host");
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `Failed to fetch hosts: ${response.status} ${errorText}`
+    );
+  }
+  return response.json();
+}
+
 function AddPropertyForm() {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -64,6 +76,12 @@ function AddPropertyForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const {toast} = useToast();
+
+  const {data: hostsData} = useQuery({
+    queryKey: ["hosts"],
+    queryFn: getAllHosts,
+  });
+  const hosts = hostsData?.data || [];
 
   const createPropertyMutation = useMutation({
     mutationFn: createProperty,
@@ -96,7 +114,7 @@ function AddPropertyForm() {
     mode: "onSubmit",
     defaultValues: {
       title: "",
-      hostId: "be310878-701d-4f71-bb59-a070d715c935", // TODO : get all the hosts and get id's dynamically
+      hostId: "",
       description: "",
       propertyType: PropertyType.COLIVE,
       foodIncluded: false,
@@ -111,8 +129,8 @@ function AddPropertyForm() {
       moveInStatus: MoveInStatus.IMMEDIATE,
       virtualTourUrl: "",
       images: [],
-      rating: 0,
-      reviews: [],
+      // rating: 0,
+      // reviews: [],
     },
   });
 
@@ -125,17 +143,17 @@ function AddPropertyForm() {
     name: "sharingTypes",
   });
 
-  const reviewFields = propertyForm.watch("reviews") || [];
+  // const reviewFields = propertyForm.watch("reviews") || [];
   
-  const appendReview = (value: string = "") => {
-    propertyForm.setValue("reviews", [...reviewFields, value]);
-  };
+  // const appendReview = (value: string = "") => {
+  //   propertyForm.setValue("reviews", [...reviewFields, value]);
+  // };
   
-  const removeReview = (index: number) => {
-    const updated = [...reviewFields];
-    updated.splice(index, 1);
-    propertyForm.setValue("reviews", updated);
-  };
+  // const removeReview = (index: number) => {
+  //   const updated = [...reviewFields];
+  //   updated.splice(index, 1);
+  //   propertyForm.setValue("reviews", updated);
+  // };
 
   const addSharingType = () => {
     appendSharingType({
@@ -149,9 +167,9 @@ function AddPropertyForm() {
     });
   };
 
-  const addReview = () => {
-    appendReview("");
-  };
+  // const addReview = () => {
+  //   appendReview("");
+  // };
 
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -206,18 +224,20 @@ function AddPropertyForm() {
       formData.append("longitude", data.longitude.toString());
       formData.append("pgRules", data.pgRules || "");
       formData.append("moveInStatus", data.moveInStatus);
-      formData.append("virtualTourUrl", data.virtualTourUrl || "");
-      formData.append("rating", data.rating.toString()); 
+      formData.append("virtualTourUrl", data.virtualTourUrl || ""); 
       // Add array fields as JSON strings
       formData.append("furnitures", JSON.stringify(data.furnitures));
       formData.append("amenities", JSON.stringify(data.amenities));
-      formData.append("reviews", JSON.stringify(data.reviews));
       formData.append("sharingTypes", JSON.stringify(data.sharingTypes));
       // Add images
       selectedImages.forEach((file) => {
         formData.append("images", file);
       });
-      await createPropertyMutation.mutateAsync(formData);
+      console.log("Form data prepared:");
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+      // await createPropertyMutation.mutateAsync(formData);
     } catch (error) {
       console.error("Form submission error:", error);
       toast({
@@ -248,6 +268,38 @@ function AddPropertyForm() {
                 </FormControl>
                 <FormDescription>
                   This is your property's public display name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={propertyForm.control}
+            name="hostId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Host *</FormLabel>
+                <Select 
+                  onValueChange={field.onChange} 
+                  value={field.value}
+                  defaultValue={""}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Host" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {hosts.map((host) => (
+                      <SelectItem key={host.id} value={host.id}>
+                        {formatText(host?.user?.name)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  Select the host of the property.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -613,7 +665,7 @@ function AddPropertyForm() {
             )}
           />
           
-          <FormField
+          {/* <FormField
             control={propertyForm.control}
             name="rating"
             render={({ field }) => (
@@ -639,10 +691,10 @@ function AddPropertyForm() {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           
           {/* Reviews section - same as before */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <FormLabel className="text-lg font-semibold">
@@ -703,7 +755,7 @@ function AddPropertyForm() {
                 </Button>
               </div>
             ))}
-          </div>
+          </div> */}
 
           {/* Sharing Types section with improved validation */}
           <div className="space-y-4">

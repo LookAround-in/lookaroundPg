@@ -6,8 +6,6 @@ import {
   AmenityType, 
   SharingType, 
   MoveInStatus,
-  type PgData,
-  type SharingTypeDetails
 } from '../interfaces/pg';
 
 // Enum schemas based on your existing enums
@@ -63,7 +61,7 @@ export const PgDataSchema = z.object({
     .max(100, 'Title must be less than 100 characters')
     .trim(),
   hostId: z.string()
-    .min(1, 'Host ID is required'),
+    .uuid('ID must be a valid UUID'),
   description: z.string()
     .min(10, 'Description must be at least 10 characters')
     .max(1000, 'Description must be less than 1000 characters')
@@ -108,10 +106,6 @@ export const PgDataSchema = z.object({
     .optional(),
   images: z.array(z.string().url('Each image must be a valid URL'))
     .max(10, 'Maximum 10 images allowed'),
-  rating: z.number()
-    .min(0, 'Rating must be between 0 and 5')
-    .max(5, 'Rating must be between 0 and 5'),
-  reviews: z.array(z.string())
 })
 
 // Create PG Schema (without ID for creation)
@@ -126,8 +120,6 @@ export const UpdatePgDataSchema = PgDataSchema.partial().extend({
 export const PgFormSchema = CreatePgDataSchema.extend({
   latitude: z.union([z.number(), z.string()]).transform((val) => Number(val)),
   longitude: z.union([z.number(), z.string()]).transform((val) => Number(val)),
-  rating: z.union([z.number(), z.string()]).transform((val) => Number(val)),
-  // Allow pgRules as array that gets converted to string
   pgRules: z.union([
     z.string().min(1, 'PG rules cannot be empty'),
     z.array(z.string().min(1, 'Rule cannot be empty'))
@@ -136,9 +128,9 @@ export const PgFormSchema = CreatePgDataSchema.extend({
     return Array.isArray(val) ? val.join(', ') : val;
   }).optional(),
 }).refine((data) => {
-  return !isNaN(data.latitude) && !isNaN(data.longitude) && !isNaN(data.rating);
+  return !isNaN(data.latitude) && !isNaN(data.longitude);
 }, {
-  message: "Latitude, longitude, and rating must be valid numbers"
+  message: "Latitude and longitude must be valid numbers"
 });
 
 // Sharing Type form schema for adding individual sharing types
@@ -160,23 +152,6 @@ export const SharingTypeFormSchema = z.object({
     .transform((val) => Number(val))
     .refine((val) => val > 0, 'Availability must be greater than 0'),
 });
-
-// Validation helper functions
-export const validatePgData = (data: unknown) => {
-  return PgDataSchema.safeParse(data);
-};
-
-export const validateCreatePgData = (data: unknown) => {
-  return CreatePgDataSchema.safeParse(data);
-};
-
-export const validatePgForm = (data: unknown) => {
-  return PgFormSchema.safeParse(data);
-};
-
-export const validateSharingType = (data: unknown) => {
-  return SharingTypeFormSchema.safeParse(data);
-};
 
 // Error formatting helper
 export const formatZodErrors = (errors: z.ZodError) => {
