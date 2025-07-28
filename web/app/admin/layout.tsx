@@ -1,12 +1,34 @@
 "use client";
-import React, { ReactNode } from 'react'
+import React, { ReactNode } from "react";
+import { redirect } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { Loader } from "lucide-react";
 
-const AuthLayout = ({ children }: { children: ReactNode }) => {
+const AdminLayout = ({ children }: { children: ReactNode }) => {
+  const { user, isLoading } = useAuth();
+  console.log(user);
 
-    // TODO : logic to redirect if user is not logged in as admin
+  if (isLoading) {
     return (
-        <div>{children}</div>
-    )
-}
+      <div className="min-h-screen flex items-center justify-center bg-light-gray">
+        <div className="text-center">
+          <Loader className="animate-spin sm:h-24 sm:w-24 h-16 w-16 text-primary" />
+          <p className="text-gray-900 font-thin text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
-export default AuthLayout
+  if (!user) {
+    redirect("/login");
+  }
+
+  if (user.role !== "admin" && user.role !== "super_admin") {
+    console.log("User role:", user.role);
+    redirect("/");
+  }
+
+  return <div>{children}</div>;
+};
+
+export default AdminLayout;

@@ -178,13 +178,17 @@ const Index = () => {
           </div>
 
           {/* Loading State */}
-          {(featuredPropertiesData.isLoading || featuredPropertiesData.isPending) && (
+          {(featuredPropertiesData.isLoading ||
+            featuredPropertiesData.isPending) && (
             <>
               {/* Mobile Horizontal Scroll Skeleton */}
               <div className="md:hidden">
                 <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
                   {Array.from({ length: 3 }).map((_, index) => (
-                    <div key={`mobile-skeleton-${index}`} className="flex-shrink-0 w-80">
+                    <div
+                      key={`mobile-skeleton-${index}`}
+                      className="flex-shrink-0 w-80"
+                    >
                       <PropertySkeleton />
                     </div>
                   ))}
@@ -224,36 +228,36 @@ const Index = () => {
           {!featuredPropertiesData.isLoading &&
             !featuredPropertiesData.isPending &&
             !featuredPropertiesData.isError && (
-            <>
-              {/* Mobile Horizontal Scroll */}
-              <div className="md:hidden">
-                <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+              <>
+                {/* Mobile Horizontal Scroll */}
+                <div className="md:hidden">
+                  <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+                    {featuredProperties.map((property, index) => (
+                      <div
+                        key={property.id}
+                        className="flex-shrink-0 w-80 animate-fadeInUp"
+                        style={{ animationDelay: `${index * 0.1}s` }}
+                      >
+                        <PropertyCard property={property} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Desktop Grid */}
+                <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {featuredProperties.map((property, index) => (
                     <div
                       key={property.id}
-                      className="flex-shrink-0 w-80 animate-fadeInUp"
+                      className="animate-fadeInUp"
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
                       <PropertyCard property={property} />
                     </div>
                   ))}
                 </div>
-              </div>
-
-              {/* Desktop Grid */}
-              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredProperties.map((property, index) => (
-                  <div
-                    key={property.id}
-                    className="animate-fadeInUp"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <PropertyCard property={property} />
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
+              </>
+            )}
         </div>
       </section>
 
@@ -277,13 +281,17 @@ const Index = () => {
           </div>
 
           {/* Loading State */}
-          {(trendingPropertiesData.isLoading || trendingPropertiesData.isPending) && (
+          {(trendingPropertiesData.isLoading ||
+            trendingPropertiesData.isPending) && (
             <>
               {/* Mobile Horizontal Scroll Skeleton */}
               <div className="md:hidden">
                 <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
                   {Array.from({ length: 3 }).map((_, index) => (
-                    <div key={`mobile-trending-skeleton-${index}`} className="flex-shrink-0 w-80">
+                    <div
+                      key={`mobile-trending-skeleton-${index}`}
+                      className="flex-shrink-0 w-80"
+                    >
                       <PropertySkeleton />
                     </div>
                   ))}
@@ -293,7 +301,9 @@ const Index = () => {
               {/* Desktop Grid Skeleton */}
               <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: 3 }).map((_, index) => (
-                  <PropertySkeleton key={`desktop-trending-skeleton-${index}`} />
+                  <PropertySkeleton
+                    key={`desktop-trending-skeleton-${index}`}
+                  />
                 ))}
               </div>
             </>
@@ -323,36 +333,36 @@ const Index = () => {
           {!trendingPropertiesData.isLoading &&
             !trendingPropertiesData.isPending &&
             !trendingPropertiesData.isError && (
-            <>
-              {/* Mobile Horizontal Scroll */}
-              <div className="md:hidden">
-                <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+              <>
+                {/* Mobile Horizontal Scroll */}
+                <div className="md:hidden">
+                  <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+                    {trendingProperties.map((property, index) => (
+                      <div
+                        key={property.id}
+                        className="flex-shrink-0 w-80 animate-fadeInUp"
+                        style={{ animationDelay: `${index * 0.1}s` }}
+                      >
+                        <PropertyCard property={property} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Desktop Grid */}
+                <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {trendingProperties.map((property, index) => (
                     <div
                       key={property.id}
-                      className="flex-shrink-0 w-80 animate-fadeInUp"
+                      className="animate-fadeInUp"
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
                       <PropertyCard property={property} />
                     </div>
                   ))}
                 </div>
-              </div>
-
-              {/* Desktop Grid */}
-              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {trendingProperties.map((property, index) => (
-                  <div
-                    key={property.id}
-                    className="animate-fadeInUp"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <PropertyCard property={property} />
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
+              </>
+            )}
         </div>
       </section>
 
