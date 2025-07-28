@@ -96,7 +96,7 @@ function AddPropertyForm() {
     mode: "onSubmit",
     defaultValues: {
       title: "",
-      hostId: "hostprofile-001",
+      hostId: "be310878-701d-4f71-bb59-a070d715c935", // TODO : get all the hosts and get id's dynamically
       description: "",
       propertyType: PropertyType.COLIVE,
       foodIncluded: false,
