@@ -771,7 +771,8 @@ const PropertyDetails = () => {
             )}
 
             {/* Nearby Facilities */}
-            <Card>
+            { property.nearbyFacilities && property.nearbyFacilities.length > 0 && (
+              <Card>
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4 flex items-center">
                   <MapPin className="h-5 w-5 mr-2" />
@@ -799,6 +800,7 @@ const PropertyDetails = () => {
                 </div>
               </CardContent>
             </Card>
+            )}
 
             {/* Amenities*/}
             {property.amenities && property.amenities.length > 0 && (
@@ -841,11 +843,11 @@ const PropertyDetails = () => {
             )}
 
             {/* Reviews Section */}
-            {property.avgRating && (
+            
               <Card className="">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-semibold">Guest Reviews</h3>
+                    <h3 className="text-lg font-semibold">{property.reviews?.length > 0 ? "Guest Reviews" : "No Reviews Yet"}</h3>
                     <div className="flex items-center space-x-2">
                       <div className="flex items-center">
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
@@ -863,7 +865,7 @@ const PropertyDetails = () => {
                   </div>
                 </CardContent>
               </Card>
-            )}
+            
           </div>
 
           {/* Sidebar */}
@@ -893,7 +895,7 @@ const PropertyDetails = () => {
                     <p className="text-gray-600">Property Host</p>
                   </div>
 
-                  {property.avgRating && (
+                  
                     <div className="flex items-center justify-center space-x-1">
                       <Star className="h-4 w-4 text-yellow-400 fill-current" />
                       <span className="font-medium">{formatRating(property.avgRating)}</span>
@@ -901,7 +903,7 @@ const PropertyDetails = () => {
                         ({property.reviews?.length || 0} reviews)
                       </span>
                     </div>
-                  )}
+                  
 
                   <div className="space-y-2">
                     {!showHostInfo ? (

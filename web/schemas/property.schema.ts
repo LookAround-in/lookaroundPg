@@ -23,33 +23,39 @@ export const SharingTypeDetailsSchema = z.object({
     .min(1, 'Description is required')
     .max(200, 'Description must be less than 200 characters')
     .optional(),
-  price: z.number()
-    .min(0, 'Price must be non-negative'),
-  availability: z.number()
-    .int('Availability must be a whole number')
-    .min(1, 'Availability must be at least 1'),
-  pricePerMonth: z.number()
-    .min(1, 'Monthly price must be greater than 0'),
-  pricePerDay: z.number()
-    .min(0, 'Daily price must be non-negative')
+  price: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Price must be a non-negative number'),
+  availability: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && Number.isInteger(val) && val >= 1, 'Availability must be a whole number greater than 0'),
+  pricePerMonth: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val > 0, 'Monthly price must be greater than 0'),
+  pricePerDay: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Daily price must be non-negative')
     .optional(),
-  deposit: z.number()
-    .min(0, 'Deposit must be non-negative'),
-  refundableDeposit: z.boolean()
+  deposit: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Deposit must be non-negative'),
+  refundableAmount: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Refundable amount must be non-negative'),
+  refundableDeposit: z.boolean().optional(),
+  maintainanceCharges: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Maintenance charges must be non-negative')
     .optional(),
-  refundableAmount: z.number()
-    .min(0, 'Refundable amount must be non-negative'),
-  maintainanceCharges: z.number()
-    .min(0, 'Maintenance charges must be non-negative')
+  electricityCharges: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Electricity charges must be non-negative')
     .optional(),
-  electricityCharges: z.number()
-    .min(0, 'Electricity charges must be non-negative')
+  waterCharges: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Water charges must be non-negative')
     .optional(),
-  waterCharges: z.number()
-    .min(0, 'Water charges must be non-negative')
-    .optional(),
-  maintenanceIncluded: z.boolean()
-    .optional()
+  maintenanceIncluded: z.boolean().optional(),
 })
 
 // Main PG Data Schema

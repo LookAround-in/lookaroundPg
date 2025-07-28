@@ -49,6 +49,17 @@ export async function GET(
                 pricePerMonth: "asc",
               },
             },
+            reviews: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
           },
         },
       },
