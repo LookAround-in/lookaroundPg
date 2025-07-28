@@ -34,7 +34,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { data: session, isPending, error } = authClient.useSession();
 
   const user = session?.user || null;
-  console.log("User in AuthProvider:", user);
   const isLoading = isPending;
 
   const logout = async () => {

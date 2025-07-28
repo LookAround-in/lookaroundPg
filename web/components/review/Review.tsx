@@ -326,7 +326,7 @@ export default function Review({
         </Button>
       )}
       {/* Add/Edit Review Form */}
-      {user && (
+      {user ? (
         <Form {...form}>
           <p className="text-lg font-semibold">
             {editingReview ? "Edit Review" : "Add a Review"}
@@ -401,6 +401,10 @@ export default function Review({
             </Button>
           </form>
         </Form>
+      ): (
+        <div>
+          <p className="text-lg font-thin">Please <a href="/login" className="text-primary">login</a> to leave a review.</p>
+        </div>
       )}
     </div>
   );
