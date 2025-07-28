@@ -11,7 +11,7 @@ const UserLayout = ({ children }: { children: ReactNode }) => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-gray">
         <div className="text-center">
-          <Loader className="animate-spin sm:h-24 sm:w-24 h-16 w-16 text-primary" />
+          <img src="/logo.png" alt="Loading" className="animate-spin sm:h-24 sm:w-24 h-16 w-16 animate-bounce" />
           <p className="text-gray-900 font-thin text-lg">Loading...</p>
         </div>
       </div>

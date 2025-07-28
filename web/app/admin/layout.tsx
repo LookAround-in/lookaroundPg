@@ -1,12 +1,24 @@
 "use client";
-import React, { ReactNode } from 'react'
+import React, { ReactNode } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
-const AuthLayout = ({ children }: { children: ReactNode }) => {
+const AdminLayout = ({ children }: { children: ReactNode }) => {
+  const { isLoading } = useAuth();
 
-    // TODO : logic to redirect if user is not logged in as admin
+  // Show loading while checking authentication
+  if (isLoading) {
     return (
-        <div>{children}</div>
-    )
-}
+      <div className="min-h-screen flex items-center justify-center bg-light-gray">
+        <div className="text-center">
+          <img src="/logo.png" alt="Loading" className="animate-spin sm:h-24 sm:w-24 h-16 w-16 animate-bounce" />
+          <p className="text-gray-900 font-thin text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
-export default AuthLayout
+  // Render auth pages for unauthenticated users
+  return <div>{children}</div>;
+};
+
+export default AdminLayout;

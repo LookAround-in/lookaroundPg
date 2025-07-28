@@ -1,5 +1,11 @@
 "use client";
-import React, { useState, useMemo, useCallback, useTransition, useEffect } from "react";
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useTransition,
+  useEffect,
+} from "react";
 import { PropertyCard } from "components/properties/PropertyCard";
 import { Button } from "components/ui/button";
 import { Label } from "components/ui/label";
@@ -20,6 +26,8 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetFooter,
+  SheetClose,
 } from "components/ui/sheet";
 import { Search, Filter, X, SlidersHorizontal, Star } from "lucide-react";
 import { useDebouncedCallback } from "use-debounce";
@@ -97,37 +105,42 @@ const Explore = () => {
   }, [data]);
 
   //Debounced price range update
-  const debouncedSetPriceRange = useDebouncedCallback(
-    (value: number[]) => {
-      startTransition(() => {
-        setDebouncedPriceRange(value);
-      });
-    },
-    300
-  );
+  const debouncedSetPriceRange = useDebouncedCallback((value: number[]) => {
+    startTransition(() => {
+      setDebouncedPriceRange(value);
+    });
+  }, 300);
 
   //Dynamic price changes based on propertues
-  const priceRange = useMemo(()=>{
-    if(properties.length === 0) return {min: 500, max: 50000};
-    const allPrices = properties.flatMap(property => 
-      property.sharingTypes.map(st => st.pricePerMonth)
-    ).filter(price => price > 0);
+  const priceRange = useMemo(() => {
+    if (properties.length === 0) return { min: 500, max: 50000 };
+    const allPrices = properties
+      .flatMap((property) =>
+        property.sharingTypes.map((st) => st.pricePerMonth)
+      )
+      .filter((price) => price > 0);
     //fallback for no prices
-    if (allPrices.length === 0) return {min: 500, max: 50000};
+    if (allPrices.length === 0) return { min: 500, max: 50000 };
     const minPrice = Math.min(...allPrices);
     const maxPrice = Math.max(...allPrices);
     return {
       min: Math.max(500, Math.floor(minPrice * 0.8)),
-      max: Math.ceil(maxPrice * 1.2)
-    }
+      max: Math.ceil(maxPrice * 1.2),
+    };
   }, [properties]);
 
-  const [priceFilter, setPriceFilter] = useState([priceRange.min, priceRange.max]);
-  const [debouncedPriceRange, setDebouncedPriceRange] = useState([priceRange.min, priceRange.max]);
+  const [priceFilter, setPriceFilter] = useState([
+    priceRange.min,
+    priceRange.max,
+  ]);
+  const [debouncedPriceRange, setDebouncedPriceRange] = useState([
+    priceRange.min,
+    priceRange.max,
+  ]);
 
-  useEffect(()=>{
-     setPriceFilter([priceRange.min, priceRange.max]);
-     setDebouncedPriceRange([priceRange.min, priceRange.max]);
+  useEffect(() => {
+    setPriceFilter([priceRange.min, priceRange.max]);
+    setDebouncedPriceRange([priceRange.min, priceRange.max]);
   }, [priceRange.min, priceRange.max]);
 
   //Handle immediate price range display
@@ -303,7 +316,8 @@ const Explore = () => {
     propertyType !== "any",
     sharingType !== "any",
     rating > 0,
-    debouncedPriceRange[0] !== priceRange.min || debouncedPriceRange[1] !== priceRange.max,
+    debouncedPriceRange[0] !== priceRange.min ||
+      debouncedPriceRange[1] !== priceRange.max,
   ].filter(Boolean).length;
 
   const locations = useMemo(
@@ -539,7 +553,7 @@ const Explore = () => {
       handlePriceRangeChange,
       selectedCity,
       locations,
-      priceFilter
+      priceFilter,
     ]
   );
 
@@ -695,6 +709,11 @@ const Explore = () => {
               </SheetTitle>
             </SheetHeader>
             <div className="py-6">{FilterContent}</div>
+            <SheetFooter>
+              <SheetClose asChild>
+                <Button variant="outline">Close</Button>
+              </SheetClose>
+            </SheetFooter>
           </SheetContent>
         </Sheet>
       </div>
