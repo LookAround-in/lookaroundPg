@@ -13,7 +13,7 @@ import {
   AmenityType,
 } from "@/interfaces/pg";
 import { Button } from "@/components/ui/button";
-import formatText from "@/utils/formatText";
+import formatText from "@/utils/format";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -36,7 +36,8 @@ import { Switch } from "@/components/ui/switch";
 import { Plus, Trash2, Upload, X, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useToast } from "@/components/ui/use-toast";
 
 type PgFormType = z.infer<typeof PgFormSchema>;
 
@@ -56,12 +57,28 @@ const createProperty = async (formData: FormData) => {
   return response.json();
 };
 
+const getAllHosts = async () => {
+  const response = await fetch("/api/v1/host");
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to fetch hosts: ${response.status} ${errorText}`);
+  }
+  return response.json();
+};
+
 function AddPropertyForm() {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const { data: hostsData } = useQuery({
+    queryKey: ["hosts"],
+    queryFn: getAllHosts,
+  });
+  const hosts = hostsData?.data || [];
 
   const createPropertyMutation = useMutation({
     mutationFn: createProperty,
@@ -81,7 +98,11 @@ function AddPropertyForm() {
     onError: (error: Error) => {
       console.error("Mutation error:", error);
       setIsSubmitting(false);
-      alert(`Error creating property: ${error.message}`);
+      toast({
+        title: "Error",
+        description: `Failed to create property: ${error.message}`,
+        variant: "destructive",
+      });
     },
   });
 
@@ -90,7 +111,7 @@ function AddPropertyForm() {
     mode: "onSubmit",
     defaultValues: {
       title: "",
-      hostId: "hostprofile-001",
+      hostId: "",
       description: "",
       propertyType: PropertyType.COLIVE,
       foodIncluded: false,
@@ -105,8 +126,6 @@ function AddPropertyForm() {
       moveInStatus: MoveInStatus.IMMEDIATE,
       virtualTourUrl: "",
       images: [],
-      rating: 0,
-      reviews: [],
     },
   });
 
@@ -119,18 +138,6 @@ function AddPropertyForm() {
     name: "sharingTypes",
   });
 
-  const reviewFields = propertyForm.watch("reviews") || [];
-  
-  const appendReview = (value: string = "") => {
-    propertyForm.setValue("reviews", [...reviewFields, value]);
-  };
-  
-  const removeReview = (index: number) => {
-    const updated = [...reviewFields];
-    updated.splice(index, 1);
-    propertyForm.setValue("reviews", updated);
-  };
-
   const addSharingType = () => {
     appendSharingType({
       type: SharingType.SINGLE,
@@ -142,11 +149,6 @@ function AddPropertyForm() {
       availability: 1,
     });
   };
-
-  const addReview = () => {
-    appendReview("");
-  };
-
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
@@ -172,14 +174,21 @@ function AddPropertyForm() {
   const onSubmit = async (data: PgFormType) => {
     try {
       if (!data.sharingTypes || data.sharingTypes.length === 0) {
-        alert("Please add at least one sharing type");
+        toast({
+          title: "Error",
+          description: "Please add at least one sharing type.",
+          variant: "destructive",
+        });
         return;
       }
       if (selectedImages.length === 0) {
-        alert("Please select at least one image");
+        toast({
+          title: "Error",
+          description: "Please select at least one image.",
+          variant: "destructive",
+        });
         return;
       }
-      setIsSubmitting(true);
       const formData = new FormData();
       // Add basic form fields - using validated data from React Hook Form
       formData.append("title", data.title);
@@ -194,11 +203,9 @@ function AddPropertyForm() {
       formData.append("pgRules", data.pgRules || "");
       formData.append("moveInStatus", data.moveInStatus);
       formData.append("virtualTourUrl", data.virtualTourUrl || "");
-      formData.append("rating", data.rating.toString()); 
       // Add array fields as JSON strings
       formData.append("furnitures", JSON.stringify(data.furnitures));
       formData.append("amenities", JSON.stringify(data.amenities));
-      formData.append("reviews", JSON.stringify(data.reviews));
       formData.append("sharingTypes", JSON.stringify(data.sharingTypes));
       // Add images
       selectedImages.forEach((file) => {
@@ -207,8 +214,11 @@ function AddPropertyForm() {
       await createPropertyMutation.mutateAsync(formData);
     } catch (error) {
       console.error("Form submission error:", error);
-      alert("Error preparing form data. Please try again.");
-      setIsSubmitting(false);
+      toast({
+        title: "Error",
+        description: `Failed to prepare form data: ${error}`,
+        variant: "destructive",
+      });
     }
   };
 
@@ -216,7 +226,10 @@ function AddPropertyForm() {
     <div className="max-w-3xl mx-auto p-6 bg-gray-100 border-2 border-pink-600 shadow-lg rounded-lg m-2 sm:m-6">
       <h2 className="text-2xl font-bold mb-4">Add New Property</h2>
       <Form {...propertyForm}>
-        <form onSubmit={propertyForm.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          onSubmit={propertyForm.handleSubmit(onSubmit)}
+          className="space-y-8"
+        >
           <FormField
             control={propertyForm.control}
             name="title"
@@ -237,7 +250,39 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
-          
+
+          <FormField
+            control={propertyForm.control}
+            name="hostId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Host *</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  defaultValue={""}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Host" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {hosts.map((host) => (
+                      <SelectItem key={host.id} value={host.id}>
+                        {formatText(host?.user?.name)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  Select the host of the property.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={propertyForm.control}
             name="description"
@@ -258,15 +303,15 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={propertyForm.control}
             name="propertyType"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Property Type *</FormLabel>
-                <Select 
-                  onValueChange={field.onChange} 
+                <Select
+                  onValueChange={field.onChange}
                   value={field.value}
                   defaultValue={PropertyType.COLIVE}
                 >
@@ -290,7 +335,7 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={propertyForm.control}
             name="foodIncluded"
@@ -312,15 +357,15 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={propertyForm.control}
             name="furnishing"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Furnishing *</FormLabel>
-                <Select 
-                  onValueChange={field.onChange} 
+                <Select
+                  onValueChange={field.onChange}
                   value={field.value}
                   defaultValue={FurnishingType.FURNISHED}
                 >
@@ -344,7 +389,7 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={propertyForm.control}
             name="address"
@@ -355,7 +400,7 @@ function AddPropertyForm() {
                   <Input
                     placeholder="123 Main Street, Koramangala, Bangalore"
                     {...field}
-                    value={field.value || ""} 
+                    value={field.value || ""}
                   />
                 </FormControl>
                 <FormDescription>
@@ -365,7 +410,7 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={propertyForm.control}
             name="latitude"
@@ -374,14 +419,9 @@ function AddPropertyForm() {
                 <FormLabel>Property Latitude</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    step="any"
                     placeholder="12.9716"
-                    value={field.value?.toString() || ""}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      field.onChange(value === "" ? 0 : parseFloat(value));
-                    }}
+                    {...field}
+                    value={field.value || ""}
                   />
                 </FormControl>
                 <FormDescription>
@@ -391,7 +431,7 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={propertyForm.control}
             name="longitude"
@@ -400,14 +440,9 @@ function AddPropertyForm() {
                 <FormLabel>Property Longitude</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    step="any"
                     placeholder="77.5946"
-                    value={field.value?.toString() || ""}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      field.onChange(value === "" ? 0 : parseFloat(value));
-                    }}
+                    {...field}
+                    value={field.value || ""}
                   />
                 </FormControl>
                 <FormDescription>
@@ -417,8 +452,7 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
-          
-  
+
           <FormField
             control={propertyForm.control}
             name="furnitures"
@@ -436,41 +470,46 @@ function AddPropertyForm() {
                       key={furniture}
                       control={propertyForm.control}
                       name="furnitures"
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={furniture}
-                          className="flex flex-row items-center gap-2"
-                        >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(furniture) || false}
-                              onCheckedChange={(checked) => {
-                                const currentValue = field.value || [];
-                                return checked
-                                  ? field.onChange([...currentValue, furniture])
-                                  : field.onChange(
-                                      currentValue.filter(
-                                        (item) => item !== furniture
-                                      )
-                                    );
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-normal">
-                            {formatText(furniture)}
-                          </FormLabel>
-                        </FormItem>
-                      );
-                    }}
-                  />
-                ))}
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={furniture}
+                            className="flex flex-row items-center gap-2"
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={
+                                  field.value?.includes(furniture) || false
+                                }
+                                onCheckedChange={(checked) => {
+                                  const currentValue = field.value || [];
+                                  return checked
+                                    ? field.onChange([
+                                        ...currentValue,
+                                        furniture,
+                                      ])
+                                    : field.onChange(
+                                        currentValue.filter(
+                                          (item) => item !== furniture
+                                        )
+                                      );
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="text-sm font-normal">
+                              {formatText(furniture)}
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  ))}
                 </div>
                 <FormMessage />
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={propertyForm.control}
             name="amenities"
@@ -484,39 +523,41 @@ function AddPropertyForm() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {Object.values(AmenityType).map((amenity) => (
-                  <FormField
-                    key={amenity}
-                    control={propertyForm.control}
-                    name="amenities"
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={amenity}
-                          className="flex flex-row items-center gap-2"
-                        >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(amenity) || false}
-                              onCheckedChange={(checked) => {
-                                const currentValue = field.value || [];
-                                return checked
-                                  ? field.onChange([...currentValue, amenity])
-                                  : field.onChange(
-                                      currentValue.filter(
-                                        (item) => item !== amenity
-                                      )
-                                    );
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-normal">
-                            {formatText(amenity)}
-                          </FormLabel>
-                        </FormItem>
-                      );
-                    }}
-                  />
-                ))}
+                    <FormField
+                      key={amenity}
+                      control={propertyForm.control}
+                      name="amenities"
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={amenity}
+                            className="flex flex-row items-center gap-2"
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={
+                                  field.value?.includes(amenity) || false
+                                }
+                                onCheckedChange={(checked) => {
+                                  const currentValue = field.value || [];
+                                  return checked
+                                    ? field.onChange([...currentValue, amenity])
+                                    : field.onChange(
+                                        currentValue.filter(
+                                          (item) => item !== amenity
+                                        )
+                                      );
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="text-sm font-normal">
+                              {formatText(amenity)}
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  ))}
                 </div>
                 <FormMessage />
               </FormItem>
@@ -530,8 +571,8 @@ function AddPropertyForm() {
               <FormItem>
                 <FormLabel>Property Rules</FormLabel>
                 <FormControl>
-                  <Input 
-                    placeholder="No smoking, No pets, etc." 
+                  <Input
+                    placeholder="No smoking, No pets, etc."
                     {...field}
                     value={field.value || ""}
                   />
@@ -543,7 +584,7 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={propertyForm.control}
             name="moveInStatus"
@@ -575,7 +616,7 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={propertyForm.control}
             name="virtualTourUrl"
@@ -596,98 +637,6 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
-          
-          <FormField
-            control={propertyForm.control}
-            name="rating"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Property Rating</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    min="0"
-                    max="5"
-                    step="0.1"
-                    placeholder="4.5"
-                    value={field.value?.toString() || ""}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      field.onChange(value === "" ? 0 : parseFloat(value));
-                    }}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Rate your property from 0 to 5 stars.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          {/* Reviews section - same as before */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <FormLabel className="text-lg font-semibold">
-                  Property Reviews
-                </FormLabel>
-                <FormDescription>
-                  Add text reviews from previous tenants or guests
-                </FormDescription>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={addReview}
-                className="flex items-center gap-2 hover:bg-primary hover:text-white"
-              >
-                <Plus className="h-4 w-4" />
-                Add Review
-              </Button>
-            </div>
-            {reviewFields.length === 0 && (
-              <div className="text-center py-4 text-gray-500 text-sm border-2 border-dashed border-gray-300 rounded-lg">
-                No reviews added yet. Click "Add Review" to get started.
-              </div>
-            )}
-
-            {reviewFields.map((field, index) => (
-              <div key={index} className="flex gap-2 items-start">
-                <FormField
-                  control={propertyForm.control}
-                  name={`reviews.${index}`}
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel className="sr-only">
-                        Review {index + 1}
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={`Review ${
-                            index + 1
-                          }: "Great place to stay! Clean rooms and friendly staff..."`}
-                          {...field}
-                          value={field.value || ""} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => removeReview(index)}
-                  className="text-red-500 hover:text-red-700 px-2 py-1"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
 
           {/* Sharing Types section with improved validation */}
           <div className="space-y-4">
@@ -697,7 +646,8 @@ function AddPropertyForm() {
                   Sharing Types *
                 </FormLabel>
                 <FormDescription>
-                  Add different sharing options with pricing details. At least one is required.
+                  Add different sharing options with pricing details. At least
+                  one is required.
                 </FormDescription>
               </div>
               <Button
@@ -714,7 +664,8 @@ function AddPropertyForm() {
 
             {sharingTypeFields.length === 0 && (
               <div className="text-center py-4 text-red-500 text-sm border-2 border-dashed border-red-300 rounded-lg">
-                No sharing types added yet. Click "Add Sharing Type" to get started. At least one is required.
+                No sharing types added yet. Click "Add Sharing Type" to get
+                started. At least one is required.
               </div>
             )}
 
@@ -762,7 +713,8 @@ function AddPropertyForm() {
                           </SelectContent>
                         </Select>
                         <FormDescription>
-                          Select the type of sharing (Single, Double, Triple, etc.)
+                          Select the type of sharing (Single, Double, Triple,
+                          etc.)
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -798,16 +750,10 @@ function AddPropertyForm() {
                         <FormItem>
                           <FormLabel>Base Price (₹) *</FormLabel>
                           <FormControl>
-                            <Input 
-                              type="number"
-                              step="1"
-                              min="0"
+                            <Input
                               placeholder="15000"
-                              value={field.value?.toString() || ""}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                field.onChange(value === "" ? 0 : parseInt(value));
-                              }}
+                              {...field}
+                              value={field.value || ""}
                             />
                           </FormControl>
                           <FormDescription>
@@ -825,16 +771,10 @@ function AddPropertyForm() {
                         <FormItem>
                           <FormLabel>Monthly Rent (₹) *</FormLabel>
                           <FormControl>
-                            <Input 
-                              type="number"
-                              step="1"
-                              min="0"
+                            <Input
                               placeholder="12000"
-                              value={field.value?.toString() || ""}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                field.onChange(value === "" ? 0 : parseInt(value));
-                              }}
+                              {...field}
+                              value={field.value || ""}
                             />
                           </FormControl>
                           <FormDescription>
@@ -852,16 +792,10 @@ function AddPropertyForm() {
                         <FormItem>
                           <FormLabel>Security Deposit (₹) *</FormLabel>
                           <FormControl>
-                            <Input 
-                              type="number"
-                              step="1"
-                              min="0"
+                            <Input
                               placeholder="25000"
-                              value={field.value?.toString() || ""}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                field.onChange(value === "" ? 0 : parseInt(value));
-                              }}
+                              {...field}
+                              value={field.value || ""}
                             />
                           </FormControl>
                           <FormDescription>
@@ -879,16 +813,10 @@ function AddPropertyForm() {
                         <FormItem>
                           <FormLabel>Refundable Amount (₹) *</FormLabel>
                           <FormControl>
-                            <Input 
-                              type="number"
-                              step="1"
-                              min="0"
+                            <Input
                               placeholder="20000"
-                              value={field.value?.toString() || ""}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                field.onChange(value === "" ? 0 : parseInt(value));
-                              }}
+                              {...field}
+                              value={field.value || ""}
                             />
                           </FormControl>
                           <FormDescription>
@@ -906,24 +834,10 @@ function AddPropertyForm() {
                         <FormItem>
                           <FormLabel>Available Slots *</FormLabel>
                           <FormControl>
-                            <Input 
-                              type="number"
-                              step="1"
-                              min="0"
-                              max="10"
+                            <Input
                               placeholder="3"
-                              value={field.value?.toString() || ""}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                if (value === "") {
-                                  field.onChange(undefined);
-                                } else {
-                                  const numValue = parseInt(value, 10);
-                                  if (!isNaN(numValue)) {
-                                    field.onChange(numValue);
-                                  }
-                                }
-                              }}
+                              {...field}
+                              value={field.value || ""}
                             />
                           </FormControl>
                           <FormDescription>
@@ -955,7 +869,8 @@ function AddPropertyForm() {
                       </div>
                       <div>
                         Deposit: ₹
-                        {propertyForm.watch(`sharingTypes.${index}.deposit`) || 0}
+                        {propertyForm.watch(`sharingTypes.${index}.deposit`) ||
+                          0}
                       </div>
                       <div>
                         Available:{" "}
@@ -979,7 +894,8 @@ function AddPropertyForm() {
                   Property Images *
                 </FormLabel>
                 <FormDescription>
-                  Upload multiple images of your property. At least one image is required.
+                  Upload multiple images of your property. At least one image is
+                  required.
                 </FormDescription>
               </div>
               <div className="relative">
@@ -1006,7 +922,7 @@ function AddPropertyForm() {
                 </Button>
               </div>
             </div>
-            
+
             {imagePreviews.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {imagePreviews.map((preview, index) => (
@@ -1034,7 +950,7 @@ function AddPropertyForm() {
                 ))}
               </div>
             )}
-            
+
             {imagePreviews.length === 0 && (
               <div className="text-center py-8 border-2 border-dashed border-red-300 rounded-lg">
                 <ImageIcon className="mx-auto h-12 w-12 text-red-400" />
@@ -1046,7 +962,7 @@ function AddPropertyForm() {
                 </div>
               </div>
             )}
-            
+
             {selectedImages.length > 0 && (
               <div className="bg-green-50 p-3 rounded-lg border border-green-200">
                 <div className="text-sm text-green-800">
@@ -1058,19 +974,20 @@ function AddPropertyForm() {
 
           {/* Submit Button Section */}
           <div className="space-y-4">
-            <Button 
-              type="submit" 
-              className="w-full" 
+            <Button
+              type="submit"
+              className="w-full"
               disabled={isSubmitting || createPropertyMutation.isPending}
             >
-              {isSubmitting || createPropertyMutation.isPending 
-                ? "Creating Property..." 
-                : "Submit Property"
-              }
+              {isSubmitting || createPropertyMutation.isPending
+                ? "Creating Property..."
+                : "Submit Property"}
             </Button>
             {createPropertyMutation.isError && (
               <div className="text-center p-3 bg-red-100 text-red-700 border border-red-300 rounded-md">
-                Error: {createPropertyMutation.error?.message || "Something went wrong"}
+                Error:{" "}
+                {createPropertyMutation.error?.message ||
+                  "Something went wrong"}
               </div>
             )}
             {createPropertyMutation.isSuccess && (

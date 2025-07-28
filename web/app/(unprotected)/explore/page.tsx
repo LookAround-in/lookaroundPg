@@ -27,7 +27,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ExploreApiResponse } from "@/interfaces/property";
 import { SharingType } from "@/interfaces/pg";
 import PropertySkeleton from "@/components/properties/PropertySkeleton";
-import formatText from "@/utils/formatText";
+import formatText from "@/utils/format";
 
 const availableAmenities = [
   "PARKING",
@@ -215,7 +215,7 @@ const Explore = () => {
       }
 
       // Rating filter
-      if (rating > 0 && (!property.rating || property.rating < rating)) {
+      if (rating > 0 && (!property.avgRating || property.avgRating < rating)) {
         return false;
       }
       return true;
@@ -246,7 +246,7 @@ const Explore = () => {
         });
         break;
       case "rating":
-        filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        filtered.sort((a, b) => (b.avgRating || 0) - (a.avgRating || 0));
         break;
       case "newest":
       default:

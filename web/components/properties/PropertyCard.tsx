@@ -8,7 +8,7 @@ import { authClient } from '@/lib/auth-client';
 import { useWishlist } from 'contexts/WishlistContext';
 import Image from 'next/image';
 import { Property } from '@/interfaces/property';
-import formatText from '@/utils/formatText';
+import formatText, { formatRating } from '@/utils/format';
 
 interface PropertyCardProps {
   property: Property;
@@ -156,15 +156,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
             <span className="text-sm text-gray-600">{property.Host?.user?.name}</span>
           </div>
           
-          {property.rating && (
             <div className="flex items-center space-x-1">
               <Star className="h-3 w-3 text-yellow-400 fill-current" />
-              <span className="text-sm font-medium">{property.rating}</span>
-              {property.reviews && (
-                <span className="text-xs text-gray-500">({property.reviews.length})</span>
-              )}
+              <span className="text-sm font-medium">{formatRating(property?.avgRating)}</span>
+              <span className="text-xs text-gray-500">({property.reviews?.length})</span>
             </div>
-          )}
         </div>
       </div>
     </div>

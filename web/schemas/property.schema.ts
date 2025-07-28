@@ -6,8 +6,6 @@ import {
   AmenityType, 
   SharingType, 
   MoveInStatus,
-  type PgData,
-  type SharingTypeDetails
 } from '../interfaces/pg';
 
 // Enum schemas based on your existing enums
@@ -25,33 +23,39 @@ export const SharingTypeDetailsSchema = z.object({
     .min(1, 'Description is required')
     .max(200, 'Description must be less than 200 characters')
     .optional(),
-  price: z.number()
-    .min(0, 'Price must be non-negative'),
-  availability: z.number()
-    .int('Availability must be a whole number')
-    .min(1, 'Availability must be at least 1'),
-  pricePerMonth: z.number()
-    .min(1, 'Monthly price must be greater than 0'),
-  pricePerDay: z.number()
-    .min(0, 'Daily price must be non-negative')
+  price: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Price must be a non-negative number'),
+  availability: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && Number.isInteger(val) && val >= 1, 'Availability must be a whole number greater than 0'),
+  pricePerMonth: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val > 0, 'Monthly price must be greater than 0'),
+  pricePerDay: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Daily price must be non-negative')
     .optional(),
-  deposit: z.number()
-    .min(0, 'Deposit must be non-negative'),
-  refundableDeposit: z.boolean()
+  deposit: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Deposit must be non-negative'),
+  refundableAmount: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Refundable amount must be non-negative'),
+  refundableDeposit: z.boolean().optional(),
+  maintainanceCharges: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Maintenance charges must be non-negative')
     .optional(),
-  refundableAmount: z.number()
-    .min(0, 'Refundable amount must be non-negative'),
-  maintainanceCharges: z.number()
-    .min(0, 'Maintenance charges must be non-negative')
+  electricityCharges: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Electricity charges must be non-negative')
     .optional(),
-  electricityCharges: z.number()
-    .min(0, 'Electricity charges must be non-negative')
+  waterCharges: z.union([z.number(), z.string()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, 'Water charges must be non-negative')
     .optional(),
-  waterCharges: z.number()
-    .min(0, 'Water charges must be non-negative')
-    .optional(),
-  maintenanceIncluded: z.boolean()
-    .optional()
+  maintenanceIncluded: z.boolean().optional(),
 })
 
 // Main PG Data Schema
@@ -63,7 +67,7 @@ export const PgDataSchema = z.object({
     .max(100, 'Title must be less than 100 characters')
     .trim(),
   hostId: z.string()
-    .min(1, 'Host ID is required'),
+    .uuid('ID must be a valid UUID'),
   description: z.string()
     .min(10, 'Description must be at least 10 characters')
     .max(1000, 'Description must be less than 1000 characters')
@@ -108,10 +112,6 @@ export const PgDataSchema = z.object({
     .optional(),
   images: z.array(z.string().url('Each image must be a valid URL'))
     .max(10, 'Maximum 10 images allowed'),
-  rating: z.number()
-    .min(0, 'Rating must be between 0 and 5')
-    .max(5, 'Rating must be between 0 and 5'),
-  reviews: z.array(z.string())
 })
 
 // Create PG Schema (without ID for creation)
@@ -126,8 +126,6 @@ export const UpdatePgDataSchema = PgDataSchema.partial().extend({
 export const PgFormSchema = CreatePgDataSchema.extend({
   latitude: z.union([z.number(), z.string()]).transform((val) => Number(val)),
   longitude: z.union([z.number(), z.string()]).transform((val) => Number(val)),
-  rating: z.union([z.number(), z.string()]).transform((val) => Number(val)),
-  // Allow pgRules as array that gets converted to string
   pgRules: z.union([
     z.string().min(1, 'PG rules cannot be empty'),
     z.array(z.string().min(1, 'Rule cannot be empty'))
@@ -136,9 +134,9 @@ export const PgFormSchema = CreatePgDataSchema.extend({
     return Array.isArray(val) ? val.join(', ') : val;
   }).optional(),
 }).refine((data) => {
-  return !isNaN(data.latitude) && !isNaN(data.longitude) && !isNaN(data.rating);
+  return !isNaN(data.latitude) && !isNaN(data.longitude);
 }, {
-  message: "Latitude, longitude, and rating must be valid numbers"
+  message: "Latitude and longitude must be valid numbers"
 });
 
 // Sharing Type form schema for adding individual sharing types
@@ -161,23 +159,6 @@ export const SharingTypeFormSchema = z.object({
     .refine((val) => val > 0, 'Availability must be greater than 0'),
 });
 
-// Validation helper functions
-export const validatePgData = (data: unknown) => {
-  return PgDataSchema.safeParse(data);
-};
-
-export const validateCreatePgData = (data: unknown) => {
-  return CreatePgDataSchema.safeParse(data);
-};
-
-export const validatePgForm = (data: unknown) => {
-  return PgFormSchema.safeParse(data);
-};
-
-export const validateSharingType = (data: unknown) => {
-  return SharingTypeFormSchema.safeParse(data);
-};
-
 // Error formatting helper
 export const formatZodErrors = (errors: z.ZodError) => {
   return errors.errors.reduce((acc, error) => {
@@ -193,3 +174,17 @@ export type CreatePgData = z.infer<typeof CreatePgDataSchema>;
 export type UpdatePgData = z.infer<typeof UpdatePgDataSchema>;
 export type PgForm = z.infer<typeof PgFormSchema>;
 export type SharingTypeForm = z.infer<typeof SharingTypeFormSchema>;
+
+export const reviewFormSchema = z.object({
+  comment: z
+    .string()
+    .min(10, {
+      message: "Comment must be at least 10 characters.",
+    })
+    .max(160, {
+      message: "Comment must not be longer than 160 characters.",
+    }),
+  rating:  z.number()
+    .min(0, 'Rating must be between 0 and 5')
+    .max(5, 'Rating must be between 0 and 5'),
+})

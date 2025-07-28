@@ -50,31 +50,10 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import formatText from "@/utils/formatText";
+import formatText, { formatRating } from "@/utils/format";
 import { useAuth } from "@/contexts/AuthContext";
 import { PgRequestData } from "@/interfaces/pg";
-
-//Mock property features data
-const propertyFeatures = {
-  nearbyFacilities: [
-    { name: "Metro Station", distance: "0.5 km", icon: Train },
-    { name: "Shopping Mall", distance: "2 km", icon: ShoppingBag },
-    { name: "Hospital", distance: "1.5 km", icon: Hospital },
-    { name: "Bus Stop", distance: "200 m", icon: Car },
-    { name: "ATM", distance: "300 m", icon: MapPin },
-    { name: "Grocery Store", distance: "500 m", icon: ShoppingBag },
-  ],
-};
-// Mock reviews data
-// {
-//     id: 1,
-//     name: "Priya Sharma",
-//     rating: 5,
-//     date: "2 weeks ago",
-//     comment:
-//       "Excellent PG with all amenities. The host is very responsive and the location is perfect for my office commute.",
-//     avatar: "/placeholder.svg",
-//   },
+import Review from "../review/Review";
 
 const fetchPropertyById = async (
   propertyId: string
@@ -128,15 +107,15 @@ const PropertyDetails = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  const data = useQuery({
+  const { data, refetch, isLoading, isPending, isError } = useQuery({
     queryKey: ["property", propertyId],
     queryFn: () => fetchPropertyById(propertyId),
     enabled: !!propertyId,
   });
 
-  const { mutate: createPropertyRequestMutation, isPending } = useMutation({
+  const { mutate: createPropertyRequestMutation, isPending: pendingRequest } = useMutation({
     mutationFn: createPropertyRequest,
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pgRequests"] });
       setShowHostInfo(true);
       setShowTermsDialog(false);
@@ -156,27 +135,19 @@ const PropertyDetails = () => {
     },
   });
 
-  const property = useMemo(() => {
-    if (data.isLoading || data.isPending) {
+  const property: Property = useMemo(() => {
+    if (isLoading || isPending) {
       return null;
     }
 
-    if (data.isError || !data.data) {
-      console.error("Error fetching property:", data.error);
+    if (isError || !data.data) {
+      console.error("Error fetching property:");
       return null;
     }
-
-    const response = data.data;
-
-    if (response.success && response.data) {
-      const propertyData = Array.isArray(response.data)
-        ? response.data[0]
-        : response.data;
-      return propertyData as Property;
-    }
-    console.warn("Unexpected API response structure:", response);
-    return null;
-  }, [data]);
+    // If data.data is an array, pick the first item; otherwise, use as is
+    const response = Array.isArray(data.data) ? data.data[0] : data.data;
+    return response;
+  }, [data, isLoading, isPending, isError]);
 
   const availableSharingTypes = useMemo(() => {
     if (
@@ -228,7 +199,7 @@ const PropertyDetails = () => {
     }
   }, [availableSharingTypes, selectedSharingType]);
 
-  if (data.isLoading || data.isPending) {
+  if (isLoading || isPending) {
     return (
       <div className="min-h-screen bg-light-gray transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -304,7 +275,7 @@ const PropertyDetails = () => {
     );
   }
   // Show error state
-  if (data.isError) {
+  if (isError) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-gray">
         <div className="text-center">
@@ -312,11 +283,11 @@ const PropertyDetails = () => {
             Error loading property
           </h1>
           <p className="text-gray-600 mb-4">
-            {(data.error as Error)?.message ||
+            {isError || 
               "Failed to load property details"}
           </p>
           <div className="space-x-4">
-            <Button onClick={() => data.refetch()}>Try Again</Button>
+            <Button onClick={() => refetch()}>Try Again</Button>
             <Button variant="outline" onClick={() => router.push("/explore")}>
               Back to Explore
             </Button>
@@ -662,13 +633,13 @@ const PropertyDetails = () => {
                     )}
                   </div>
 
-                  {/* Rating */}
-                  {property.rating && (
+                  {/*Rating */}
+                  {property.avgRating && (
                     <div className="flex items-center space-x-2">
                       <div className="flex items-center">
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
                         <span className="ml-1 font-semibold">
-                          {property.rating}
+                          {formatRating(property.avgRating)}
                         </span>
                       </div>
                       {property.reviews && (
@@ -800,24 +771,24 @@ const PropertyDetails = () => {
             )}
 
             {/* Nearby Facilities */}
-            <Card>
+            { property.nearbyFacilities && property.nearbyFacilities.length > 0 && (
+              <Card>
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4 flex items-center">
                   <MapPin className="h-5 w-5 mr-2" />
                   Nearby Facilities
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {propertyFeatures.nearbyFacilities.map((facility, index) => {
-                    const IconComponent = facility.icon;
+                  {property.nearbyFacilities.map((facility, index) => {
                     return (
                       <div
                         key={index}
                         className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg"
                       >
-                        <IconComponent className="h-5 w-5 text-blue-600" />
+                        <span className="h-5 w-5">{facility.icon}</span>
                         <div>
                           <p className="font-medium text-gray-800">
-                            {facility.name}
+                            {facility.title}
                           </p>
                           <p className="text-sm text-gray-600">
                             {facility.distance}
@@ -829,6 +800,7 @@ const PropertyDetails = () => {
                 </div>
               </CardContent>
             </Card>
+            )}
 
             {/* Amenities*/}
             {property.amenities && property.amenities.length > 0 && (
@@ -871,16 +843,16 @@ const PropertyDetails = () => {
             )}
 
             {/* Reviews Section */}
-            {property.rating && (
+            
               <Card className="">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-semibold">Guest Reviews</h3>
+                    <h3 className="text-lg font-semibold">{property.reviews?.length > 0 ? "Guest Reviews" : "No Reviews Yet"}</h3>
                     <div className="flex items-center space-x-2">
                       <div className="flex items-center">
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
                         <span className="ml-1 font-semibold">
-                          {property.rating}
+                          {formatRating(property.avgRating)}
                         </span>
                       </div>
                       <span className="text-gray-600">
@@ -888,51 +860,12 @@ const PropertyDetails = () => {
                       </span>
                     </div>
                   </div>
-
                   <div className="space-y-6">
-                    {property.reviews.map((review, index) => (
-                      <div
-                        key={index}
-                        className="border-b border-gray-200 last:border-b-0 pb-6 last:pb-0"
-                      >
-                        <div className="flex items-start space-x-4">
-                          <img
-                            src={`https://ui-avatars.com/api/?name=${review}&background=random`}
-                            alt={review}
-                            className="w-10 h-10 rounded-full bg-gray-200"
-                          />
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold">{"Google Reviewer"}</h4>
-                              <span className="text-sm text-gray-500">
-                                {property.updatedAt}
-                              </span>
-                            </div>
-                            <div className="flex items-center mb-2">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${
-                                    i < property.rating
-                                      ? "text-yellow-400 fill-current"
-                                      : "text-gray-300"
-                                    }`}
-                                />
-                              ))}
-                            </div>
-                            <p className="text-gray-600">{review}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                    <Review property={property} refetchProperty={refetch} />
                   </div>
-
-                  <Button variant="outline" className="w-full mt-6">
-                    View All Reviews
-                  </Button>
                 </CardContent>
               </Card>
-            )}
+            
           </div>
 
           {/* Sidebar */}
@@ -962,15 +895,15 @@ const PropertyDetails = () => {
                     <p className="text-gray-600">Property Host</p>
                   </div>
 
-                  {property.rating && (
+                  
                     <div className="flex items-center justify-center space-x-1">
                       <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                      <span className="font-medium">{property.rating}</span>
+                      <span className="font-medium">{formatRating(property.avgRating)}</span>
                       <span className="text-gray-600">
                         ({property.reviews?.length || 0} reviews)
                       </span>
                     </div>
-                  )}
+                  
 
                   <div className="space-y-2">
                     {!showHostInfo ? (
@@ -1114,7 +1047,7 @@ const PropertyDetails = () => {
                 disabled={!termsAccepted}
                 className="mb-2 sm:mb-0"
               >
-                {isPending ? (
+                {pendingRequest ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     Processing...
