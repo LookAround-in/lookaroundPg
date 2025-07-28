@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 import { ExploreApiResponse } from "@/interfaces/property";
 import { useQuery } from "@tanstack/react-query";
 import PropertySkeleton from "@/components/properties/PropertySkeleton";
+import { formatRating } from "@/utils/format";
 
 const fetchHostProperties = async (
   hostId: string
@@ -197,7 +198,7 @@ const HostProperties = () => {
                         <div className="flex items-center space-x-2 mt-4 sm:mt-0 bg-yellow-50 px-3 py-2 rounded-lg">
                           <Star className="h-5 w-5 text-yellow-400 fill-current" />
                           <span className="text-lg font-bold">
-                            {hostStats.averageRating}
+                            {formatRating(hostStats.averageRating)}
                           </span>
                           <span className="text-gray-600 text-sm">
                             ({hostStats.totalReviews} reviews)

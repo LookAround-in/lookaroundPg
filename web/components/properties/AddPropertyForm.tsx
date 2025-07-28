@@ -13,7 +13,7 @@ import {
   AmenityType,
 } from "@/interfaces/pg";
 import { Button } from "@/components/ui/button";
-import formatText from "@/utils/formatText";
+import formatText from "@/utils/format";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
