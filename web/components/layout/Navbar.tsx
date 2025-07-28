@@ -129,7 +129,7 @@ export const Navbar = () => {
                 </Link>
                 <Link href="/signup">
                   <Button className="bg-gradient-cool hover:opacity-90 text-white">
-                    Sign up
+                    Get Started
                   </Button>
                 </Link>
               </div>
@@ -242,9 +242,9 @@ export const Navbar = () => {
                   <Link
                     href="/signup"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center px-4 py-3 bg-gradient-cool text-white rounded-lg font-medium"
+                    className="flex items-center justify-center px-4 py-3 bg-gradient-cool text-white rounded-lg font-medium"
                   >
-                    Sign up
+                    Get Started
                   </Link>
                 </>
               )}

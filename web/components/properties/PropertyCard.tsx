@@ -156,10 +156,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
             <span className="text-sm text-gray-600">{property.Host?.user?.name}</span>
           </div>
           
-          {property.rating && (
+          {property.avgRating && (
             <div className="flex items-center space-x-1">
               <Star className="h-3 w-3 text-yellow-400 fill-current" />
-              <span className="text-sm font-medium">{property.rating}</span>
+              <span className="text-sm font-medium">{property.avgRating}</span>
               {property.reviews && (
                 <span className="text-xs text-gray-500">({property.reviews.length})</span>
               )}

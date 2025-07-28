@@ -5,17 +5,14 @@ import { SharingTypeDetails } from "./pg";
 export interface Host {
   id: string;
   contactNumber: string;
-  user: {
-    name: string;
-    email:string;
-    image?: string;
-  };
+  user: User
 }
 
 export interface User {
   id: string;
   name: string;
   email: string;
+  image?: string;
 }
 
 export interface Furniture {
@@ -28,6 +25,23 @@ export interface Amenity {
   id: string;
   type: string;
   pgDataId: string;
+}
+
+export interface NearbyFacility{
+  icon: string;
+  title: string;
+  distance: string;
+}
+
+export interface Review {
+  id: string;
+  userId: string;
+  pgDataId: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  updatedAt: string;
+  user: User;
 }
 
 export interface Property {
@@ -47,12 +61,13 @@ export interface Property {
   moveInStatus: string;
   virtualTourUrl: string;
   images: string[];
-  rating: number;
-  reviews: string[];
+  avgRating: number;
+  reviews: Review[];
   Host: Host;
   furnitures: Furniture[];
   amenities: Amenity[];
   sharingTypes: SharingTypeDetails[];
+  nearbyFacilities: NearbyFacility[];
 }
 
 export interface ExploreApiResponse {
