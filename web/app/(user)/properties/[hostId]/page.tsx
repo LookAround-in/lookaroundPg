@@ -85,7 +85,16 @@ const HostProperties = () => {
     );
   }
 
-  const averageRating = hostProperties.map((p) => p?.avgRating || 0).reduce((a, b) => a + b, 0) / hostProperties.length || 0;
+  // find averageRating of Host using an average of all rated properties
+  let totalRating = 0;
+  let totalRatedProperties = 0;
+  hostProperties.forEach((p) => {
+    if (p.avgRating > 0) {
+      totalRating += p.avgRating;
+      totalRatedProperties++;
+    }
+  })
+  const averageRating = totalRatedProperties > 0 ? totalRating / totalRatedProperties : 0;
   const totalReviews = hostProperties.reduce((acc, p) => acc + (p.reviews?.length || 0), 0);
 
   const hostStats = {

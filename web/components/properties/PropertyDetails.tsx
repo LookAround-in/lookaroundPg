@@ -1004,7 +1004,7 @@ const PropertyDetails = () => {
 
         {/* Terms and Conditions Dialog */}
         <Dialog open={showTermsDialog} onOpenChange={setShowTermsDialog}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md rounded-lg">
             <DialogHeader>
               <DialogTitle>Terms and Conditions</DialogTitle>
               <DialogDescription>

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css"
 import { Providers } from "./providers";
 import { metadata as baseMetadata } from "../utils/metadata";
+import { Navbar } from "@/components/layout/Navbar";
+import {Footer} from "@/components/layout/Footer";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const metadata: Metadata = {
@@ -25,7 +27,9 @@ export default function RootLayout({
       </head>
       <body>
         <Providers>
-          {children}
+            <Navbar />
+              {children}
+            <Footer />
         </Providers>
       </body>
     </html>

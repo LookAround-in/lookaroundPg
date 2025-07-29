@@ -1,5 +1,5 @@
+'use client';
 import Image from 'next/image';
-import React from 'react';
 import Link from 'next/link';
 import { Facebook, Twitter, Instagram, Heart } from 'lucide-react';
 

@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -17,7 +18,6 @@ export const Navbar = () => {
   const { wishlist } = useWishlist();
   const router = useRouter();
   const { logout , user} = useAuth();
-
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
