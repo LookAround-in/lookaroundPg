@@ -16,8 +16,6 @@ const HostLayout = ({ children }: { children: ReactNode }) => {
       </div>
     );
   }
-
-  // Render auth pages for unauthenticated users
   return <div>{children}</div>;
 };
 

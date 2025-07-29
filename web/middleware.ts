@@ -26,7 +26,7 @@ export async function middleware(req: NextRequest) {
   if (pathname === '/login' || pathname === '/signup') {
     if (sessionCookie) {
       const url = req.nextUrl.clone();
-      url.pathname = '/profile';
+      url.pathname = '/';
       return NextResponse.redirect(url);
     }
     return NextResponse.next();
