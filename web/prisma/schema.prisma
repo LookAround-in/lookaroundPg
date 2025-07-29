@@ -128,7 +128,7 @@ model PgData {
   pgRules          String?
   moveInStatus     MoveInStatus
 
-  avgRating       Float?        
+  avgRating       Float?        @default(0) // For efficiency, avoid AVG queries
   reviewCount     Int            @default(0) // For efficiency, avoid COUNT queries
 
   nearbyFacilities Json[]         @default([]) // JSON field to store nearby facilities

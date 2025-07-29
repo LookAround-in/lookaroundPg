@@ -2,8 +2,10 @@ import prisma from "@/lib/Prisma";
 import { NextResponse } from "next/server";
 
 // Helper function to calculate and update PG rating whenever a review is created, updated, or deleted
-async function updatePgRating(pgDataId: string) {
-    const result = await prisma.review.aggregate({
+async function updatePgRating(pgDataId: string, tx?: any) {
+    const prismaClient = tx || prisma;
+
+    const result = await prismaClient.review.aggregate({
         where: { pgDataId },
         _avg: { rating: true },
         _count: { rating: true },
@@ -11,12 +13,13 @@ async function updatePgRating(pgDataId: string) {
 
     const avgRating = result._avg.rating;
     const reviewCount = result._count.rating;
-    console.log(avgRating, reviewCount);
 
-    await prisma.pgData.update({
+    console.log(`Updating PG ${pgDataId}: avgRating=${avgRating}, reviewCount=${reviewCount}`);
+
+    await prismaClient.pgData.update({
         where: { id: pgDataId },
         data: {
-            avgRating: avgRating,
+            avgRating: avgRating, // This will be null if no reviews exist
             reviewCount: reviewCount,
         },
     });
@@ -98,22 +101,13 @@ export const POST = async (request: Request) => {
                     pgDataId: pgDataId,
                     rating: rating,
                     comment: comment.trim()
-                },
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            image: true
-                        }
-                    }
                 }
             });
 
             // Update PG rating and count
-            await updatePgRating(pgDataId);
+            const { avgRating, reviewCount } = await updatePgRating(pgDataId, tx);
 
-            return newReview;
+            return { newReview, avgRating, reviewCount };
         });
 
         return NextResponse.json({
@@ -204,7 +198,7 @@ export const PUT = async (request: Request) => {
             });
 
             // Update PG rating and count
-            await updatePgRating(existingReview.pgDataId);
+            await updatePgRating(existingReview.pgDataId, tx);
 
             return updatedReview;
         });
@@ -275,7 +269,7 @@ export const DELETE = async (request: Request) => {
             });
 
             // Update PG rating and count
-            await updatePgRating(existingReview.pgDataId);
+            await updatePgRating(existingReview.pgDataId, tx);
         });
 
         return NextResponse.json({
