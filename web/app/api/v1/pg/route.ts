@@ -72,9 +72,7 @@ export const POST =
         pgRules: getFormField("pgRules"),
         moveInStatus: getFormField("moveInStatus") as MoveInStatus,
         virtualTourUrl: getFormField("virtualTourUrl"),
-        images: imageUrls,
-        rating: parseNumber("rating"),
-        reviews: parseJsonField("reviews"),
+        images: imageUrls
       };
 
       const result = await pgController.createPg(pgData);

@@ -104,21 +104,13 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addToWishlist = (propertyId: string) => {
     if (!user?.id) return;
-    
-    // Optimistic update
     setWishlist((prev) => [...prev, propertyId]);
-    
-    // API call
     addWishListMutation({ pgDataId: propertyId, userId: user.id });
   };
 
   const removeFromWishlist = (propertyId: string) => {
     if (!user?.id) return;
-    
-    // Optimistic update
     setWishlist(prev => prev.filter(id => id !== propertyId));
-    
-    // API call
     addWishListMutation({ pgDataId: propertyId, userId: user.id });
   };
 

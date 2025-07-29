@@ -101,7 +101,7 @@ export default function Review({
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const reviewsToShow = showAllReviews
     ? property.reviews
-    : property.reviews.slice(0, 3);
+    : property.reviews.slice(0, 3) || [];
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -281,14 +281,10 @@ export default function Review({
                 </div>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
-                    {[...Array(5)].map((_, i) => (
+                    {[...Array(review.rating)].map((_, i) => (
                       <Star
                         key={i}
-                        className={`h-4 w-4 ${
-                          i < property.avgRating
-                            ? "text-yellow-400 fill-current"
-                            : "text-gray-300"
-                        }`}
+                        className="h-4 w-4 text-yellow-400 fill-current"
                       />
                     ))}
                   </div>
@@ -330,7 +326,7 @@ export default function Review({
         </Button>
       )}
       {/* Add/Edit Review Form */}
-      {user && (
+      {user ? (
         <Form {...form}>
           <p className="text-lg font-semibold">
             {editingReview ? "Edit Review" : "Add a Review"}
@@ -405,6 +401,10 @@ export default function Review({
             </Button>
           </form>
         </Form>
+      ): (
+        <div>
+          <p className="text-lg font-thin">Please <a href="/login" className="text-primary">login</a> to leave a review.</p>
+        </div>
       )}
     </div>
   );

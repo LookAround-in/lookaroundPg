@@ -85,7 +85,7 @@ const HostProperties = () => {
     );
   }
 
-  const averageRating = hostProperties.map((p) => p.avgRating || 0).reduce((a, b) => a + b, 0) / hostProperties.length || 0;
+  const averageRating = hostProperties.map((p) => p?.avgRating || 0).reduce((a, b) => a + b, 0) / hostProperties.length || 0;
   const totalReviews = hostProperties.reduce((acc, p) => acc + (p.reviews?.length || 0), 0);
 
   const hostStats = {
@@ -193,8 +193,7 @@ const HostProperties = () => {
 
                     {!hostPropertiesData.isLoading &&
                       !hostPropertiesData.isPending &&
-                      hostProperties.length > 0 &&
-                      hostProperties[0].avgRating && (
+                      hostProperties.length > 0 && (
                         <div className="flex items-center space-x-2 mt-4 sm:mt-0 bg-yellow-50 px-3 py-2 rounded-lg">
                           <Star className="h-5 w-5 text-yellow-400 fill-current" />
                           <span className="text-lg font-bold">

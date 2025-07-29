@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { auth } from "@/lib/auth";
 
 export async function withAuth(
@@ -13,6 +14,7 @@ export async function withAuth(
       // if(req.role !== requiredRole) return error
       // if (req.role === requiredRole) return handler(req);
 
+
       return handler(req);
     } catch (error) {
       console.error("Auth middleware error:", error);
@@ -25,6 +27,7 @@ export async function withAuth(
 }
 
 export const isAdmin = (handler: (req: Request) => Promise<NextResponse>) =>
+
   withAuth(handler, "admin");
 
 export const isHost = (handler: (req: Request) => Promise<NextResponse>) =>
@@ -32,3 +35,4 @@ export const isHost = (handler: (req: Request) => Promise<NextResponse>) =>
 
 export const isUser = (handler: (req: Request) => Promise<NextResponse>) =>
   withAuth(handler, "user");
+

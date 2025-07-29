@@ -1,3 +1,4 @@
+
 import { createAuthClient } from "better-auth/react";
 import { inferAdditionalFields } from "better-auth/client/plugins";
 import { adminClient } from "better-auth/client/plugins";
@@ -6,6 +7,7 @@ export const authClient = createAuthClient({
   plugins: [inferAdditionalFields<typeof auth>(), adminClient()],
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
 });
+
 
 const signIn = async () => {
   const data = await authClient.signIn.social({

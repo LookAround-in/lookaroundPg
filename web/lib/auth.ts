@@ -1,7 +1,9 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+
 import { admin } from "better-auth/plugins/admin";
 import z from "zod";
+
 
 import prisma from "./Prisma";
 
@@ -33,5 +35,7 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
+
   },
 });
+

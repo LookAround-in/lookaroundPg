@@ -1,6 +1,6 @@
-// middleware.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getSessionCookie } from 'better-auth/cookies';
+import { Session, UserRole } from './interfaces/session';
 
 export const config = {
   matcher: [
@@ -11,27 +11,52 @@ export const config = {
     '/properties/:path*',
     // Auth routes (to redirect away if authenticated)
     '/login',
-    '/signup'
+    '/signup',
+    // Protected admin and host routes
+    '/admin/:path*',
+    '/host/:path*',
   ],
 };
 
 export async function middleware(req: NextRequest) {
-  const sessionCookie = getSessionCookie(req);
+  const sessionCookie = getSessionCookie(req) as unknown as Session;
   const { pathname } = req.nextUrl;
   
   // Handle auth routes (login/register)
   if (pathname === '/login' || pathname === '/signup') {
     if (sessionCookie) {
-      // User is authenticated, redirect away from auth pages
       const url = req.nextUrl.clone();
       url.pathname = '/profile';
       return NextResponse.redirect(url);
     }
-    // User not authenticated, allow access to auth pages
     return NextResponse.next();
   }
+
+  // Handle admin routes
+  if (pathname.startsWith('/admin')) {
+    if (sessionCookie) {
+      const userRole = sessionCookie.user?.role;
+      if (userRole !== UserRole.ADMIN) {
+        const url = req.nextUrl.clone();
+        url.pathname = '/';
+        return NextResponse.redirect(url);
+      }
+    } 
+  }
+
+  // Handle host routes
+  if (pathname.startsWith('/host')) {
+    if (sessionCookie) {
+      const userRole = sessionCookie.user?.role;
+      if (userRole !== UserRole.HOST) {
+        const url = req.nextUrl.clone();
+        url.pathname = '/';
+        return NextResponse.redirect(url);
+      }
+    }
+  }
   
-  // Handle protected routes
+  // Handle other protected routes
   if (!sessionCookie) {
     const url = req.nextUrl.clone();
     url.pathname = '/login';
