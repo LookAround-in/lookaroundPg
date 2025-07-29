@@ -1,33 +1,41 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import {customSession} from "better-auth/plugins"
 
-import prisma from './Prisma'
+import { admin } from "better-auth/plugins/admin";
+import z from "zod";
+
+
+import prisma from "./Prisma";
 
 export const auth = betterAuth({
-    database: prismaAdapter(prisma, {
-        provider: "postgresql",
-    }),
-    emailAndPassword: {
-        enabled: true
-    },
-    socialProviders: {
-        google: {
-            prompt: "select_account",
-            clientId: process.env.GOOGLE_CLIENT_ID as string,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+  database: prismaAdapter(prisma, {
+    provider: "postgresql",
+  }),
+  plugins: [admin()],
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "user",
+        input: true,
+        validator: {
+          input: z.enum(["user", "admin", "host", "super_admin"]).optional(),
+          output: z.enum(["user", "admin", "host", "super_admin"]).optional(),
         },
+      },
     },
-    plugins: [
-        customSession(async ({user, session}) => {
-            const dbUser = await prisma.user.findUnique({
-                where: {id: session.userId},
-                select: {role: true}
-            })
-            return {
-                user: {...user, role: dbUser?.role || "USER"},
-                session
-            }
-        })
-    ]
+  },
+  emailAndPassword: {
+    enabled: true,
+  },
+  socialProviders: {
+    google: {
+      prompt: "select_account",
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
+
+  },
 });
+

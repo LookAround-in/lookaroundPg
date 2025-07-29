@@ -10,7 +10,7 @@ datasource db {
 
 model User {
   id            String   @id @default(uuid())
-  role          UserRole @default(USER)
+  role          UserRole @default(user)
   name          String
   email         String
   emailVerified Boolean
@@ -109,31 +109,33 @@ model HostProfile {
 }
 
 model PgData {
-  id               String         @id @default(uuid())
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  title            String
-  hostId           String
-  Host             HostProfile    @relation(fields: [hostId], references: [id])
-  description      String?
-  propertyType     PropertyType
-  foodIncluded     Boolean        @default(false)
-  furnishing       FurnishingType
-  address          String
-  latitude         Float
-  longitude        Float
-  furnitures       Furniture[]
-  amenities        Amenity[]
-  sharingTypes     SharingType[]
-  pgRules          String?
-  moveInStatus     MoveInStatus
 
-  avgRating       Float?        @default(0) // For efficiency, avoid AVG queries
-  reviewCount     Int            @default(0) // For efficiency, avoid COUNT queries
+  id           String         @id @default(uuid())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  title        String
+  hostId       String
+  Host         HostProfile    @relation(fields: [hostId], references: [id])
+  description  String?
+  propertyType PropertyType
+  foodIncluded Boolean        @default(false)
+  furnishing   FurnishingType
+  address      String
+  latitude     Float
+  longitude    Float
+  furnitures   Furniture[]
+  amenities    Amenity[]
+  sharingTypes SharingType[]
+  pgRules      String?
+  moveInStatus MoveInStatus
 
-  nearbyFacilities Json[]         @default([]) // JSON field to store nearby facilities
+  avgRating   Float?
+  reviewCount Int    @default(0) // For efficiency, avoid COUNT queries
+
+  nearbyFacilities Json[]      @default([]) // JSON field to store nearby facilities
+
   virtualTourUrl   String?
-  images           String[]       @default([])
+  images           String[]    @default([])
   PgRequest        PgRequest[]
   wishList         WishList[]
   reviews          Review[]
@@ -231,10 +233,10 @@ enum PgRequestStatus {
 }
 
 enum UserRole {
-  SUPER_ADMIN
-  ADMIN
-  USER
-  HOST
+  super_admin
+  admin
+  user
+  host
 }
 
 enum MoveInStatus {

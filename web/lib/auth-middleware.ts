@@ -1,21 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authClient } from "./auth-client";
-import { Session, UserRole } from "@/interfaces/session";
+
+import { auth } from "@/lib/auth";
 
 export async function withAuth(
   handler: (req: Request) => Promise<NextResponse>,
-  requiredRole?: UserRole
+  requiredRole?: string
 ) {
   return async (req: NextRequest) => {
     try {
-      const session = (await authClient.getSession(req)) as unknown as Session;
-      const userRole = session?.user?.role;
-      if (requiredRole && userRole !== requiredRole) {
-        return NextResponse.json(
-          { success: false, message: "Forbidden: Insufficient permissions" },
-          { status: 403 }
-        );
-      }
+      // TODO :
+      // Get the user role from the request
+      // compare it with the required role
+      // if(req.role !== requiredRole) return error
+      // if (req.role === requiredRole) return handler(req);
+
 
       return handler(req);
     } catch (error) {
@@ -29,10 +27,12 @@ export async function withAuth(
 }
 
 export const isAdmin = (handler: (req: Request) => Promise<NextResponse>) =>
-  withAuth(handler, UserRole.ADMIN);
+
+  withAuth(handler, "admin");
 
 export const isHost = (handler: (req: Request) => Promise<NextResponse>) =>
-  withAuth(handler, UserRole.HOST);
+  withAuth(handler, "host");
 
 export const isUser = (handler: (req: Request) => Promise<NextResponse>) =>
-  withAuth(handler, UserRole.USER);
+  withAuth(handler, "user");
+

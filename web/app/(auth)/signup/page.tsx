@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
 import { Label } from "components/ui/label";
@@ -33,26 +33,27 @@ const Signup = () => {
         email,
         password,
         name,
-        callbackURL: "/"
+        callbackURL: "/",
+        role: "user",
       },
       {
         onRequest: (ctx) => {
-          //show loading
           toast({
             title: "Creating Account!",
             description: "Your Account is being created, please wait...",
           });
         },
         onSuccess: (ctx) => {
-          //redirect to the dashboard or sign in page
+          console.log(data);
           toast({
             title: "Account Created!",
             description: "Your Account has been created successfully.",
           });
           setIsLoading(false);
+
+          redirect("/");
         },
         onError: (ctx) => {
-          // display the error message
           setIsLoading(false);
           toast({
             title: "Account Creation Failed!",
