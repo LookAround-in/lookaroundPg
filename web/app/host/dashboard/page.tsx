@@ -136,7 +136,7 @@ const HostDashboard = () => {
   ]);
 
   // TODO: Replace with actual user ID from context or auth
-  const userId = "2b08f2f3-940c-4b5e-b3da-aa8f25f85cc9";
+  const userId = "016eff1d-c5c7-48f4-a9f5-75a361d9030c";
 
   const { data: queriesData, isLoading: loading } = useQuery({
     queryKey: ["propertyQueries", userId],

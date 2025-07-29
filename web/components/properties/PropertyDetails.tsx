@@ -639,12 +639,12 @@ const PropertyDetails = () => {
                       <div className="flex items-center">
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
                         <span className="ml-1 font-semibold">
-                          {formatRating(property.avgRating)}
+                          {formatRating(property?.avgRating)}
                         </span>
                       </div>
-                      {property.reviews && (
+                      {property?.reviews && (
                         <span className="text-gray-600">
-                          ({property.reviews.length} reviews)
+                          ({property?.reviewCount} reviews)
                         </span>
                       )}
                     </div>
@@ -847,16 +847,16 @@ const PropertyDetails = () => {
               <Card className="">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-semibold">{property.reviews?.length > 0 ? "Guest Reviews" : "No Reviews Yet"}</h3>
+                    <h3 className="text-lg font-semibold">{property?.reviewCount > 0 ? "Guest Reviews" : "No Reviews Yet"}</h3>
                     <div className="flex items-center space-x-2">
                       <div className="flex items-center">
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
                         <span className="ml-1 font-semibold">
-                          {formatRating(property.avgRating)}
+                          {formatRating(property?.avgRating)}
                         </span>
                       </div>
                       <span className="text-gray-600">
-                        ({property.reviews?.length || 0} reviews)
+                        ({property?.reviewCount || 0} reviews)
                       </span>
                     </div>
                   </div>
@@ -900,7 +900,7 @@ const PropertyDetails = () => {
                       <Star className="h-4 w-4 text-yellow-400 fill-current" />
                       <span className="font-medium">{formatRating(property.avgRating)}</span>
                       <span className="text-gray-600">
-                        ({property.reviews?.length || 0} reviews)
+                        ({property?.reviewCount || 0} reviews)
                       </span>
                     </div>
                   

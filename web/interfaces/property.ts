@@ -62,6 +62,7 @@ export interface Property {
   virtualTourUrl: string;
   images: string[];
   avgRating: number;
+  reviewCount: number;
   reviews: Review[];
   Host: Host;
   furnitures: Furniture[];

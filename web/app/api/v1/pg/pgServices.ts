@@ -30,7 +30,7 @@ export class PgServices {
           moveInStatus: pgData.moveInStatus,
           virtualTourUrl: pgData.virtualTourUrl,
           images: pgData.images ?? [],
-          // nearbyFacilities: pgData.nearbyFacilities ?? [],
+          nearbyFacilities: pgData.nearbyFacilities ?? [],
 
           furnitures: {
             create:
@@ -109,7 +109,7 @@ export class PgServices {
           moveInStatus: pgData.moveInStatus,
           virtualTourUrl: pgData.virtualTourUrl,
           images: pgData.images ?? [],
-          // nearbyFacilities: pgData.nearbyFacilities ?? [],
+          nearbyFacilities: pgData.nearbyFacilities ?? [],
           
           furnitures: {
             deleteMany: {},

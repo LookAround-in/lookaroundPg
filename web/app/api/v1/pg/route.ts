@@ -69,6 +69,7 @@ export const POST =
         furnitures: parseJsonField<FurnitureType>("furnitures"),
         amenities: parseJsonField("amenities"),
         sharingTypes: parseJsonField("sharingTypes"),
+        nearbyFacilities: parseJsonField("nearbyFacilities"),
         pgRules: getFormField("pgRules"),
         moveInStatus: getFormField("moveInStatus") as MoveInStatus,
         virtualTourUrl: getFormField("virtualTourUrl"),

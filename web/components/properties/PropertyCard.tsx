@@ -159,7 +159,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
             <div className="flex items-center space-x-1">
               <Star className="h-3 w-3 text-yellow-400 fill-current" />
               <span className="text-sm font-medium">{formatRating(property?.avgRating)}</span>
-              <span className="text-xs text-gray-500">({property.reviews?.length})</span>
+              <span className="text-xs text-gray-500">({property?.reviewCount})</span>
             </div>
         </div>
       </div>

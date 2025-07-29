@@ -26,35 +26,35 @@ export async function middleware(req: NextRequest) {
   if (pathname === '/login' || pathname === '/signup') {
     if (sessionCookie) {
       const url = req.nextUrl.clone();
-      url.pathname = '/profile';
+      url.pathname = '/';
       return NextResponse.redirect(url);
     }
     return NextResponse.next();
   }
 
   // Handle admin routes
-  if (pathname.startsWith('/admin')) {
-    if (sessionCookie) {
-      const userRole = sessionCookie.user?.role;
-      if (userRole !== UserRole.ADMIN) {
-        const url = req.nextUrl.clone();
-        url.pathname = '/';
-        return NextResponse.redirect(url);
-      }
-    } 
-  }
+  // if (pathname.startsWith('/admin')) {
+  //   if (sessionCookie) {
+  //     const userRole = sessionCookie.user?.role;
+  //     if (userRole !== UserRole.ADMIN) {
+  //       const url = req.nextUrl.clone();
+  //       url.pathname = '/';
+  //       return NextResponse.redirect(url);
+  //     }
+  //   } 
+  // }
 
   // Handle host routes
-  if (pathname.startsWith('/host')) {
-    if (sessionCookie) {
-      const userRole = sessionCookie.user?.role;
-      if (userRole !== UserRole.HOST) {
-        const url = req.nextUrl.clone();
-        url.pathname = '/';
-        return NextResponse.redirect(url);
-      }
-    }
-  }
+  // if (pathname.startsWith('/host')) {
+  //   if (sessionCookie) {
+  //     const userRole = sessionCookie.user?.role;
+  //     if (userRole !== UserRole.HOST) {
+  //       const url = req.nextUrl.clone();
+  //       url.pathname = '/';
+  //       return NextResponse.redirect(url);
+  //     }
+  //   }
+  // }
   
   // Handle other protected routes
   if (!sessionCookie) {

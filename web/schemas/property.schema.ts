@@ -16,6 +16,12 @@ export const AmenityTypeSchema = z.nativeEnum(AmenityType);
 export const SharingTypeSchema = z.nativeEnum(SharingType);
 export const MoveInStatusSchema = z.nativeEnum(MoveInStatus);
 
+const NearbyFacilitySchema = z.object({
+  icon: z.string().min(1, "Facility icon is required"),
+  title: z.string().min(1, "Facility title is required"),
+  distance: z.string().min(1, "Facility distance is required"),
+});
+
 // Sharing Type Details Schema
 export const SharingTypeDetailsSchema = z.object({
   type: SharingTypeSchema,
@@ -95,6 +101,7 @@ export const PgDataSchema = z.object({
     .refine((arr) => new Set(arr).size === arr.length, {
       message: 'Duplicate amenity types are not allowed'
     }),
+  nearbyFacilities: z.array(NearbyFacilitySchema).optional(),
   sharingTypes: z.array(SharingTypeDetailsSchema)
     .min(1, 'At least one sharing type is required')
     .refine((arr) => {
