@@ -33,28 +33,28 @@ export async function middleware(req: NextRequest) {
   }
 
   // Handle admin routes
-  // if (pathname.startsWith('/admin')) {
-  //   if (sessionCookie) {
-  //     const userRole = sessionCookie.user?.role;
-  //     if (userRole !== UserRole.ADMIN) {
-  //       const url = req.nextUrl.clone();
-  //       url.pathname = '/';
-  //       return NextResponse.redirect(url);
-  //     }
-  //   } 
-  // }
+  if (pathname.startsWith('/admin')) {
+    if (sessionCookie) {
+      const userRole = sessionCookie.user?.role;
+      if (userRole !== UserRole.ADMIN) {
+        const url = req.nextUrl.clone();
+        url.pathname = '/';
+        return NextResponse.redirect(url);
+      }
+    } 
+  }
 
   // Handle host routes
-  // if (pathname.startsWith('/host')) {
-  //   if (sessionCookie) {
-  //     const userRole = sessionCookie.user?.role;
-  //     if (userRole !== UserRole.HOST) {
-  //       const url = req.nextUrl.clone();
-  //       url.pathname = '/';
-  //       return NextResponse.redirect(url);
-  //     }
-  //   }
-  // }
+  if (pathname.startsWith('/host')) {
+    if (sessionCookie) {
+      const userRole = sessionCookie.user?.role;
+      if (userRole !== UserRole.HOST) {
+        const url = req.nextUrl.clone();
+        url.pathname = '/';
+        return NextResponse.redirect(url);
+      }
+    }
+  }
   
   // Handle other protected routes
   if (!sessionCookie) {

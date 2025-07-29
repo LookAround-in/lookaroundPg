@@ -7,8 +7,6 @@ import { Loader } from "lucide-react";
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
   const { user, isLoading } = useAuth();
-  console.log(user);
-
 
   if (isLoading) {
     return (
@@ -29,7 +27,6 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
   }
 
   if (user.role !== "admin" && user.role !== "super_admin") {
-    console.log("User role:", user.role);
     redirect("/");
   }
 

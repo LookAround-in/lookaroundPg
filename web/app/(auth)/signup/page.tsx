@@ -44,7 +44,6 @@ const Signup = () => {
           });
         },
         onSuccess: (ctx) => {
-          console.log(data);
           toast({
             title: "Account Created!",
             description: "Your Account has been created successfully.",
