@@ -79,6 +79,7 @@ export interface PgData {
   furnitures: FurnitureType[];
   amenities: AmenityType[];
   sharingTypes: SharingTypeDetails[];
+  nearbyFacilities?: NearbyFacility[];
   pgRules?: string;
   moveInStatus: MoveInStatus;
   virtualTourUrl?: string;
@@ -115,6 +116,12 @@ export interface SharingTypeDetails {
   electricityCharges?: number;
   waterCharges?: number;
   maintenanceIncluded?: boolean;
+}
+
+export interface NearbyFacility {
+  icon: string;
+  title: string;
+  distance: string;
 }
 
 export type PgCreateInput = Omit<PgData, "id" | "createdAt" | "updatedAt"> & {

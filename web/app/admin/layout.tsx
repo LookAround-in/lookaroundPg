@@ -23,7 +23,6 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
   }
 
   if (user.role !== "admin" && user.role !== "super_admin") {
-    console.log("User role:", user.role);
     redirect("/");
   }
 

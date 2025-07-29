@@ -121,6 +121,7 @@ function AddPropertyForm() {
       longitude: 0,
       furnitures: [],
       amenities: [],
+      nearbyFacilities: [],
       sharingTypes: [],
       pgRules: "",
       moveInStatus: MoveInStatus.IMMEDIATE,
@@ -149,6 +150,20 @@ function AddPropertyForm() {
       availability: 1,
     });
   };
+
+  const {fields: nearbyFacilitiesFields, append: appendNearbyFacility, remove: removeNearbyFacility} = useFieldArray({
+    control: propertyForm.control,
+    name: "nearbyFacilities"
+  })
+
+  const addNearbyFacility = () => {
+    appendNearbyFacility({
+      title: "",
+      icon: "",
+      distance: ""
+    })
+  }
+
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
@@ -204,6 +219,7 @@ function AddPropertyForm() {
       formData.append("moveInStatus", data.moveInStatus);
       formData.append("virtualTourUrl", data.virtualTourUrl || "");
       // Add array fields as JSON strings
+      formData.append("nearbyFacilities", JSON.stringify(data.nearbyFacilities || []));
       formData.append("furnitures", JSON.stringify(data.furnitures));
       formData.append("amenities", JSON.stringify(data.amenities));
       formData.append("sharingTypes", JSON.stringify(data.sharingTypes));
@@ -638,6 +654,116 @@ function AddPropertyForm() {
             )}
           />
 
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <FormLabel className="text-lg font-semibold">
+                  Nearby Facilities *
+                </FormLabel>
+                <FormDescription>
+                  Add different nearby facilities with details.
+                </FormDescription>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addNearbyFacility}
+                className="flex items-center gap-2 hover:bg-primary hover:text-white"
+              >
+                <Plus className="h-4 w-4" />
+                Add Nearby Facility
+              </Button>
+            </div>
+
+            {nearbyFacilitiesFields.map((field, index) => (
+              <Card key={field.id} className="border-pink-200">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium">
+                      Nearby Facility #{index + 1} *
+                    </CardTitle>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeNearbyFacility(index)}
+                      className="text-red-500 hover:text-red-700 h-8 w-8 p-0"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={propertyForm.control}
+                      name={`nearbyFacilities.${index}.title`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Facility Title *</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Gym, Pool, etc."
+                              {...field}
+                              value={field.value || ""}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Name of the nearby facility
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={propertyForm.control}
+                      name={`nearbyFacilities.${index}.icon`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Facility Icon *</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="🏥, 🏪, 🍕, etc."
+                              {...field}
+                              value={field.value || ""}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Icon representing the nearby facility
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={propertyForm.control}
+                      name={`nearbyFacilities.${index}.distance`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Distance (km) *</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="2"
+                              {...field}
+                              value={field.value || ""}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Distance to the facility in kilometers
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
           {/* Sharing Types section with improved validation */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -857,9 +983,9 @@ function AddPropertyForm() {
                     <div className="text-xs text-gray-600 space-y-1">
                       <div>
                         Type:{" "}
-                        {formatText(
+                        {
                           propertyForm.watch(`sharingTypes.${index}.type`)
-                        ) || "Not selected"}
+                         || "Not selected"}
                       </div>
                       <div>
                         Monthly Rent: ₹
@@ -885,6 +1011,7 @@ function AddPropertyForm() {
               </Card>
             ))}
           </div>
+
 
           {/* Images section - same as before but with required indication */}
           <div className="space-y-4">
