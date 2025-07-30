@@ -1,7 +1,7 @@
 'use client';
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth-client";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { createContext, useContext } from "react";
 
 interface User {

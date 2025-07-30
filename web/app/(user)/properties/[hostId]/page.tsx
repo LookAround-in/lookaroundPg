@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { ExploreApiResponse } from "@/interfaces/property";
+import { ExploreApiResponse, Review } from "@/interfaces/property";
 import { useQuery } from "@tanstack/react-query";
 import PropertySkeleton from "@/components/properties/PropertySkeleton";
 import { formatRating } from "@/utils/format";
@@ -33,6 +33,19 @@ const fetchHostProperties = async (
   hostId: string
 ): Promise<ExploreApiResponse> => {
   const response = await fetch(`/api/v1/pg/getPgByhostId/${hostId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return response.json();
+};
+
+const fetchHostPropertyReviews = async (hostId: string) => {
+  const response = await fetch(`/api/v1/reviews/getAllReviews/${hostId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -55,6 +68,14 @@ const HostProperties = () => {
   });
 
   const hostProperties = hostPropertiesData.data?.data || [];
+
+  const hostPropertyReviewsData = useQuery({
+    queryKey: ["hostPropertyReviews", hostId],
+    queryFn: () => fetchHostPropertyReviews(hostId as string),
+    enabled: !!hostId,
+  });
+
+  const reviews = hostPropertyReviewsData.data?.data || [];
 
   if (
     !hostPropertiesData.isLoading &&
@@ -93,9 +114,13 @@ const HostProperties = () => {
       totalRating += p.avgRating;
       totalRatedProperties++;
     }
-  })
-  const averageRating = totalRatedProperties > 0 ? totalRating / totalRatedProperties : 0;
-  const totalReviews = hostProperties.reduce((acc, p) => acc + (p.reviews?.length || 0), 0);
+  });
+  const averageRating =
+    totalRatedProperties > 0 ? totalRating / totalRatedProperties : 0;
+  const totalReviews = hostProperties.reduce(
+    (acc, p) => acc + (p.reviews?.length || 0),
+    0
+  );
 
   const hostStats = {
     totalProperties: hostProperties.length,
@@ -136,7 +161,10 @@ const HostProperties = () => {
                         <Image
                           placeholder="blur"
                           blurDataURL="/blurImg.png"
-                          src={hostProperties[0].Host.user.image || `https://ui-avatars.com/api/?name=${hostProperties[0].Host.user.name}&background=random&color=fff`}
+                          src={
+                            hostProperties[0].Host.user.image ||
+                            `https://ui-avatars.com/api/?name=${hostProperties[0].Host.user.name}&background=random&color=fff`
+                          }
                           alt={hostProperties[0].Host.user.name}
                           width={32}
                           height={32}
@@ -394,17 +422,53 @@ const HostProperties = () => {
 
           <TabsContent value="reviews" className="space-y-6">
             <Card>
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-gradient-cool-light rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Star className="h-8 w-8 text-gradient-cool" />
-                </div>
-                <h3 className="text-xl font-bold text-charcoal mb-2">
-                  Reviews Coming Soon
+              <CardContent className="p-6 lg:p-8">
+                <h3 className="text-xl font-bold text-charcoal mb-4">
+                  User Reviews for Properties
                 </h3>
-                <p className="text-gray-600">
-                  Guest reviews and ratings will be displayed here once
-                  available.
-                </p>
+                {reviews.map((review, index) => (
+                  <div
+                    key={index}
+                    className="border-b border-gray-200 last:border-b-0 p-6 shadow-md rounded-lg mb-2 last:mb-0"
+                  >
+                    <div className="flex flex-row items-center justify-between mb-2">
+                      <p className="text-gray-900 text-xl">{review?.pgData?.title}</p>
+                      <Button variant="link">
+                        <a href={`/property/${review?.pgData?.id}`}>View Details</a>
+                      </Button>
+                    </div>
+                    <div className="flex items-start space-x-4">
+                      <Image
+                        placeholder="blur"
+                        blurDataURL="/blurImg.png"
+                        src={
+                          review.user.image ||
+                          `https://ui-avatars.com/api/?name=${review.user.name}&background=random`
+                        }
+                        alt={review.user.name}
+                        width={32}
+                        height={32}
+                        className="w-10 h-10 rounded-full bg-gray-200"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold">{review.user.name}</h4>
+                        </div>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center">
+                            {[...Array(review.rating)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className="h-4 w-4 text-yellow-400 fill-current"
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-gray-600">{review.comment}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </CardContent>
             </Card>
           </TabsContent>
