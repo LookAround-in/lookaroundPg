@@ -54,6 +54,7 @@ async function main() {
         role: "admin",
         name: "Admin User",
         email: "admin@lookaroundpg.com",
+        phone: "9876543201", // Added phone number (10 digits)
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
@@ -62,11 +63,13 @@ async function main() {
       },
     }),
 
+    // Host Users
     prisma.user.create({
       data: {
         role: "host",
         name: "Rajesh Kumar",
         email: "rajesh.kumar@gmail.com",
+        phone: "9876543210", // Added phone number (10 digits)
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
@@ -80,6 +83,7 @@ async function main() {
         role: "host",
         name: "Priya Sharma",
         email: "priya.sharma@gmail.com",
+        phone: "9876543220", // Added phone number (10 digits)
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
@@ -93,6 +97,7 @@ async function main() {
         role: "host",
         name: "Arjun Patel",
         email: "arjun.patel@gmail.com",
+        phone: "9876543230", // Added phone number (10 digits)
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
@@ -107,6 +112,7 @@ async function main() {
         role: "user",
         name: "Amit Singh",
         email: "amit.singh@gmail.com",
+        phone: "8765432109", // Added phone number (10 digits)
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
@@ -120,6 +126,7 @@ async function main() {
         role: "user",
         name: "Sneha Gupta",
         email: "sneha.gupta@gmail.com",
+        phone: "8765432110", // Added phone number (10 digits)
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1494790108755-2616b612b550?w=150",
@@ -133,6 +140,7 @@ async function main() {
         role: "user",
         name: "Vikram Reddy",
         email: "vikram.reddy@gmail.com",
+        phone: "8765432111", // Added phone number (10 digits)
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
@@ -146,6 +154,7 @@ async function main() {
         role: "user",
         name: "Kavya Nair",
         email: "kavya.nair@gmail.com",
+        phone: "8765432112", // Added phone number (10 digits)
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1494790108755-2616b612b550?w=150",
@@ -155,7 +164,7 @@ async function main() {
     }),
   ]);
 
-  console.log(`✅ Created ${users.length} sample users`);
+  console.log(`✅ Created ${users.length} sample users with phone numbers`);
 
   // Get the host users for creating host profiles
   const hostUsers = users.filter((user) => user.role === UserRole.host);
@@ -167,9 +176,9 @@ async function main() {
     prisma.hostProfile.create({
       data: {
         userId: hostUsers[0].id,
-        contactNumber: "+91-9876543210",
-        alternateContact: "+91-9876543211",
-        whatsApp: "+91-9876543210",
+        contactNumber: "9876543210", // Matches user phone number
+        alternateContact: "9876543211",
+        whatsApp: "9876543210",
         Address: "123, MG Road, Bangalore, Karnataka 560001",
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -179,9 +188,9 @@ async function main() {
     prisma.hostProfile.create({
       data: {
         userId: hostUsers[1].id,
-        contactNumber: "+91-9876543220",
-        alternateContact: "+91-9876543221",
-        whatsApp: "+91-9876543220",
+        contactNumber: "9876543220", // Matches user phone number
+        alternateContact: "9876543221",
+        whatsApp: "9876543220",
         Address: "456, Koramangala, Bangalore, Karnataka 560034",
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -191,9 +200,9 @@ async function main() {
     prisma.hostProfile.create({
       data: {
         userId: hostUsers[2].id,
-        contactNumber: "+91-9876543230",
-        alternateContact: "+91-9876543231",
-        whatsApp: "+91-9876543230",
+        contactNumber: "9876543230", // Matches user phone number
+        alternateContact: "9876543231",
+        whatsApp: "9876543230",
         Address: "789, HSR Layout, Bangalore, Karnataka 560102",
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -482,6 +491,7 @@ async function main() {
 
   console.log(`✅ Created ${pgListings.length} PG listings`);
 
+  // ... (rest of the seed file remains the same)
   // Create Sharing Types
   console.log("🛏️ Creating sharing types...");
   const sharingTypes = await Promise.all([
@@ -1032,7 +1042,7 @@ async function main() {
 
   // Print summary
   console.log("\n📊 Seeding Summary:");
-  console.log(`👥 Users: ${users.length}`);
+  console.log(`👥 Users (with phone numbers): ${users.length}`);
   console.log(`🏠 Host Profiles: ${hostProfiles.length}`);
   console.log(`🏘️ PG Listings: ${pgListings.length}`);
   console.log(`🛏️ Sharing Types: ${sharingTypes.length}`);
@@ -1041,6 +1051,11 @@ async function main() {
   console.log(`⭐ Reviews: ${reviews.length}`);
   console.log(`📋 PG Requests: ${pgRequests.length}`);
   console.log(`❤️ Wishlist Entries: ${wishlistEntries.length}`);
+  
+  console.log("\n📱 Phone Numbers Added:");
+  console.log("📝 Admin: 9876543201");
+  console.log("📝 Hosts: 9876543210, 9876543220, 9876543230");
+  console.log("📝 Users: 8765432109, 8765432110, 8765432111, 8765432112");
 }
 
 main()

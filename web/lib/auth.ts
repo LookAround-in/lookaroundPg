@@ -24,6 +24,17 @@ export const auth = betterAuth({
           output: z.enum(["user", "admin", "host", "super_admin"]).optional(),
         },
       },
+      phone: {
+        type: "string",
+        required: false,
+        input: true,
+        validator: {
+          input: z.string()
+            .length(10, "Phone number must be exactly 10 digits")
+            .regex(/^\d{10}$/, "Phone number must contain only digits"),
+          output: z.string(),
+        },
+      },
     },
   },
   emailAndPassword: {

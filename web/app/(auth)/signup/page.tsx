@@ -25,14 +25,30 @@ const Signup = () => {
   const { toast } = useToast();
   const router = useRouter();
 
+  // Phone number validation
+  const validatePhone = (phoneNumber: string) => {
+    return /^\d{10}$/.test(phoneNumber);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validatePhone(phone)) {
+      toast({
+        title: "Invalid Phone Number",
+        description: "Phone number must be exactly 10 digits",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
     const { data, error } = await authClient.signUp.email(
       {
         email,
         password,
         name,
+        phone: phone, // Allow phone to be optional
         callbackURL: "/",
         role: "user",
       },
