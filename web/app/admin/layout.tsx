@@ -1,11 +1,9 @@
 "use client";
 import React, { ReactNode } from "react";
-
-import { redirect } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
-  const { user, isLoading } = useAuth();
+  const {isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -16,14 +14,6 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         </div>
       </div>
     );
-  }
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  if (user.role !== "admin" && user.role !== "super_admin") {
-    redirect("/");
   }
 
   return <div>{children}</div>;

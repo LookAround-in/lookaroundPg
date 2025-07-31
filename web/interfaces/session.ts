@@ -1,8 +1,8 @@
 export enum UserRole {
-    SUPER_ADMIN,
-    ADMIN,
-    USER,
-    HOST
+    super_admin = 'super_admin',
+    admin = 'admin',
+    user = 'user',
+    host = 'host'
 }
 
 export interface SessionInfo {
