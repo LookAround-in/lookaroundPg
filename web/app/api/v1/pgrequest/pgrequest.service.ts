@@ -65,7 +65,7 @@ export class PgRequestServices {
             // Send email to super admin with all details
             await resend.emails.send({
                 from: process.env.FROM_EMAIL || "LookaroundPG <onboarding@resend.dev>",
-                to: ["try.bivek@gmail.com"],   // TODO: This should be the super admin email
+                to: ["info.lookaroundpg@gmail.com"],   // TODO: This should be the super admin email
                 subject: "New PG Request Created",
                 html: `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
