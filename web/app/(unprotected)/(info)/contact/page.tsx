@@ -17,10 +17,43 @@ const ContactUs = () => {
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/v1/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert('Message sent successfully! We\'ll get back to you soon.');
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          category: '',
+          message: ''
+        });
+      } else {
+        alert(`Error: ${result.message}`);
+      }
+    } catch (error) {
+      alert('Failed to send message. Please try again.');
+      console.error('Contact form error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: string, value: string) => {
@@ -63,7 +96,7 @@ const ContactUs = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 animate-fadeInUp">
             Get in Touch
           </h1>
-          <p className="text-xl text-white/90 mb-8 animate-fadeInUp" style={{animationDelay: '0.2s'}}>
+          <p className="text-xl text-white/90 mb-8 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
             We'd love to hear from you. Send us a message and we'll respond as soon as possible.
           </p>
         </div>
@@ -76,7 +109,7 @@ const ContactUs = () => {
             <div
               key={index}
               className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 text-center hover:shadow-lg transition-all duration-300 animate-fadeInUp"
-              style={{animationDelay: `${index * 0.1}s`}}
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className={`w-12 h-12 rounded-lg ${info.color} flex items-center justify-center mx-auto mb-4`}>
                 <info.icon className="h-6 w-6" />
@@ -199,11 +232,12 @@ const ContactUs = () => {
                 />
               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full bg-gradient-cool text-white hover:opacity-90 h-12 text-lg font-semibold"
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-gradient-cool text-white hover:opacity-90 h-12 text-lg font-semibold disabled:opacity-50"
               >
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
                 <Send className="h-5 w-5 ml-2" />
               </Button>
             </form>
@@ -230,7 +264,11 @@ const ContactUs = () => {
                 Find Our Office
               </h3>
               <div className="bg-gray-200 rounded-lg h-48 flex items-center justify-center">
-                <p className="text-gray-500">Interactive Map Coming Soon</p>
+                <iframe
+                    width="100%"
+                    height="100%"
+                    src={`https://www.google.com/maps?q=${12.953530},${77.710129}&z=15&output=embed`}
+                  ></iframe>
               </div>
             </div>
           </div>
