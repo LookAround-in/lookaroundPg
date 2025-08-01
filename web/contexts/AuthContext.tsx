@@ -11,6 +11,7 @@ interface User {
   emailVerified?: boolean;
   image?: string;
   role?: string;
+  phone?: string;
 }
 
 interface AuthContextType {
