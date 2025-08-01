@@ -89,10 +89,11 @@ model HostProfile {
   id     String @id @default(uuid())
   userId String @unique
 
-  contactNumber    String
-  alternateContact String?
-  whatsApp         String?
-  Address          String?
+  contactNumber         String
+  alternateContact      String?
+  whatsApp              String?
+  Address               String?
+  languagesSpokenByHost String[] @default([]) // Array of languages spoken by the host
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -110,7 +111,6 @@ model HostProfile {
 }
 
 model PgData {
-
   id           String         @id @default(uuid())
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
@@ -133,13 +133,13 @@ model PgData {
   avgRating   Float?
   reviewCount Int    @default(0) // For efficiency, avoid COUNT queries
 
-  nearbyFacilities Json[]      @default([]) // JSON field to store nearby facilities
+  nearbyFacilities Json[] @default([]) // JSON field to store nearby facilities
 
-  virtualTourUrl   String?
-  images           String[]    @default([])
-  PgRequest        PgRequest[]
-  wishList         WishList[]
-  reviews          Review[]
+  virtualTourUrl String?
+  images         String[]    @default([])
+  PgRequest      PgRequest[]
+  wishList       WishList[]
+  reviews        Review[]
 }
 
 model Review {
