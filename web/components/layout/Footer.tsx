@@ -7,7 +7,7 @@ export const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-12 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
@@ -70,13 +70,8 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-gray-50 hover:text-primary transition-colors">
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link href="/careers" className="text-gray-50 hover:text-primary transition-colors">
-                  Careers
+                <Link href="/host/dashboard" className="text-gray-50 hover:text-primary transition-colors">
+                  Host Dashboard
                 </Link>
               </li>
             </ul>
@@ -127,23 +122,6 @@ export const Footer = () => {
                 <a href="/cookie" className="text-gray-50 hover:text-primary transition-colors">
                   Cookie Policy
                 </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Host */}
-          <div>
-            <h3 className="font-semibold text-lg text-gray-50 mb-4">Host</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/host/login" className="text-gray-50 hover:text-primary transition-colors">
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link href="/host/dashboard" className="text-gray-50 hover:text-primary transition-colors">
-                  Dashboard
-                </Link>
               </li>
             </ul>
           </div>
