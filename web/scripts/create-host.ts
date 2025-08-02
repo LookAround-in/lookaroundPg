@@ -1,38 +1,39 @@
 import { authClient } from "@/lib/auth-client"
 import prisma from "@/lib/Prisma";
+import { UserRole } from "@/generated/prisma";
 
 const host = [
     {
-        name: 'Rajesh Kumar',
-        email: 'rajesh.kumar@gmail.com',
+        name: 'Aditya Venkatesh',
+        email: 'aditya.venkatesh.pg@gmail.com',
         password: 'tempPassword1@',
         phone: '9876543210',
         image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
     },
     {
-        name: 'Priya Sharma',
-        email: 'priya.sharma@gmail.com',
+        name: 'Sneha Balasubramanian',
+        email: 'sneha.bala.homes@gmail.com',
         password: 'tempPassword2@',
         phone: '9876543220',
         image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
     },
     {
-        name: 'Arjun Patel',
-        email: 'arjun.patel@gmail.com',
+        name: 'Kiran Maheshwari',
+        email: 'kiran.mahesh.stays@gmail.com',
         password: 'tempPassword3@',
         phone: '9876543230',
         image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
     },
     {
-        name: 'Kavitha Reddy',
-        email: 'kavitha.reddy@gmail.com',
+        name: 'Meera Chandrasekhar',
+        email: 'meera.chandra.residences@gmail.com',
         password: 'tempPassword4@',
         phone: '9876543240',
         image: 'https://images.unsplash.com/photo-1494790108755-2616b612b550?w=150',
     },
     {
-        name: 'Vikram Singh',
-        email: 'vikram.singh@gmail.com',
+        name: 'Rohan Srinivasan',
+        email: 'rohan.srini.hostels@gmail.com',
         password: 'tempPassword5@',
         phone: '9876543250',
         image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
@@ -42,14 +43,13 @@ const host = [
 // Create User account using better auth using above data.
 
 const createUsersForHostProfiles = async () => {
-    host.forEach(async (user) => {
+  for (const user of host) { // Use for...of instead of forEach for proper async handling
         const { data, error } = await authClient.signUp.email(
             {
                 email: user.email,
                 password: user.password,
                 name: user.name,
                 phone: user.phone,
-                role: "host",
             },
             {
                 onRequest: (ctx) => {
@@ -66,16 +66,20 @@ const createUsersForHostProfiles = async () => {
 
         if (error) {
             console.error("Error creating user:", error);
-        } else {
-            console.log("User created successfully:", data);
+        } else if (data?.user?.id) {
+            // Update the role manually
+            await prisma.user.update({
+                where: { id: data.user.id },
+                data: { role: 'host' }
+            });
+            console.log("User created and role updated successfully:", data);
         }
-    });
+    }
 }
-
 
 const hostProfileInfo = [
     {
-        userId: "MslZMZsc727s551NlB1l5e2J6HM3uMnK", // get this user Id from the database after creating the user - Rajesh Kumar
+        userId: "hKBT2SLnVmgYahzoqAcb6P0FlEdzpmEL", // get this user Id from the database after creating the user - Rajesh Kumar
         contactNumber: '9876543210',
         alternateContact: '9876543211',
         whatsappNumber: '9876543210',
@@ -83,7 +87,7 @@ const hostProfileInfo = [
         languagesSpokenByHost: ['Hindi', 'English', 'Kannada'],
     },
     {
-        userId: "MslZMZsc727s551NlB1l5e2J6HM3uMnK", // get this user Id from the database after creating the user - Priya Sharma
+        userId: "7Q5JviBp2gmihawmvLqoD45wtmgdic0w", // get this user Id from the database after creating the user - Priya Sharma
         contactNumber: '9876543220',
         alternateContact: '9876543221',
         whatsappNumber: '9876543220',
@@ -91,7 +95,7 @@ const hostProfileInfo = [
         languagesSpokenByHost: ['Hindi', 'English', 'Tamil', 'Kannada'],
     },
     {
-        userId: "kUlnUpuxPHMpryUyqnL7dsmKJHzLnCDm", // get this user Id from the database after creating the user - Arjun Patel
+        userId: "Ej5oDHxf4UGbJ0uos1eDB6fMNJI1G5E5", // get this user Id from the database after creating the user - Arjun Patel
         contactNumber: '9876543230',
         alternateContact: '9876543231',
         whatsappNumber: '9876543230',
@@ -99,7 +103,7 @@ const hostProfileInfo = [
         languagesSpokenByHost: ['Hindi', 'English', 'Gujarati'],
     },
     {
-        userId: "str6WkwSJQ1YJc1B0XfUtkz0ZWVbB5rm", // get this user Id from the database after creating the user - Kavitha Reddy
+        userId: "8jNqhNcWZbFHYgISomn1gbZaouBxT1kY", // get this user Id from the database after creating the user - Kavitha Reddy
         contactNumber: '9876543240',
         alternateContact: '9876543241',
         whatsappNumber: '9876543240',
@@ -107,7 +111,7 @@ const hostProfileInfo = [
         languagesSpokenByHost: ['Telugu', 'English', 'Hindi', 'Kannada'],
     },
     {
-        userId: "5dZAX8kdHe5AiQVz8UWbjTmxqGxPtdgk", // get this user Id from the database after creating the user - Vikram Singh
+        userId: "1toDgDHVUnMmQZ5HlYpnboG6nN5N1D69", // get this user Id from the database after creating the user - Vikram Singh
         contactNumber: '9876543250',
         alternateContact: '9876543251',
         whatsappNumber: '9876543250',
@@ -138,10 +142,10 @@ const createHostProfiles = async () => {
 }
 
 const main = async () => {
-    // console.log("Starting the creation of user accounts...");
-    // await createUsersForHostProfiles();
-    console.log("Starting the creation of hostProfile...");
-    await createHostProfiles();
+    console.log("Starting the creation of user accounts...");
+    await createUsersForHostProfiles();
+    // console.log("Starting the creation of hostProfile...");
+    // await createHostProfiles();
 }
 
 main();
