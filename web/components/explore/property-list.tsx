@@ -1,6 +1,5 @@
 'use client';
 import { PropertyCard } from '@/components/properties/PropertyCard';
-import PropertySkeleton from '@/components/properties/PropertySkeleton';
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card';
 import { ExploreApiResponse, Property } from '@/interfaces/property'
@@ -19,10 +18,7 @@ interface PropertyListProps{
 }
 
 function PropertyList({ data, filteredProperties }: PropertyListProps) {
-  console.log("isloading:", data.isLoading, "isFetching:", data.isFetching, "isPending:", data.isPending);
   const isLoading = data.isLoading || data.isFetching || data.isPending;
-  console.log("Loading state:", isLoading);
-  console.log("Filtered properties:", filteredProperties);
   return (
     <div className="flex-1">
             {/* Error State */}
@@ -42,14 +38,6 @@ function PropertyList({ data, filteredProperties }: PropertyListProps) {
                 </div>
               </div>
             )}
-            {/* Skeleton Cards for better UX while data is still loading */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
-              {(isLoading) &&
-                // Show skeleton cards
-                Array.from({ length: 6 }).map((_, index) => (
-                  <PropertySkeleton key={`skeleton-${index}`} />
-                ))}
-            </div>
             {!isLoading && !data.isError && (
               <div>
                 {filteredProperties.length > 0 ? (

@@ -7,6 +7,7 @@ import { ExploreApiResponse, Property } from "@/interfaces/property";
 import { useQuery } from "@tanstack/react-query";
 import { SharingType } from "@/interfaces/pg";
 import { PaginationWithLinks } from "../ui/pagination-with-links";
+import PropertySkeleton from "../properties/PropertySkeleton";
 
 const fetchProperties = async (page: number, limit: number): Promise<ExploreApiResponse> => {
   const response = await fetch(`/api/v1/pg/getExplorePg?page=${page}&limit=${limit}`, {
@@ -241,7 +242,17 @@ function ExploreProperties({page = 1, limit = 12}: {page: number, limit: number}
             onFiltersChange={updateFilters}
           />
           {/* Properties Grid */}
-          <PropertyList data={explorePropertiesData} filteredProperties={filteredProperties} />
+          { originalProperties.length === 0 ? (
+            <div className="flex-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
+              {Array.from({ length: 6 }).map((_, index) => (
+                  <PropertySkeleton key={`skeleton-${index}`} />
+                ))}
+            </div>
+            </div>
+          ): (
+            <PropertyList data={explorePropertiesData} filteredProperties={filteredProperties} />
+          ) }
         </div>
         <div className='mt-4 flex justify-center'>
           <PaginationWithLinks page={page} pageSize={limit} totalCount={totalProperties}/>
