@@ -24,14 +24,14 @@ import {
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { ExploreApiResponse, Review } from "@/interfaces/property";
+import { PropertyApiResponse } from "@/interfaces/property";
 import { useQuery } from "@tanstack/react-query";
 import PropertySkeleton from "@/components/properties/PropertySkeleton";
 import { formatRating } from "@/utils/format";
 
 const fetchHostProperties = async (
   hostId: string
-): Promise<ExploreApiResponse> => {
+): Promise<PropertyApiResponse> => {
   const response = await fetch(`/api/v1/pg/getPgByhostId/${hostId}`, {
     method: "GET",
     headers: {

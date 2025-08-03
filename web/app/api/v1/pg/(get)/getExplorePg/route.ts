@@ -3,7 +3,25 @@ import { pgController } from "../../route";
 
 export async function GET(request: Request) {
     try {
-        const result = await pgController.getExplorePgs(request);
+        const url = new URL(request.url);
+        const pageParam = url.searchParams.get("page");
+        const limitParam = url.searchParams.get("limit");
+        const page = pageParam ? parseInt(pageParam, 10) : 1;
+        const limit = limitParam ? parseInt(limitParam, 10) : 12;
+        
+        if (!Number.isInteger(page) || page < 1) {
+            return NextResponse.json(
+                { message: 'Invalid page number. Must be a positive integer.' },
+                { status: 400 }
+            );
+        }
+        if (!Number.isInteger(limit) || limit < 1) {
+            return NextResponse.json(
+                { message: 'Invalid limit. Must be a positive integer.' },
+                { status: 400 }
+            );
+        }
+        const result = await pgController.getExplorePgs(request, page, limit);
         return result;
     } catch (error) {
         console.error("Error in getting explore pg's route:", error);

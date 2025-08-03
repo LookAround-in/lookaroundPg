@@ -2,7 +2,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { usePropertyContext } from "contexts/PropertyContext";
 import { Button } from "components/ui/button";
 import { Badge } from "components/ui/badge";
 import { Card, CardContent } from "components/ui/card";
@@ -91,8 +90,7 @@ const createPropertyRequest = async (pgRequest: PgRequestData) => {
   return response.json();
 };
 
-const PropertyDetails = () => {
-  const { propertyId } = usePropertyContext();
+const PropertyDetails = ({propertyId}: {propertyId: string}) => {
   const router = useRouter();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const { toast } = useToast();

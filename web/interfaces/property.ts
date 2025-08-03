@@ -74,6 +74,19 @@ export interface Property {
 export interface ExploreApiResponse {
   success: boolean;
   message: string;
+  data: Properties;
+}
+interface Properties{
+  properties: Property[];
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  limit: number;
+}
+
+export interface PropertyApiResponse {
+  success: boolean;
+  message: string;
   data: Property[];
 }
 
@@ -85,7 +98,6 @@ interface PgData {
   images: string[];
   propertyType: string;
 }
-
 
 export interface HostRequest {
   id: string;

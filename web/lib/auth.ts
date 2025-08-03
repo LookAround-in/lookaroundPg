@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { nextCookies } from "better-auth/next-js";
 
 import { admin } from "better-auth/plugins/admin";
 import z from "zod";
@@ -11,7 +12,7 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  plugins: [admin()],
+  plugins: [admin(), nextCookies()],
   user: {
     additionalFields: {
       role: {
