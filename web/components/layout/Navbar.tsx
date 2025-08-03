@@ -17,7 +17,8 @@ export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { wishlist } = useWishlist();
   const router = useRouter();
-  const { logout , user} = useAuth();
+  const { logout, user} = useAuth();
+
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

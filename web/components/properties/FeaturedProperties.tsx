@@ -18,7 +18,7 @@ const fetchFeaturedProperties = async (): Promise<PropertyApiResponse> => {
   if (!response.ok) {
     throw new Error("Failed to fetch featured properties");
   }
-  console.log("Featured properties fetched from API client side");
+
   return response.json();
 };
 

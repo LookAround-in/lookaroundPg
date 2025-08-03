@@ -24,6 +24,7 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const { refetch } = authClient.useSession();
 
   // Phone number validation
   const validatePhone = (phoneNumber: string) => {
@@ -59,12 +60,16 @@ const Signup = () => {
             description: "Your Account is being created, please wait...",
           });
         },
-        onSuccess: (ctx) => {
+        onSuccess: async (ctx) => {
           toast({
             title: "Account Created!",
             description: "Your Account has been created successfully.",
           });
           setIsLoading(false);
+          await authClient.getSession({
+            query: { disableCookieCache: true },
+          });
+          refetch();
           redirect("/");
         },
         onError: (ctx) => {
