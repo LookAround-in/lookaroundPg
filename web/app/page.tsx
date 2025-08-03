@@ -5,7 +5,7 @@ import { Shield, Search, Star, Users } from "lucide-react";
 import Featured from "@/components/properties/FeaturedProperties";
 import Trending from "@/components/properties/TrendingProperties";
 import { getQueryClient } from "@/lib/get-query-client";
-import { fetchFeaturedProperties, fetchTrendingProperties } from "@/lib/api";
+import { fetchFeaturedProperties, fetchTrendingProperties } from "@/lib/api-server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 export default async function HomePage() {

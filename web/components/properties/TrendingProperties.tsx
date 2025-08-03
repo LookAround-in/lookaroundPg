@@ -1,19 +1,31 @@
 "use client";
 import React from "react";
-import { ExploreApiResponse } from "@/interfaces/property";
+import { PropertyApiResponse } from "@/interfaces/property";
 import { useQuery } from "@tanstack/react-query";
 import { PropertyCard } from "./PropertyCard";
 import PropertySkeleton from "./PropertySkeleton";
 import Link from "next/link";
 import { Button } from "components/ui/button";
-import { fetchTrendingProperties } from "@/lib/api";
+
+const fetchTrendingProperties = async (): Promise<PropertyApiResponse> => {
+  const response = await fetch(`/api/v1/pg/getTrendingPg`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch featured properties");
+  }
+
+  return response.json();
+};
 
 export default function Trending() {
   const trendingPropertiesData = useQuery({
     queryKey: ["trendingProperties"],
     queryFn: fetchTrendingProperties,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
   });
 
   const trendingProperties = trendingPropertiesData.data?.data || [];

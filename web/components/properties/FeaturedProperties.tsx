@@ -1,19 +1,31 @@
 "use client";
 import React from "react";
-import { ExploreApiResponse } from "@/interfaces/property";
+import { PropertyApiResponse } from "@/interfaces/property";
 import { useQuery } from "@tanstack/react-query";
 import { PropertyCard } from "./PropertyCard";
 import PropertySkeleton from "./PropertySkeleton";
 import Link from "next/link";
 import { Button } from "components/ui/button";
-import { fetchFeaturedProperties } from "@/lib/api";
+
+const fetchFeaturedProperties = async (): Promise<PropertyApiResponse> => {
+  const response = await fetch(`/api/v1/pg/getFeaturedPg`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch featured properties");
+  }
+  console.log("Featured properties fetched from API client side");
+  return response.json();
+};
 
 export default function Featured() {
   const featuredPropertiesData = useQuery({
     queryKey: ["featuredProperties"],
     queryFn: fetchFeaturedProperties,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
   });
   const featuredProperties = featuredPropertiesData.data?.data || [];
 

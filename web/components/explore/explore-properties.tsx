@@ -5,10 +5,24 @@ import PropertyList from "./property-list";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select";
 import { ExploreApiResponse, Property } from "@/interfaces/property";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProperties } from "@/lib/api";
 import { SharingType } from "@/interfaces/pg";
+import { PaginationWithLinks } from "../ui/pagination-with-links";
 
-function ExploreProperties({page, limit}: {page?: number, limit?: number}) {
+const fetchProperties = async (page: number, limit: number): Promise<ExploreApiResponse> => {
+  const response = await fetch(`/api/v1/pg/getExplorePg?page=${page}&limit=${limit}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return response.json();
+};
+
+function ExploreProperties({page = 1, limit = 12}: {page: number, limit: number}) {
   const [sortBy, setSortBy] = useState("newest");
   const [originalProperties, setOriginalProperties] = useState<Property[]>([]);
   
@@ -26,17 +40,18 @@ function ExploreProperties({page, limit}: {page?: number, limit?: number}) {
     rating: 0,
   });
 
-  const data = useQuery<ExploreApiResponse>({
-    queryKey: ["properties"],
-    queryFn: fetchProperties,
+  const explorePropertiesData = useQuery<ExploreApiResponse>({
+    queryKey: ["properties", page],
+    queryFn: () => fetchProperties(page, limit),
   });
+  const totalProperties = explorePropertiesData?.data?.data?.totalItems || 0;
 
   // Set original properties and update price range when data changes
   useEffect(() => {
-    if (data.data && data.data.success) {
-      const properties = data.data.data || [];
+    if (explorePropertiesData.data && explorePropertiesData.data.success) {
+      const properties = explorePropertiesData.data.data.properties || [];
       setOriginalProperties(properties);
-      
+
       // Calculate price range from properties
       if (properties.length > 0) {
         const allPrices = properties
@@ -64,7 +79,7 @@ function ExploreProperties({page, limit}: {page?: number, limit?: number}) {
     } else {
       setOriginalProperties([]);
     }
-  }, [data.data]);
+  }, [explorePropertiesData.data]);
 
   // Handler to update filters
   const updateFilters = (newFilters: Partial<FilterState>) => {
@@ -73,7 +88,7 @@ function ExploreProperties({page, limit}: {page?: number, limit?: number}) {
 
   // Filter and sort properties - moved from Filter component
   const filteredProperties = useMemo(() => {
-    const filtered = originalProperties.filter((property) => {
+    const filtered = originalProperties?.filter((property) => {
       // Location filter
       if (
         filters.selectedLocation &&
@@ -226,7 +241,10 @@ function ExploreProperties({page, limit}: {page?: number, limit?: number}) {
             onFiltersChange={updateFilters}
           />
           {/* Properties Grid */}
-          <PropertyList data={data} filteredProperties={filteredProperties} />
+          <PropertyList data={explorePropertiesData} filteredProperties={filteredProperties} />
+        </div>
+        <div className='mt-4 flex justify-center'>
+          <PaginationWithLinks page={page} pageSize={limit} totalCount={totalProperties}/>
         </div>
       </div>
       {/* Floating Mobile Filter Button */}

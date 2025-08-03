@@ -3,22 +3,26 @@ import { PropertyCard } from '@/components/properties/PropertyCard';
 import PropertySkeleton from '@/components/properties/PropertySkeleton';
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card';
-import { Property } from '@/interfaces/property'
+import { ExploreApiResponse, Property } from '@/interfaces/property'
 import { Search } from 'lucide-react';
-
 interface PropertyListProps{
   data: {
+    isFetching: boolean;
     isLoading: boolean;
     isPending?: boolean;
     isError: boolean;
     error?: unknown;
     refetch: () => void;
+    data: ExploreApiResponse;
   };
   filteredProperties: Property[];
-  // clearFilters: () => void;
 }
 
 function PropertyList({ data, filteredProperties }: PropertyListProps) {
+  console.log("isloading:", data.isLoading, "isFetching:", data.isFetching, "isPending:", data.isPending);
+  const isLoading = data.isLoading || data.isFetching || data.isPending;
+  console.log("Loading state:", isLoading);
+  console.log("Filtered properties:", filteredProperties);
   return (
     <div className="flex-1">
             {/* Error State */}
@@ -40,13 +44,13 @@ function PropertyList({ data, filteredProperties }: PropertyListProps) {
             )}
             {/* Skeleton Cards for better UX while data is still loading */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
-              {(data.isLoading || data.isPending) &&
+              {(isLoading) &&
                 // Show skeleton cards
                 Array.from({ length: 6 }).map((_, index) => (
                   <PropertySkeleton key={`skeleton-${index}`} />
                 ))}
             </div>
-            {!data.isLoading && !data.isPending && !data.isError && (
+            {!isLoading && !data.isError && (
               <div>
                 {filteredProperties.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
@@ -73,12 +77,6 @@ function PropertyList({ data, filteredProperties }: PropertyListProps) {
                         We couldn't find any properties matching your criteria.
                         Try adjusting your filters to see more results.
                       </p>
-                      {/* <Button
-                        onClick={clearFilters}
-                        className="bg-gradient-cool text-white hover:opacity-90 font-semibold"
-                      >
-                        Clear All Filters
-                      </Button> */}
                     </CardContent>
                   </Card>
                 )}

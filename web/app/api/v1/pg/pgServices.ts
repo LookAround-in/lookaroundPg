@@ -396,12 +396,11 @@ export class PgServices {
     }
   }
 
-  async getExplorePgs() {
+  async getExplorePgs(page: number = 1, limit: number = 12) {
     try {
-      const explorePgs = await this.prismaClient.pgData.findMany({
-        where: {
-          // Must have available rooms
-          sharingTypes: {
+      const skip = (page - 1) * limit;
+      const commonWhereClause = {
+        sharingTypes: {
             some: {
               availability: {
                 gt: 0,
@@ -415,8 +414,14 @@ export class PgServices {
           address: {
             not: "",
           },
-        },
-        take: 12, // Show more options for exploration
+      }
+      const totalItems = await this.prismaClient.pgData.count({
+        where: commonWhereClause
+      })
+      const explorePgs = await this.prismaClient.pgData.findMany({
+        where: commonWhereClause,
+        take: limit, // Show more options for exploration
+        skip: skip,
         orderBy: [
           {
             avgRating: "desc", // Quality first (nulls last in PostgreSQL)
@@ -486,10 +491,16 @@ export class PgServices {
           },
         },
       });
+      const totalPages = Math.ceil(totalItems / limit)
 
       // Add some randomization to explore results for variety
       const shuffledResults = explorePgs.sort(() => Math.random() - 0.5);
-      return shuffledResults;
+      return {
+        properties: shuffledResults,
+        totalItems,
+        totalPages
+      };
+
     } catch (error) {
       console.error("Error fetching explore Pgs:", error);
       throw new Error("Failed to fetch explore Pgs");
