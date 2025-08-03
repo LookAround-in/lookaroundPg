@@ -54,7 +54,7 @@ async function main() {
         role: "admin",
         name: "Admin User",
         email: "admin@lookaroundpg.com",
-        phone: "9876543201", 
+        phone: "9876543201",
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
@@ -69,7 +69,7 @@ async function main() {
         role: "host",
         name: "Rajesh Kumar",
         email: "rajesh.kumar@gmail.com",
-        phone: "9876543210", 
+        phone: "9876543210",
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
@@ -83,7 +83,7 @@ async function main() {
         role: "host",
         name: "Priya Sharma",
         email: "priya.sharma@gmail.com",
-        phone: "9876543220", 
+        phone: "9876543220",
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
@@ -97,7 +97,7 @@ async function main() {
         role: "host",
         name: "Arjun Patel",
         email: "arjun.patel@gmail.com",
-        phone: "9876543230", 
+        phone: "9876543230",
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
@@ -112,7 +112,7 @@ async function main() {
         role: "user",
         name: "Amit Singh",
         email: "amit.singh@gmail.com",
-        phone: "8765432109", 
+        phone: "8765432109",
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
@@ -126,7 +126,7 @@ async function main() {
         role: "user",
         name: "Sneha Gupta",
         email: "sneha.gupta@gmail.com",
-        phone: "8765432110", 
+        phone: "8765432110",
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1494790108755-2616b612b550?w=150",
@@ -140,7 +140,7 @@ async function main() {
         role: "user",
         name: "Vikram Reddy",
         email: "vikram.reddy@gmail.com",
-        phone: "8765432111", 
+        phone: "8765432111",
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
@@ -154,7 +154,7 @@ async function main() {
         role: "user",
         name: "Kavya Nair",
         email: "kavya.nair@gmail.com",
-        phone: "8765432112", 
+        phone: "8765432112",
         emailVerified: true,
         image:
           "https://images.unsplash.com/photo-1494790108755-2616b612b550?w=150",
@@ -180,6 +180,7 @@ async function main() {
         alternateContact: "9876543211",
         whatsApp: "9876543210",
         Address: "123, MG Road, Bangalore, Karnataka 560001",
+        languagesSpokenByHost: ["English", "Hindi", "Kannada"],
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -192,6 +193,7 @@ async function main() {
         alternateContact: "9876543221",
         whatsApp: "9876543220",
         Address: "456, Koramangala, Bangalore, Karnataka 560034",
+        languagesSpokenByHost: ["English", "Hindi", "Kannada"],
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -204,6 +206,7 @@ async function main() {
         alternateContact: "9876543231",
         whatsApp: "9876543230",
         Address: "789, HSR Layout, Bangalore, Karnataka 560102",
+        languagesSpokenByHost: ["English", "Hindi", "Kannada"],
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -2026,7 +2029,7 @@ async function main() {
   console.log(`⭐ Reviews: ${reviews.length}`);
   console.log(`📋 PG Requests: ${pgRequests.length}`);
   console.log(`❤️ Wishlist Entries: ${wishlistEntries.length}`);
-  
+
   console.log("\n📱 Phone Numbers Added:");
   console.log("📝 Admin: 9876543201");
   console.log("📝 Hosts: 9876543210, 9876543220, 9876543230");

@@ -44,7 +44,12 @@ const About = () => {
       name: 'Aakash Subedi',
       role: 'CTO',
       description: 'Building the tech backbone that keeps tenants and owners connected with ease.'
-    }
+    },
+    {
+      name: 'Bivek Gharti',
+      role: 'Founding Engineer',
+      description: 'Leading core product development and helping turn ideas into working software.'
+    },
   ];
 
   const stats = [

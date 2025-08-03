@@ -1,8 +1,9 @@
 import prisma from "@/lib/Prisma";
 import { NextResponse } from "next/server";
 
+
 // Helper function to calculate and update PG rating whenever a review is created, updated, or deleted
-async function updatePgRating(pgDataId: string, tx?: any) {
+async function updatePgRating(pgDataId: string, tx?:  Omit<typeof prisma, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">) {
     const prismaClient = tx || prisma;
 
     const result = await prismaClient.review.aggregate({
