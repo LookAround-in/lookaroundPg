@@ -27,7 +27,7 @@ export const SharingTypeDetailsSchema = z.object({
   type: SharingTypeSchema,
   description: z.string()
     .min(1, 'Description is required')
-    .max(200, 'Description must be less than 200 characters')
+    .max(1000, 'Description must be less than 1000 characters')
     .optional(),
   price: z.union([z.number(), z.string()])
     .transform((val) => Number(val))

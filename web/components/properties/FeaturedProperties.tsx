@@ -6,21 +6,7 @@ import { PropertyCard } from "./PropertyCard";
 import PropertySkeleton from "./PropertySkeleton";
 import Link from "next/link";
 import { Button } from "components/ui/button";
-
-const fetchFeaturedProperties = async (): Promise<ExploreApiResponse> => {
-  const response = await fetch("/api/v1/pg/getFeaturedPg", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch featured properties");
-  }
-
-  return response.json();
-};
+import { fetchFeaturedProperties } from "@/lib/api";
 
 export default function Featured() {
   const featuredPropertiesData = useQuery({
@@ -29,7 +15,6 @@ export default function Featured() {
     refetchOnMount: true,
     refetchOnReconnect: true,
   });
-
   const featuredProperties = featuredPropertiesData.data?.data || [];
 
   return (

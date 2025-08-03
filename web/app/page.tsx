@@ -1,12 +1,27 @@
-'use client';
 import Link from "next/link";
 import { Button } from "components/ui/button";
 import { SearchBar } from "components/search/SearchBar";
 import { Shield, Search, Star, Users } from "lucide-react";
 import Featured from "@/components/properties/FeaturedProperties";
 import Trending from "@/components/properties/TrendingProperties";
+import { getQueryClient } from "@/lib/get-query-client";
+import { fetchFeaturedProperties, fetchTrendingProperties } from "@/lib/api";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-const Index = () => {
+export default async function HomePage() {
+  const queryClient = getQueryClient();
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["featuredProperties"],
+      queryFn: fetchFeaturedProperties,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["trendingProperties"],
+      queryFn: fetchTrendingProperties,
+    })
+  ])
+  const dehydratedState = dehydrate(queryClient);
+
   const features = [
     {
       icon: Shield,
@@ -30,10 +45,9 @@ const Index = () => {
     },
   ];
 
-
-
   return (
-    <div className="min-h-screen bg-background transition-colors duration-200">
+    <HydrationBoundary state={dehydratedState}>
+      <div className="min-h-screen bg-background transition-colors duration-200">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -144,7 +158,6 @@ const Index = () => {
         </div>
       </section>
     </div>
+    </HydrationBoundary>
   );
 };
-
-export default Index;

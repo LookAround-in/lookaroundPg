@@ -6,21 +6,7 @@ import { PropertyCard } from "./PropertyCard";
 import PropertySkeleton from "./PropertySkeleton";
 import Link from "next/link";
 import { Button } from "components/ui/button";
-
-const fetchTrendingProperties = async (): Promise<ExploreApiResponse> => {
-  const response = await fetch("/api/v1/pg/getTrendingPg", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch trending properties");
-  }
-
-  return response.json();
-};
+import { fetchTrendingProperties } from "@/lib/api";
 
 export default function Trending() {
   const trendingPropertiesData = useQuery({
