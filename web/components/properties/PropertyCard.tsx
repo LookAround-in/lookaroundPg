@@ -1,5 +1,5 @@
 'use client'
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Heart, MapPin, User, Star } from 'lucide-react';
 import { Button } from 'components/ui/button';
@@ -9,6 +9,7 @@ import { useWishlist } from 'contexts/WishlistContext';
 import Image from 'next/image';
 import { Property } from '@/interfaces/property';
 import formatText, { formatRating } from '@/utils/format';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface PropertyCardProps {
   property: Property;
@@ -16,8 +17,7 @@ interface PropertyCardProps {
 }
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className = '' }) => {
-  const { data: session } = authClient.useSession();
-  const user = session?.user;
+  const user = useAuth();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [imageLoaded, setImageLoaded] = useState(false);
 

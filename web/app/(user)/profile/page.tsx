@@ -36,7 +36,7 @@ const Profile = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: ""
+    phone: ''
   });
 
   // Update form data when user changes
@@ -45,7 +45,7 @@ const Profile = () => {
       setFormData({
         name: user.name || "",
         email: user.email || "",
-        phone: user?.phone || ""
+        phone : user.phone || "",
       });
     }
   }, [user]);
@@ -203,13 +203,13 @@ const Profile = () => {
                   )}
                 </div>
 
-                 <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Phone className="h-4 w-4 text-orange-500" />
                     <span className="text-sm">Phone</span>
                   </div>
                   <span className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">
-                    {user?.phone ? 'Added' : 'Not Added'}
+                    {user.phone ? 'Added' : 'Not Added'}
                   </span>
                 </div>
               </CardContent>

@@ -1,14 +1,14 @@
 "use client";
 import React from "react";
-import { ExploreApiResponse } from "@/interfaces/property";
+import { PropertyApiResponse } from "@/interfaces/property";
 import { useQuery } from "@tanstack/react-query";
 import { PropertyCard } from "./PropertyCard";
 import PropertySkeleton from "./PropertySkeleton";
 import Link from "next/link";
 import { Button } from "components/ui/button";
 
-const fetchFeaturedProperties = async (): Promise<ExploreApiResponse> => {
-  const response = await fetch("/api/v1/pg/getFeaturedPg", {
+const fetchFeaturedProperties = async (): Promise<PropertyApiResponse> => {
+  const response = await fetch(`/api/v1/pg/getFeaturedPg`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -26,10 +26,7 @@ export default function Featured() {
   const featuredPropertiesData = useQuery({
     queryKey: ["featuredProperties"],
     queryFn: fetchFeaturedProperties,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
   });
-
   const featuredProperties = featuredPropertiesData.data?.data || [];
 
   return (

@@ -1,19 +1,9 @@
-'use client'
-import { use } from "react";
-import { PropertyProvider } from "contexts/PropertyContext";
 import PropertyDetails from "components/properties/PropertyDetails";
 
-interface PropertyPageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
-
-export default function PropertyPage({ params }: PropertyPageProps) {
-  const {id} = use(params)
+export default async function PropertyPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const {id} = resolvedParams;
   return (
-    <PropertyProvider propertyId={id}>
-      <PropertyDetails />
-    </PropertyProvider>
+      <PropertyDetails propertyId={id}/>
   );
 }
