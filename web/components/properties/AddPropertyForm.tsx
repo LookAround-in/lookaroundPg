@@ -32,12 +32,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Trash2, Upload, X, Image as ImageIcon } from "lucide-react";
+import { Plus, Trash2, Upload, X, Image as ImageIcon , Check, ChevronsUpDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
+import { cn } from "@/lib/utils";
 
 type PgFormType = z.infer<typeof PgFormSchema>;
 
@@ -58,7 +72,7 @@ const createProperty = async (formData: FormData) => {
 };
 
 const getAllHosts = async () => {
-  const response = await fetch("/api/v1/host");
+  const response = await fetch(`/api/v1/host`);
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`Failed to fetch hosts: ${response.status} ${errorText}`);
@@ -266,31 +280,67 @@ function AddPropertyForm() {
               </FormItem>
             )}
           />
-
+          
           <FormField
             control={propertyForm.control}
             name="hostId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Host *</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  defaultValue={""}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Host" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {hosts.map((host) => (
-                      <SelectItem key={host.id} value={host.id}>
-                        {formatText(host?.user?.name)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                    <Button
+                    variant="outline"
+                    role="combobox"
+                    className={cn(
+                        "w-full justify-between",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >{
+                      field.value ? 
+                        hosts.find(
+                          (host) => host.id === field.value
+                        )?.user?.name
+                       : "Select Host"
+                    }
+                    <ChevronsUpDown className="opacity-50"/>
+                    </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput
+                      placeholder="Search framework..."
+                      className="h-9"
+                    />
+                    <CommandList>
+                      <CommandEmpty>No Host found.</CommandEmpty>
+                      <CommandGroup>
+                        {hosts.map((host) => (
+                          <CommandItem
+                            value={host?.user?.name}
+                            key={host.id}
+                            onSelect={() => {
+                              propertyForm.setValue("hostId", host.id)
+                            }}
+                          >
+                            {formatText(host?.user?.name)} ({formatText(host?.contactNumber)})
+                            <Check
+                              className={cn(
+                                "ml-auto",
+                                host.id === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+                </Popover>
                 <FormDescription>
                   Select the host of the property.
                 </FormDescription>

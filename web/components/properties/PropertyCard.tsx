@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Heart, MapPin, User, Star } from 'lucide-react';
 import { Button } from 'components/ui/button';
 import { Badge } from 'components/ui/badge';
-import { authClient } from '@/lib/auth-client';
 import { useWishlist } from 'contexts/WishlistContext';
 import Image from 'next/image';
 import { Property } from '@/interfaces/property';
@@ -42,7 +41,6 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
       default: return 'bg-gray-100 text-gray-800';
     }
   };
-  //No need to filter as the backend is sending the sharingTypes already sorted by price
 
   return (
     <div className={`property-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden ${className}`}>

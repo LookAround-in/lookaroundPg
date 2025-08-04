@@ -99,9 +99,7 @@ const tourPlans = [
     }
   ];
 
-const Partner = () => {
-  
-
+export default async function Partner() {
   return (
     <div className="min-h-screen bg-light-gray">
       {/* Enhanced Hero Section */}
@@ -324,5 +322,3 @@ const Partner = () => {
     </div>
   );
 };
-
-export default Partner;
