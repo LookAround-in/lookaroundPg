@@ -72,7 +72,7 @@ const roadmapSteps = [
 
 const tourPlans = [
     {
-      name: 'Standard Virtual Tour',
+      name: 'Standard Listing',
       price: '₹500',
       features: [
         'Host-uploaded photos only',
@@ -81,10 +81,11 @@ const tourPlans = [
         'Mobile-friendly & shareable',
         'Host dashboard access'
       ],
+      demo: "/explore",
       recommended: false
     },
     {
-      name: 'Premium Virtual Tour',
+      name: 'Premium Listing',
       price: '₹1,500',
       features: [
         '4K 360° photography',
@@ -95,6 +96,7 @@ const tourPlans = [
         'Priority listing placement',
         '24/7 priority support'
       ],
+      demo: "https://realsee.ai/ZyKKW8Kp",
       recommended: true
     }
   ];
@@ -107,7 +109,7 @@ export default async function Partner() {
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 animate-fadeInUp">
-            Partner with LookaroundPG
+            Partner with LookAroundPG
           </h1>
           <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto animate-fadeInUp" style={{animationDelay: '0.2s'}}>
             Transform your property into a thriving business. Join thousands of successful hosts and maximize your rental income with our premium platform.
@@ -207,7 +209,7 @@ export default async function Partner() {
                   </ul>
                   <Button className={`w-full ${plan.recommended ? 'bg-gradient-cool text-white hover:opacity-90' : ''}`}>
                     <Eye className="h-4 w-4 mr-2" />
-                    Choose {plan.name}
+                    <a href={plan.demo}>View Demo</a>
                   </Button>
                 </CardContent>
               </Card>
@@ -220,7 +222,7 @@ export default async function Partner() {
           <div className="space-y-8">
             <div>
               <h2 className="text-3xl font-bold text-charcoal mb-6">
-                Why Choose LookaroundPG?
+                Why Choose LookAroundPG?
               </h2>
               <div className="space-y-6">
                 {benefits.map((benefit, index) => (
@@ -273,7 +275,7 @@ export default async function Partner() {
                   </div>
                   <div>
                     <p className="text-gray-700 italic mb-2">
-                      "Since partnering with LookaroundPG, our occupancy rate increased from 70% to 95%. 
+                      "Since partnering with LookAroundPG, our occupancy rate increased from 70% to 95%. 
                       The platform brings quality tenants and the support team is excellent."
                     </p>
                     <div className="text-sm">
@@ -292,7 +294,7 @@ export default async function Partner() {
               <CardHeader>
                 <CardTitle className="text-gradient-cool">Start Your Partnership Journey</CardTitle>
                 <CardDescription >
-                  Join thousands of successful property owners earning with LookaroundPG
+                  Join thousands of successful property owners earning with LookAroundPG
                 </CardDescription>
               </CardHeader>
               <CardContent>

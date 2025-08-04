@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Facebook, Twitter, Instagram, Heart } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Heart, Linkedin } from 'lucide-react';
 
 export const Footer = () => {
   return (
@@ -20,28 +20,31 @@ export const Footer = () => {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="font-bold md:text-xl text-gradient-cool">LookaroundPG</span>
+              <span className="font-bold md:text-xl text-gradient-cool">LookAroundPG</span>
             </div>
             <p className="text-gray-50">
               Your trusted platform for finding safe, comfortable, and affordable PG accommodations.
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.linkedin.com/company/lookaround-in/"
+                target="_blank"
                 className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center hover:bg-primary transition-colors"
-                aria-label="Facebook"
+                aria-label="Linkedin"
               >
-                <Facebook className="w-4 h-4" />
+                <Linkedin className="w-4 h-4" />
               </a>
               <a
-                href="#"
+                href="https://x.com/LookAroundPG"
+                target="_blank"
                 className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center hover:bg-primary transition-colors"
                 aria-label="Twitter"
               >
                 <Twitter className="w-4 h-4" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/lookaround.pg/"
+                target="_blank"
                 className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center hover:bg-primary transition-colors"
                 aria-label="Instagram"
               >
@@ -130,7 +133,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 mt-8 pt-8 text-center">
           <p className="text-gray-50">
-            © 2025 LookaroundPG. Made with <Heart className="inline w-4 h-4 text-red-500 mx-1" /> for better living.
+            © 2025 LookAroundPG. Built for better living by <a href="http://lookaround.in" target="_blank" rel="noopener noreferrer"><span className='text-primary'>lookaround.in</span></a>.
           </p>
         </div>
       </div>

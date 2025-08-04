@@ -65,7 +65,7 @@ const About = () => {
       <section className="bg-gradient-cool relative overflow-hidden py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 animate-fadeInUp">
-            About LookaroundPG
+            About LookAroundPG
           </h1>
           <p className="text-xl text-white/90 mb-8 leading-relaxed">
             We're on a mission to make finding safe, comfortable, and affordable 
@@ -86,7 +86,7 @@ const About = () => {
               </h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  Founded in 2025, LookaroundPG was born from a simple observation: 
+                  Founded in 2025, LookAroundPG was born from a simple observation: 
                   finding quality PG accommodation shouldn't be a stressful, 
                   time-consuming process filled with uncertainty and safety concerns.
                 </p>
@@ -164,7 +164,7 @@ const About = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {team.map((member, index) => (
               <Card key={index} className="text-center">
                 <CardContent className="p-6">

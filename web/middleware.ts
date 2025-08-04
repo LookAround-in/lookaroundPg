@@ -6,7 +6,6 @@ export const config = {
     // Protected routes
     '/profile/:path*',
     '/wishlist/:path*',
-    '/partner/:path*',
     '/properties/:path*',
     // Auth routes (to redirect away if authenticated)
     '/login',

@@ -44,7 +44,7 @@ export const Navbar = () => {
                    className="w-full h-full object-contain"
                  />
               </div>
-              <span className="font-bold text-xl text-gradient-cool">LookaroundPG</span>
+              <span className="font-bold text-xl text-gradient-cool">LookAroundPG</span>
             </Link>
           </div>
 

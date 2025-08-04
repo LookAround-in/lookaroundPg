@@ -1036,8 +1036,8 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
               <div className="bg-gray-50 p-4 rounded-lg mb-4">
                 <h4 className="font-semibold mb-2">Important Notice</h4>
                 <p className="text-sm text-gray-600">
-                  LookaroundPG is just a platform that connects users with
-                  property hosts. LookaroundPG is not responsible for any
+                  LookAroundPG is just a platform that connects users with
+                  property hosts. LookAroundPG is not responsible for any
                   disputes, damages, or issues that may arise between users and
                   hosts. By proceeding, you acknowledge that any transactions or
                   agreements are directly between you and the property host.

@@ -100,7 +100,7 @@ const Signup = () => {
                 className="w-full h-full object-contain"
               />
             </div>
-            <span className="font-bold text-xl text-primary">LookaroundPG</span>
+            <span className="font-bold text-xl text-primary">LookAroundPG</span>
           </Link>
         </div>
 

@@ -92,7 +92,7 @@ const SafetyInformation = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white transition-colors duration-200">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-red-500 to-pink-600 relative overflow-hidden">
+      <div className="bg-gradient-cool relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
           <Shield className="h-16 w-16 text-white mx-auto mb-6 animate-fadeInUp" />
@@ -121,7 +121,7 @@ const SafetyInformation = () => {
             {safetyFeatures.map((feature, index) => (
               <Card key={index} className="text-center h-full animate-fadeInUp" style={{animationDelay: `${index * 0.1}s`}}>
                 <CardContent className="p-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-cool rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <feature.icon className="h-8 w-8 text-white" />
                   </div>
                   <h3 className="text-xl font-semibold text-charcoal mb-2">
@@ -160,7 +160,7 @@ const SafetyInformation = () => {
                   <ul className="space-y-3">
                     {section.tips.map((tip, tipIndex) => (
                       <li key={tipIndex} className="flex items-start">
-                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <div className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></div>
                         <span className="text-gray-600 text-sm leading-relaxed">
                           {tip}
                         </span>
@@ -187,7 +187,7 @@ const SafetyInformation = () => {
                   style={{animationDelay: `${index * 0.1}s`}}
                 >
                   <div className="flex items-center">
-                    <Phone className="h-5 w-5 text-red-500 mr-3" />
+                    <Phone className="h-5 w-5 text-primary mr-3" />
                     <div>
                       <div className="font-semibold text-charcoal">
                         {contact.service}
@@ -197,7 +197,7 @@ const SafetyInformation = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="text-lg font-bold text-red-500">
+                  <div className="text-lg font-bold text-primary">
                     {contact.number}
                   </div>
                 </div>
@@ -212,7 +212,7 @@ const SafetyInformation = () => {
             <div className="space-y-4">
               {reportingSteps.map((item, index) => (
                 <div key={index} className="flex items-start animate-fadeInUp" style={{animationDelay: `${index * 0.1}s`}}>
-                  <div className="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 flex-shrink-0">
+                  <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 flex-shrink-0">
                     {item.step}
                   </div>
                   <div>
@@ -231,7 +231,7 @@ const SafetyInformation = () => {
 
         {/* Safety Resources */}
         <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl p-8 text-center">
-          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <AlertTriangle className="h-12 w-12 text-primary mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-charcoal mb-4">
             Need Immediate Help?
           </h3>
@@ -240,11 +240,11 @@ const SafetyInformation = () => {
             Your safety is our top priority.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-red-500 hover:bg-red-600 text-white">
+            <Button className="bg-primary hover:bg-primary-dark text-white">
               <Phone className="h-4 w-4 mr-2" />
               Call Safety Hotline
             </Button>
-            <Button variant="outline" className="border-red-500 text-red-500 hover:bg-red-50">
+            <Button variant="outline" className="border-primary text-primary hover:bg-primary-light">
               <AlertTriangle className="h-4 w-4 mr-2" />
               Report an Issue
             </Button>

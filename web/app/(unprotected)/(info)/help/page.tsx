@@ -54,7 +54,7 @@ const HelpCenter = () => {
     {
       id: 4,
       question: "Are all properties verified?",
-      answer: "Yes, we verify all properties listed on our platform. Our verification process includes checking property documents, photos, and conducting quality assessments to ensure authenticity and safety."
+      answer: "Only premium properties are verified on our platform. Our verification process includes checking documents, reviewing photos, and conducting quality assessments to ensure authenticity and safety."
     },
     {
       id: 5,
@@ -63,16 +63,11 @@ const HelpCenter = () => {
     },
     {
       id: 6,
-      question: "Can I cancel my booking?",
-      answer: "Cancellation policies vary depending on the property and booking terms. Please check the specific cancellation policy mentioned in your booking confirmation or contact our support team for assistance."
+      question: "How do I report inappropriate content?",
+      answer: "To report inappropriate content, please contact our support team directly. We take all reports seriously and will investigate them promptly."
     },
     {
       id: 7,
-      question: "How do I report inappropriate content?",
-      answer: "You can report inappropriate content by clicking the 'Report' button on any property listing or by contacting our support team directly. We take all reports seriously and investigate them promptly."
-    },
-    {
-      id: 8,
       question: "Is there a mobile app available?",
       answer: "Currently, we offer a mobile-optimized website that works seamlessly on all devices. A dedicated mobile app is in development and will be available soon."
     }

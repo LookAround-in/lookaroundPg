@@ -15,20 +15,20 @@ const FAQ = () => {
     {
       id: 1,
       category: 'Getting Started',
-      question: "How do I create an account on LookaroundPG?",
+      question: "How do I create an account on LookAroundPG?",
       answer: "To create an account, click on the 'Sign Up' button in the top right corner of our website. You'll need to provide your email address, create a password, and verify your email. Once verified, you can start browsing and saving properties to your wishlist."
     },
     {
       id: 2,
       category: 'Getting Started',
-      question: "Is it free to use LookaroundPG?",
-      answer: "Yes, creating an account and browsing properties on LookaroundPG is completely free. We don't charge users any fees for searching or contacting property owners. Our revenue comes from partnerships with verified property owners."
+      question: "Is it free to use LookAroundPG?",
+      answer: "Yes, creating an account and browsing properties on LookAroundPG is completely free. We don't charge users any fees for searching or contacting property owners. Our revenue comes from partnerships with verified property owners."
     },
     {
       id: 3,
       category: 'Property Search',
       question: "How do I search for PG accommodations?",
-      answer: "You can search for PG accommodations using our search bar on the homepage. Enter your preferred location, and use our filters to narrow down results based on price range, gender preference, amenities, and more. You can also sort results by price, rating, or newest listings."
+      answer: "You can search for PG accommodations through our Explore page, which offers advanced filters to narrow down results by price, gender preference, amenities, and more. You can also use the search bar on the homepage to enter your preferred location. For the best experience, we recommend using the Explore page."
     },
     {
       id: 4,
@@ -40,7 +40,7 @@ const FAQ = () => {
       id: 5,
       category: 'Property Search',
       question: "How are properties verified?",
-      answer: "All properties on our platform undergo a verification process that includes document verification, photo verification, and quality assessments. We check property ownership documents, visit the property, and ensure all amenities mentioned are available."
+      answer: "Only premium properties on our platform undergo a thorough verification process. This includes document checks, on-site visits, photo verification, and quality assessments to ensure all listed amenities are accurate and trustworthy."
     },
     {
       id: 6,
@@ -58,7 +58,7 @@ const FAQ = () => {
       id: 8,
       category: 'Booking',
       question: "What should I bring when visiting a property?",
-      answer: "When visiting a property, bring a valid ID, a list of questions about the property and rules, and if possible, have a friend accompany you. Also, take note of the neighborhood safety and transportation options."
+      answer: "When visiting a property, we recommend carrying a valid ID and reaching out to the host beforehand for visit details — as visits depend on their availability. If possible, take a friend along and observe the neighborhood’s safety, cleanliness, and transport access."
     },
     {
       id: 9,
@@ -76,13 +76,17 @@ const FAQ = () => {
       id: 11,
       category: 'Safety',
       question: "How do you ensure the safety of listed properties?",
-      answer: "We verify all properties and conduct background checks on property owners. We also encourage users to report any safety concerns. Properties with security features like CCTV, security guards, and secure access are highlighted in listings."
+      answer: "Only premium properties undergo verification, including checks on ownership documents and security features. We highlight listings with added safety measures like CCTV, secure access, and security guards. Users are encouraged to contact hosts for specific safety info and report any concerns."
     },
     {
       id: 12,
       category: 'Safety',
       question: "What should I do if I feel unsafe?",
-      answer: "Your safety is our priority. If you feel unsafe, immediately contact local authorities if there's immediate danger. For non-emergency safety concerns, contact our 24/7 support team at +91 98765 43210 or email safety LookaroundPG.com."
+      answer: (
+        <>
+          Your safety is our priority. If you're in immediate danger, contact local authorities right away. <br/> <br/> For non-emergency concerns, reach out to our support. Email us at <a href="mailto:info.lookaroundpg@gmail.com" className="text-primary underline">info.lookaroundpg@gmail.com</a>. <br/> <br/> For detailed safety guidelines, visit our <a href="/safety" className="text-primary underline">Safety Information page</a>.
+        </>
+      )
     },
     {
       id: 13,
@@ -118,14 +122,13 @@ const FAQ = () => {
       id: 18,
       category: 'Technical',
       question: "How do I report a bug or technical issue?",
-      answer: "You can report technical issues by contacting our support team at support LookaroundPG.com or using the 'Contact Us' form. Please include details about the issue, your device/browser information, and steps to reproduce the problem."
+      answer: (<>You can report technical issues by contacting our support team at <a href="mailto:info.lookaroundpg@gmail.com" className="text-primary underline">info.lookaroundpg@gmail.com</a> or using the <a href="/contact" className="text-primary underline">Contact Us</a> form. <br/> <br/> Please include details about the issue, your device/browser information, and steps to reproduce the problem.</>)
     }
   ];
 
   const filteredFaqs = faqs.filter(faq => {
     const matchesCategory = selectedCategory === 'All' || faq.category === selectedCategory;
-    const matchesSearch = faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = faq.question.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesCategory && matchesSearch;
   });
 
@@ -143,7 +146,7 @@ const FAQ = () => {
             Frequently Asked Questions
           </h1>
           <p className="text-xl text-white/90 mb-8 animate-fadeInUp" style={{animationDelay: '0.2s'}}>
-            Find quick answers to common questions about LookaroundPG
+            Find quick answers to common questions about LookAroundPG
           </p>
           
           {/* Search Bar */}
