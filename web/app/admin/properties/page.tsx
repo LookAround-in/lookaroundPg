@@ -7,7 +7,7 @@ import { getQueryClient } from "@/lib/get-query-client";
 import { fetchProperties } from "@/lib/api-server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-export default async function HostAllProperties({ searchParams }: { searchParams: { page?: string } }) {
+export default async function HostAllProperties({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const resolvedSearchParams = await searchParams;
   const page = parseInt(resolvedSearchParams.page || "1", 10);
   const limit = 12;
