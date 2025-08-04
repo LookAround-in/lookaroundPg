@@ -1,6 +1,5 @@
 import { ExploreApiResponse, PropertyApiResponse } from "@/interfaces/property";
 
-
 function getBaseUrl() {
   if (typeof window !== 'undefined') {
     return '';
@@ -54,6 +53,25 @@ export const fetchFeaturedProperties = async (): Promise<PropertyApiResponse> =>
 
   if (!response.ok) {
     throw new Error("Failed to fetch featured properties");
+  }
+  return response.json();
+};
+
+export const fetchPropertyById = async (
+  propertyId: string
+): Promise<PropertyApiResponse> => {
+  const baseUrl = getBaseUrl();
+  if (!propertyId) {
+    throw new Error("Pg Id is required");
+  }
+  const response = await fetch(`${baseUrl}/api/v1/pg/getPgById/${propertyId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
   }
   return response.json();
 };

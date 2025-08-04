@@ -5,7 +5,8 @@ import { SharingTypeDetails } from "./pg";
 export interface Host {
   id: string;
   contactNumber: string;
-  user: User
+  languagesSpokenByHost?: string[];
+  user: User;
 }
 
 export interface User {

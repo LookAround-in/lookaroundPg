@@ -38,12 +38,13 @@ import {
   Hospital,
   PencilRuler,
   PackagePlus,
-  MessageSquareDot
+  MessageSquareDot,
+  User2
 } from "lucide-react";
 import { useWishlist } from "contexts/WishlistContext";
 import { useToast } from "hooks/use-toast";
 import Image from "next/image";
-import { ExploreApiResponse, Property } from "@/interfaces/property";
+import { Property, PropertyApiResponse } from "@/interfaces/property";
 import {
   useMutation,
   useQuery,
@@ -56,7 +57,7 @@ import Review from "../review/Review";
 
 const fetchPropertyById = async (
   propertyId: string
-): Promise<ExploreApiResponse> => {
+): Promise<PropertyApiResponse> => {
   if (!propertyId) {
     throw new Error("Pg Id is required");
   }
@@ -745,6 +746,28 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Furniture List */}
+            {property.Host.languagesSpokenByHost && property.Host.languagesSpokenByHost.length > 0 && (
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                    <User2 className="h-5 w-5 mr-2" />
+                    Languages Spoken By Host
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {property.Host.languagesSpokenByHost.map((item, index) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                        <span className="text-gray-700">
+                          {formatText(item)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Furniture List */}
             {property.furnitures && property.furnitures.length > 0 && (

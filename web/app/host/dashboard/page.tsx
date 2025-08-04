@@ -367,7 +367,7 @@ const HostDashboard = () => {
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
