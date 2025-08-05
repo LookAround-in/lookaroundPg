@@ -21,13 +21,6 @@ function PropertyList({ filteredProperties, isLoading, error }: PropertyListProp
             <h1 className="text-2xl font-bold mb-4 text-red-600">
               Error loading properties
             </h1>
-            {/* <p className="text-gray-600 mb-4">
-              {(data.error as Error)?.message ||
-                "Failed to load property details"}
-            </p> */}
-            {/* <div className="space-x-4">
-              <Button onClick={() => data.refetch()}>Try Again</Button>
-            </div> */}
             <p className="text-gray-600 mb-4">
               {error}
             </p>

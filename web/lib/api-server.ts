@@ -24,11 +24,19 @@ export const fetchFeaturedProperties = async () => {
 export const fetchPropertyById = async (propertyId: string) => {
   if (!propertyId) throw new Error("Pg Id is required");
   const result = await pgService.getPgById(propertyId);
-  return result;
+  return {
+    success: true,
+    message: "Pg fetched successfully",
+    data: result,
+  };
 };
 
 export const fetchPropertyByHostId = async (hostId: string) => {
   if (!hostId) throw new Error("Host Id is required");
   const result = await pgService.getPgsByHostId(hostId);
-  return result;
+  return {
+    success: true,
+    message: "Pg fetched successfully",
+    data: result,
+  };
 };

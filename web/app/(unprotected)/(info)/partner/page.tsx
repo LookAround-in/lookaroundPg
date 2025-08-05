@@ -2,7 +2,7 @@ import { Button } from 'components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
 import { Badge } from 'components/ui/badge';
 import { Home, Users, Star, TrendingUp, CheckCircle, Calendar, Camera, Eye, Crown, Award, PhoneOutgoing } from 'lucide-react';
-import PartnerForm from './partner-form';
+import PartnerForm from '../../../../components/forms/partner-form';
 
 const benefits = [
     {

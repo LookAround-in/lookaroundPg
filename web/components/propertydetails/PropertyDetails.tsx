@@ -15,7 +15,6 @@ import {
   DialogFooter,
 } from "components/ui/dialog";
 import { Checkbox } from "components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "components/ui/tabs";
 import {
   MapPin,
   Heart,
@@ -134,6 +133,8 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
     },
   });
 
+  // const property: Property = data;
+
   const property: Property = useMemo(() => {
     if (isLoading || isPending) {
       return null;
@@ -198,103 +199,6 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
     }
   }, [availableSharingTypes, selectedSharingType]);
 
-  if (isLoading || isPending) {
-    return (
-      <div className="min-h-screen bg-light-gray transition-colors duration-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Loading skeleton */}
-          <div className="flex justify-between items-center mb-6">
-            <div className="h-10 bg-gray-200 rounded w-20 animate-pulse"></div>
-            <div className="h-10 bg-gray-200 rounded w-24 animate-pulse"></div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Content Skeleton */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Image Gallery Skeleton */}
-              <div className="bg-white rounded-lg overflow-hidden">
-                <div className="aspect-[16/10] bg-gray-200 animate-pulse"></div>
-              </div>
-
-              {/* Property Info Skeleton */}
-              <div className="bg-white rounded-lg p-6">
-                <div className="space-y-4">
-                  <div className="h-8 bg-gray-200 rounded w-3/4 animate-pulse"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2 animate-pulse"></div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-100 rounded-lg">
-                    <div className="h-16 bg-gray-200 rounded animate-pulse"></div>
-                    <div className="h-16 bg-gray-200 rounded animate-pulse"></div>
-                  </div>
-                  <div className="flex gap-3">
-                    {Array.from({ length: 4 }).map((_, index) => (
-                      <div key={index} className="h-10 bg-gray-200 rounded w-24 animate-pulse"></div>
-                    ))}
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <div className="h-10 bg-gray-200 rounded w-32 animate-pulse"></div>
-                    <div className="h-6 bg-gray-200 rounded w-20 animate-pulse"></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Additional skeleton cards */}
-              {Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className="bg-white rounded-lg p-6">
-                  <div className="h-6 bg-gray-200 rounded w-1/3 mb-4 animate-pulse"></div>
-                  <div className="space-y-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                    <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2 animate-pulse"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Sidebar Skeleton */}
-            <div className="space-y-6">
-              {/* Host Profile Skeleton */}
-              <div className="bg-white rounded-lg p-6">
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto animate-pulse"></div>
-                  <div className="h-6 bg-gray-200 rounded w-1/2 mx-auto animate-pulse"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/3 mx-auto animate-pulse"></div>
-                  <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
-                </div>
-              </div>
-
-              {/* Action Buttons Skeleton */}
-              <div className="space-y-3">
-                <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
-                <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  // Show error state
-  if (isError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-light-gray">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4 text-red-600">
-            Error loading property
-          </h1>
-          <p className="text-gray-600 mb-4">
-            {isError || 
-              "Failed to load property details"}
-          </p>
-          <div className="space-x-4">
-            <Button onClick={() => refetch()}>Try Again</Button>
-            <Button variant="outline" onClick={() => router.push("/explore")}>
-              Back to Explore
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
   // Show not found state when data is loaded but property is null
   if (!property) {
     return (
@@ -1093,46 +997,6 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                 Virtual Tour - {property.title}
               </DialogTitle>
             </DialogHeader>
-            {/* Future use case, when there are multiple versions of the same property for different sharing options*/}
-            {/* <div className="p-6">
-              <Tabs defaultValue="single" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="single">Single Sharing</TabsTrigger>
-                  <TabsTrigger value="double">Double Sharing</TabsTrigger>
-                  <TabsTrigger value="triple">Triple Sharing</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="single" className="mt-4">
-                  <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <Play className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                      <h3 className="text-xl font-semibold mb-2">Single Sharing - Virtual Tour</h3>
-                      <p className="text-gray-300">360° view of single occupancy room</p>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="double" className="mt-4">
-                  <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <Play className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                      <h3 className="text-xl font-semibold mb-2">Double Sharing - Virtual Tour</h3>
-                      <p className="text-gray-300">360° view of double occupancy room</p>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="triple" className="mt-4">
-                  <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <Play className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                      <h3 className="text-xl font-semibold mb-2">Triple Sharing - Virtual Tour</h3>
-                      <p className="text-gray-300">360° view of triple occupancy room</p>
-                    </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </div> */}
             <div className="w-full h-full">
               <div
                 className="relative w-full"
