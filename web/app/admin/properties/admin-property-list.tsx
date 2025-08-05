@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useMemo } from "react";
 import { PropertyCard } from "components/properties/PropertyCard";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "components/ui/button";
 import { Card, CardContent } from "components/ui/card";
 import { Badge } from "components/ui/badge";
@@ -9,42 +8,22 @@ import { Input } from "components/ui/input";
 import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue} from "components/ui/select";
 import { Plus,Search,Filter,Home,Eye,Edit,Trash2} from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ExploreApiResponse } from "@/interfaces/property";
-import PropertySkeleton from "@/components/properties/PropertySkeleton";
+import { Properties } from "@/interfaces/property";
 import { PaginationWithLinks } from "@/components/ui/pagination-with-links";
 
-const fetchProperties = async (page: number, limit: number): Promise<ExploreApiResponse> => {
-  const response = await fetch(`/api/v1/pg/getExplorePg?page=${page}&limit=${limit}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+interface AdminPropertyProps{
+  page: number;
+  limit: number;
+  explorePropertiesData: Properties;
+}
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return response.json();
-};
-
-function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}) {
+function AdminPropertyList({page = 1, limit = 12, explorePropertiesData}: AdminPropertyProps) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
 
-    // In a real app, these would be filtered by the logged-in host
-    const explorePropertiesData = useQuery<ExploreApiResponse>({
-        queryKey: ["properties", page],
-        queryFn: () => fetchProperties(page, limit),
-    });
-    const totalProperties = explorePropertiesData?.data?.data?.totalItems || 0;
-    // Extract the data array from the API response
-    const properties = useMemo(() => {
-      if (explorePropertiesData.data && explorePropertiesData.data.success) {
-        return explorePropertiesData.data.data.properties || [];
-      }
-      return [];
-    }, [explorePropertiesData]);
+    const totalProperties = explorePropertiesData?.totalItems || 0;
+    const properties = explorePropertiesData?.properties || [];
 
     const filteredProperties = properties.filter((property) => {
       const matchesSearch =
@@ -58,7 +37,7 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
     });
 
     const stats = {
-      total: explorePropertiesData?.data?.data?.totalItems || 0,
+      total: explorePropertiesData?.totalItems || 0,
       active: properties.filter((p) => p.sharingTypes.length > 0).length,
       inactive: properties.filter((p) => !p.sharingTypes.length).length,
       totalViews: properties.reduce((sum, p) => sum + (p.reviews.length || 0), 0),
@@ -160,34 +139,8 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
             </div>
           </CardContent>
         </Card>
-        {/* Error State - Outside grid */}
-        {explorePropertiesData.isError && (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold mb-4 text-red-600">
-                Error loading properties
-              </h1>
-              <p className="text-gray-600 mb-4">
-                {(explorePropertiesData.error as Error)?.message ||
-                  "Failed to load property details"}
-              </p>
-              <div className="space-x-4">
-                <Button onClick={() => explorePropertiesData.refetch()}>Try Again</Button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {(explorePropertiesData.isLoading || explorePropertiesData.isPending || properties.length === 0) &&
-            // Show skeleton cards
-            Array.from({ length: 6 }).map((_, index) => (
-              <PropertySkeleton key={index} />
-            ))}
-        </div>
 
         {/* Properties Grid - Only show when data is loaded successfully */}
-        {!explorePropertiesData.isLoading && !explorePropertiesData.isPending && !explorePropertiesData.isError && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredProperties &&
               filteredProperties.map((property) => (
@@ -226,9 +179,8 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
                 </div>
               ))}
           </div>
-        )}
 
-        {!explorePropertiesData.isLoading && filteredProperties.length === 0 && (
+        { filteredProperties.length === 0 && (
           <Card className="text-center py-12">
             <CardContent>
               <Home className="h-12 w-12 text-gray-400 mx-auto mb-4" />

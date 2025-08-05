@@ -1,21 +1,32 @@
-import { getQueryClient } from "@/lib/get-query-client";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import ExploreProperties from "@/components/explore/explore-properties";
 import { fetchProperties } from "@/lib/api-server";
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 
 export default async function Page({ searchParams }: { searchParams: { page?: string } }) {
-    const resolvedSearchParams = await searchParams;
-    const page = parseInt(resolvedSearchParams.page || "1", 10);
-    const limit = 12;
-    const queryClient = getQueryClient();
-
-    await queryClient.prefetchQuery({
-        queryKey: ["properties", page],
-        queryFn: () => fetchProperties(page, limit),
-    });
-    return (
-        <HydrationBoundary state={dehydrate(queryClient)}>
-            <ExploreProperties page={page} limit={limit} />
-        </HydrationBoundary>
-    )
+    try {
+        const resolvedSearchParams = await searchParams;
+        const page = parseInt(resolvedSearchParams.page || "1", 10);
+        const limit = 12;
+        const propertiesData = await fetchProperties(page, limit);
+        return (
+            <ExploreProperties 
+                page={page} 
+                limit={limit} 
+                explorePropertiesData={propertiesData}
+                isLoading={false}
+                error={null}
+            />
+        );
+    } catch (error) {
+        return (
+            <ExploreProperties 
+                page={1} 
+                limit={12} 
+                explorePropertiesData={null}
+                isLoading={false}
+                error={error instanceof Error ? error.message : "Failed to load properties"}
+            />
+        );
+    }
 }
