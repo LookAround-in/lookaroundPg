@@ -4,7 +4,7 @@ import Link from "next/link";
 import AdminPropertyList from "./admin-property-list";
 import { fetchProperties } from "@/lib/api-server";
 
-export default async function HostAllProperties({ searchParams }: { searchParams: { page?: string } }) {
+export default async function HostAllProperties({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const resolvedSearchParams = await searchParams;
   const page = parseInt(resolvedSearchParams.page || "1", 10);
   const limit = 12;
