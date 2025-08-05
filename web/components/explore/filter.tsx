@@ -74,6 +74,8 @@ export default function FilterComponent({
       max: Math.ceil(maxPrice * 1.2),
     };
   }, [properties]);
+  const minFilterPrice = priceRange.min > 2000 ? priceRange.min - 1000 : priceRange.min;
+  const maxFilterPrice = priceRange.max < 50000 ? priceRange.max + 1000 : priceRange.max;
 
   // Debounced price range update
   const debouncedSetPriceRange = useDebouncedCallback((value: number[]) => {
@@ -173,8 +175,8 @@ export default function FilterComponent({
       <PriceRangeFilter
         priceFilter={filters.priceFilter}
         onPriceChange={handlePriceRangeChange}
-        min={1000}
-        max={100000}
+        min={minFilterPrice}
+        max={maxFilterPrice}
         step={500}
       />
       
@@ -206,7 +208,7 @@ export default function FilterComponent({
         </Button>
       )}
     </div>
-  ), [filters, handleCityChange, handleLocationChange, handlePriceRangeChange, handleGenderChange, handleRatingChange, handleSharingTypeChange, handleVirtualTourChange, handleAmenityChange, clearFilters, activeFiltersCount, locations]);
+  ), [filters, handleCityChange, handleLocationChange, handlePriceRangeChange, handleGenderChange, handleRatingChange, handleSharingTypeChange, handleVirtualTourChange, handleAmenityChange, clearFilters, activeFiltersCount, locations, minFilterPrice, maxFilterPrice]);
 
   return (
     <div>

@@ -1,13 +1,8 @@
 import { ExploreApiResponse, PropertyApiResponse } from "@/interfaces/property";
 
-function getBaseUrl() {
-  if (typeof window !== 'undefined') {
-    return '';
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  return `http://localhost:${process.env.PORT ?? 3000}`;
+export function getBaseUrl() {
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  else return `http://localhost:${process.env.PORT ?? 3000}`;
 }
 
 export const fetchProperties = async (page: number, limit: number): Promise<ExploreApiResponse> => {

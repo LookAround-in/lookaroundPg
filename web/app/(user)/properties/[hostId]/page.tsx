@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import { PropertyCard } from "components/properties/PropertyCard";
 import { Button } from "components/ui/button";
@@ -122,6 +122,12 @@ const HostProperties = () => {
     0
   );
 
+  // By default becuase if array is empty it will return true
+  let isHostVerified = false;
+  if (hostProperties.length > 0){
+    isHostVerified = hostProperties.every((p) => !!p.virtualTourUrl);
+  }
+
   const hostStats = {
     totalProperties: hostProperties.length,
     averageRating: averageRating,
@@ -175,10 +181,12 @@ const HostProperties = () => {
                       )}
                     </div>
                   </div>
-                  <Badge className="absolute -bottom-2 -right-2 bg-green-500 text-white border-2 border-white">
+                  {isHostVerified && (
+                    <Badge className="absolute -bottom-2 -right-2 bg-green-500 text-white border-2 border-white">
                     <Shield className="h-3 w-3 mr-1" />
                     Verified
                   </Badge>
+                  )}
                 </div>
 
                 {/* Host Info */}
@@ -426,7 +434,7 @@ const HostProperties = () => {
                 <h3 className="text-xl font-bold text-charcoal mb-4">
                   User Reviews for Properties
                 </h3>
-                {reviews.map((review, index) => (
+                {reviews.length > 0 ? (reviews.map((review, index) => (
                   <div
                     key={index}
                     className="border-b border-gray-200 last:border-b-0 p-6 shadow-md rounded-lg mb-2 last:mb-0"
@@ -468,7 +476,13 @@ const HostProperties = () => {
                       </div>
                     </div>
                   </div>
-                ))}
+                ))): (
+                  <div className="text-center py-12">
+                    <p className="text-gray-600">
+                      No reviews available for this host yet.
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
