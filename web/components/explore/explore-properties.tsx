@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
-import Filter, { FilterState } from "./filter";
-import PropertyList from "./property-list";
+import { FilterState } from "./filter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select";
 import {  Properties, Property } from "@/interfaces/property";
 import { SharingType } from "@/interfaces/pg";
-import { PaginationWithLinks } from "../ui/pagination-with-links";
+import dynamic from "next/dynamic";
+const PaginationWithLinks = dynamic(() => import("../ui/pagination-with-links").then(mod => mod.PaginationWithLinks), { ssr: false });
+const PropertyList = dynamic(() => import("./property-list"), { ssr: false });
+import Filter from "./filter";
 interface ExplorePropertiesProps {
     page: number;
     limit: number;

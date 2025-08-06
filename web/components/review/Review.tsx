@@ -13,8 +13,11 @@ import type { Review } from "@/interfaces/property";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
-import ReviewForm from "../forms/review-from";
+import dynamic from "next/dynamic";
 
+const ReviewForm = dynamic(() => import("../forms/review-form"), {
+  ssr: false,
+});
 
 const deleteReview = async (data: { reviewId: string; userId: string }) => {
   const response = await fetch(`/api/v1/reviews`, {
@@ -193,15 +196,15 @@ export default function Review({
         </Button>
       )}
       {/* Add/Edit Review Form */}
-      <ReviewForm 
-        property={property}
-        refetchProperty={refetchProperty}
-        editingReview={editingReview}
-        setEditingReview={setEditingReview}
-        isSubmitting={isSubmitting}
-        setIsSubmitting={setIsSubmitting}
-        form={form}
-      />
+        <ReviewForm
+          property={property}
+          refetchProperty={refetchProperty}
+          editingReview={editingReview}
+          setEditingReview={setEditingReview}
+          isSubmitting={isSubmitting}
+          setIsSubmitting={setIsSubmitting}
+          form={form}
+        />
     </div>
   );
 }

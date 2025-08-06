@@ -12,9 +12,17 @@ import {
 import { useRouter } from "next/navigation";
 import { PropertyApiResponse } from "@/interfaces/property";
 import { useQuery } from "@tanstack/react-query";
-import PropertyList from "@/components/explore/property-list";
 import HostStats from "./host-stats";
-import { HostPropertyReviews } from "./reviews-list";
+import dynamic from "next/dynamic";
+
+const PropertyList = dynamic(() => import("@/components/explore/property-list"), {
+  loading: () => <div>Loading properties...</div>,
+  ssr: false,
+});
+const HostPropertyReviews = dynamic(() => import("./reviews-list"), {
+  loading: () => <div>Loading reviews...</div>,
+  ssr: false,
+});
 
 const fetchHostProperties = async (
   hostId: string
@@ -31,13 +39,22 @@ const fetchHostProperties = async (
   return response.json();
 };
 
-const HostProperties = ({hostId}: {hostId: string}) => {
-  const router = useRouter();
+interface HostPropertiesProps {
+  hostId: string;
+  initialData?: PropertyApiResponse | null;
+  error?: string | null;
+}
 
+const HostProperties = ({ hostId, initialData, error }: HostPropertiesProps) => {
+  const router = useRouter();
   const hostPropertiesData = useQuery({
     queryKey: ["hostProperties", hostId],
     queryFn: () => fetchHostProperties(hostId as string),
-    enabled: !!hostId,
+    initialData: initialData, // Use server data initially
+    enabled: !initialData || !!hostId, // Only fetch if no initial data or when hostId changes
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnMount: false, // Don't refetch on mount since we have server data
+    refetchOnWindowFocus: false,
   });
 
   const hostProperties = hostPropertiesData.data?.data || [];

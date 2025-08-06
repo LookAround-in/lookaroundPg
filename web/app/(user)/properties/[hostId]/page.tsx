@@ -1,22 +1,30 @@
 import { fetchPropertyByHostId } from "@/lib/api-server";
-import { getQueryClient } from "@/lib/get-query-client";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { Suspense } from "react";
 import HostProperties from "@/components/hostproperties/host-details";
+export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
-export default async function PropertyPage({ params }: { params: Promise<{ hostId: string }> }) {
+export default async function HostPropertyPage({ params }: { params: Promise<{ hostId: string }> }) {
   const resolvedParams = await params;
   const { hostId } = resolvedParams;
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-      queryKey: ["property", hostId],
-      queryFn: () => fetchPropertyByHostId(hostId),
-  });
-  return (
-    <Suspense>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-          <HostProperties hostId={hostId}/>
-      </HydrationBoundary>
-    </Suspense>
-  );
+  
+  try {
+    // Fetch data directly on server
+    const hostPropertiesData = await fetchPropertyByHostId(hostId);
+    
+    return (
+      <HostProperties 
+        hostId={hostId}
+        initialData={hostPropertiesData}
+        error={null}
+      />
+    );
+  } catch (error) {
+    return (
+      <HostProperties 
+        hostId={hostId}
+        initialData={null}
+        error={error instanceof Error ? error.message : "Failed to load host properties"}
+      />
+    );
+  }
 }

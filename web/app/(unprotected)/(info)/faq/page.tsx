@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Input } from 'components/ui/input';
 import { Badge } from 'components/ui/badge';
-import { Search, ChevronDown, ChevronRight, HelpCircle } from 'lucide-react';
+import { Search, ChevronDown, ChevronRight, HelpCircle, Link } from 'lucide-react';
 
 const FAQ = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -84,7 +84,7 @@ const FAQ = () => {
       question: "What should I do if I feel unsafe?",
       answer: (
         <>
-          Your safety is our priority. If you're in immediate danger, contact local authorities right away. <br/> <br/> For non-emergency concerns, reach out to our support. Email us at <a href="mailto:info.lookaroundpg@gmail.com" className="text-primary underline">info.lookaroundpg@gmail.com</a>. <br/> <br/> For detailed safety guidelines, visit our <a href="/safety" className="text-primary underline">Safety Information page</a>.
+          Your safety is our priority. If you're in immediate danger, contact local authorities right away. <br/> <br/> For non-emergency concerns, reach out to our support. Email us at <a href="mailto:info.lookaroundpg@gmail.com" className="text-primary underline">info.lookaroundpg@gmail.com</a>. <br/> <br/> For detailed safety guidelines, visit our <Link href="/safety" className="text-primary underline">Safety Information page</Link>.
         </>
       )
     },
@@ -122,7 +122,7 @@ const FAQ = () => {
       id: 18,
       category: 'Technical',
       question: "How do I report a bug or technical issue?",
-      answer: (<>You can report technical issues by contacting our support team at <a href="mailto:info.lookaroundpg@gmail.com" className="text-primary underline">info.lookaroundpg@gmail.com</a> or using the <a href="/contact" className="text-primary underline">Contact Us</a> form. <br/> <br/> Please include details about the issue, your device/browser information, and steps to reproduce the problem.</>)
+      answer: (<>You can report technical issues by contacting our support team at <Link href="mailto:info.lookaroundpg@gmail.com" className="text-primary underline">info.lookaroundpg@gmail.com</Link> or using the <Link href="/contact" className="text-primary underline">Contact Us</Link> form. <br/> <br/> Please include details about the issue, your device/browser information, and steps to reproduce the problem.</>)
     }
   ];
 

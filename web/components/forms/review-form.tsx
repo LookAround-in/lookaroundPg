@@ -1,7 +1,7 @@
 "use client";
 import { Property } from "@/interfaces/property";
 import React from "react";
-import { Star } from "lucide-react";
+import { Link, Star } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -245,7 +245,7 @@ export default function ReviewForm({ property, refetchProperty, editingReview, s
         </Form>
       ): (
         <div>
-          <p className="text-lg font-thin">Please <a href="/login" className="text-primary">login</a> to leave a review.</p>
+          <p className="text-lg font-thin">Please <Link href="/login" className="text-primary">login</Link> to leave a review.</p>
         </div>
       )}
     </div>

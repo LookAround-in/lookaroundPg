@@ -1,7 +1,15 @@
 "use client";
 import React, { useState, useMemo, useCallback, useTransition} from "react";
 import { Property } from "@/interfaces/property";
-import { CityFilter, LocationFilter, PriceRangeFilter, GenderFilter, RatingFilter, AmenitiesFilter, SharingTypeFilter, VirtualTourFilter} from './filter-components';
+import dynamic from "next/dynamic";
+const CityFilter = dynamic(() => import("./filter-components").then(mod => mod.CityFilter));
+const LocationFilter = dynamic(() => import("./filter-components").then(mod => mod.LocationFilter));
+const PriceRangeFilter = dynamic(() => import("./filter-components").then(mod => mod.PriceRangeFilter));
+const GenderFilter = dynamic(() => import("./filter-components").then(mod => mod.GenderFilter));
+const RatingFilter = dynamic(() => import("./filter-components").then(mod => mod.RatingFilter));
+const AmenitiesFilter = dynamic(() => import("./filter-components").then(mod => mod.AmenitiesFilter));
+const SharingTypeFilter = dynamic(() => import("./filter-components").then(mod => mod.SharingTypeFilter));
+const VirtualTourFilter = dynamic(() => import("./filter-components").then(mod => mod.VirtualTourFilter));
 import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card";
 import { Button } from "components/ui/button";
 import { Badge, Filter, SlidersHorizontal, X } from "lucide-react";

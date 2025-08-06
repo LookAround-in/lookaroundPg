@@ -1,22 +1,30 @@
 import { fetchPropertyById } from "@/lib/api-server";
-import { getQueryClient } from "@/lib/get-query-client";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import PropertyDetails from "@/components/propertydetails/PropertyDetails";
-import { Suspense } from "react";
+export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function PropertyPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
-  const {id} = resolvedParams;
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-      queryKey: ["property", id],
-      queryFn: () => fetchPropertyById(id),
-  });
-  return (
-    <Suspense>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-          <PropertyDetails propertyId={id}/>
-      </HydrationBoundary>
-    </Suspense>
-  );
+  const { id } = resolvedParams;
+  
+  try {
+    // Fetch data directly
+    const propertyData = await fetchPropertyById(id);
+    
+    return (
+      <PropertyDetails 
+        propertyId={id} 
+        initialData={propertyData}
+        error={null}
+      />
+    );
+  } catch (error) {
+    return (
+      <PropertyDetails 
+        propertyId={id} 
+        initialData={null}
+        error={error instanceof Error ? error.message : "Failed to load property"}
+      />
+    );
+  }
 }

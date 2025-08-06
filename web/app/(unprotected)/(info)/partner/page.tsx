@@ -1,7 +1,7 @@
 import { Button } from 'components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
 import { Badge } from 'components/ui/badge';
-import { Home, Users, Star, TrendingUp, CheckCircle, Calendar, Camera, Eye, Crown, Award, PhoneOutgoing } from 'lucide-react';
+import { Home, Users, Star, TrendingUp, CheckCircle, Calendar, Camera, Eye, Crown, Award, PhoneOutgoing, Link } from 'lucide-react';
 import PartnerForm from '../../../../components/forms/partner-form';
 
 const benefits = [
@@ -209,7 +209,7 @@ export default async function Partner() {
                   </ul>
                   <Button className={`w-full ${plan.recommended ? 'bg-gradient-cool text-white hover:opacity-90' : ''}`}>
                     <Eye className="h-4 w-4 mr-2" />
-                    <a href={plan.demo}>View Demo</a>
+                    <Link href={plan.demo}>View Demo</Link>
                   </Button>
                 </CardContent>
               </Card>

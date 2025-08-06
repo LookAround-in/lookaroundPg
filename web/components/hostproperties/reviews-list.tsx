@@ -6,6 +6,7 @@ import {
   Star,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 
 const fetchHostPropertyReviews = async (hostId: string) => {
   const response = await fetch(`/api/v1/reviews/getAllReviews/${hostId}`, {
@@ -20,7 +21,7 @@ const fetchHostPropertyReviews = async (hostId: string) => {
   return response.json();
 };
 
-export const HostPropertyReviews = ({ hostId }: { hostId: string }) => {
+export default function HostPropertyReviews ({ hostId }: { hostId: string }) {
   const hostPropertyReviewsData = useQuery({
     queryKey: ["hostPropertyReviews", hostId],
     queryFn: () => fetchHostPropertyReviews(hostId as string),
@@ -63,7 +64,7 @@ export const HostPropertyReviews = ({ hostId }: { hostId: string }) => {
                     <div className="flex flex-row items-center justify-between mb-2">
                       <p className="text-gray-900 text-xl">{review?.pgData?.title}</p>
                       <Button variant="link">
-                        <a href={`/property/${review?.pgData?.id}`}>View Details</a>
+                        <Link href={`/property/${review?.pgData?.id}`}>View Details</Link>
                       </Button>
                     </div>
                     <div className="flex items-start space-x-4">

@@ -1,14 +1,20 @@
 import { Button } from "components/ui/button";
 import {ArrowLeft,Plus} from "lucide-react";
 import Link from "next/link";
-import AdminPropertyList from "./admin-property-list";
+import AdminPropertyList from "../../../components/properties/admin-property-list";
 import { fetchProperties } from "@/lib/api-server";
 
-export default async function HostAllProperties({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+export default async function AdminProperties({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  let propertiesData;
   const resolvedSearchParams = await searchParams;
   const page = parseInt(resolvedSearchParams.page || "1", 10);
   const limit = 12;
-  const propertiesData = await fetchProperties(page, limit);
+  try {
+    propertiesData = await fetchProperties(page, limit);
+  } catch (error) {
+    propertiesData = null;
+    console.error("Error fetching properties:", error);
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -40,7 +46,7 @@ export default async function HostAllProperties({ searchParams }: { searchParams
             </Button>
           </Link>
         </div>
-        <AdminPropertyList page={page} limit={limit} explorePropertiesData={propertiesData || null}/>
+        <AdminPropertyList page={page} limit={limit} explorePropertiesData={propertiesData}/>
       </div>
     </div>
   );

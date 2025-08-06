@@ -14,7 +14,6 @@ import {
   Home,
   Calendar,
   TrendingUp,
-  Users,
   Shield,
   Award,
   MessageSquareDot,

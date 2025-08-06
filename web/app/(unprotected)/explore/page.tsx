@@ -1,9 +1,9 @@
 import ExploreProperties from "@/components/explore/explore-properties";
 import { fetchProperties } from "@/lib/api-server";
-export const revalidate = 0;
+export const revalidate = 60;
 export const dynamic = 'force-dynamic';
 
-export default async function Page({ searchParams }: { searchParams: { page?: string } }) {
+export default async function ExplorePage({ searchParams }: { searchParams: { page?: string } }) {
     try {
         const resolvedSearchParams = await searchParams;
         const page = parseInt(resolvedSearchParams.page || "1", 10);
