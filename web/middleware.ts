@@ -3,14 +3,11 @@ import { getSessionCookie } from 'better-auth/cookies';
 
 export const config = {
   matcher: [
-    // Protected routes
     '/profile/:path*',
     '/wishlist/:path*',
     '/properties/:path*',
-    // Auth routes (to redirect away if authenticated)
     '/login',
     '/signup',
-    // Protected admin and host routes
     '/admin/:path*',
     '/host/:path*',
   ],
@@ -37,5 +34,5 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // return NextResponse.next();
+  return NextResponse.next();
 }
