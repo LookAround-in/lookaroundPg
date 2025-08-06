@@ -11,6 +11,7 @@ import {
   SharingType,
   FurnitureType,
   AmenityType,
+  FacilityIconsType
 } from "@/interfaces/pg";
 import { Button } from "@/components/ui/button";
 import formatText from "@/utils/format";
@@ -173,7 +174,7 @@ function AddPropertyForm() {
     appendNearbyFacility({
       title: "",
       icon: "",
-      distance: ""
+      distance: "",
     })
   }
 
@@ -774,13 +775,24 @@ function AddPropertyForm() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Facility Icon *</FormLabel>
+                          <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          defaultValue={""}
+                        >
                           <FormControl>
-                            <Input
-                              placeholder="🏥, 🏪, 🍕, etc."
-                              {...field}
-                              value={field.value || ""}
-                            />
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select Facility Icon" />
+                            </SelectTrigger>
                           </FormControl>
+                          <SelectContent>
+                            {Object.values(FacilityIconsType).map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {formatText(type)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                           <FormDescription>
                             Icon representing the nearby facility
                           </FormDescription>
