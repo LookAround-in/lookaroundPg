@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { Input } from 'components/ui/input';
 import { Badge } from 'components/ui/badge';
-import { Search, ChevronDown, ChevronRight, HelpCircle, Link } from 'lucide-react';
+import { Search, ChevronDown, ChevronRight, HelpCircle } from 'lucide-react';
+import Link from 'next/link';
 
 const FAQ = () => {
   const [searchQuery, setSearchQuery] = useState('');

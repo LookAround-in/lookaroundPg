@@ -1,7 +1,7 @@
 "use client";
 import { Property } from "@/interfaces/property";
 import React from "react";
-import { Link, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -20,6 +20,7 @@ import { reviewFormSchema } from "@/schemas/property.schema";
 import type { Review, User } from "@/interfaces/property";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 const createReview = async (data: {
   userId: string;

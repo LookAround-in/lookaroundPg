@@ -65,6 +65,11 @@ export default function PropertyInfo({ property }: PropertyInfoProps) {
     }
   }, [availableSharingTypes, selectedSharingType]);
 
+  // Reverse the available sharing types for display
+  const reversedAvailableSharingTypes = useMemo(() => {
+    return [...availableSharingTypes].reverse();
+  }, [availableSharingTypes]);
+
   const getGenderBadgeColor = (gender: string) => {
     switch (gender) {
      case "men":
@@ -133,7 +138,7 @@ export default function PropertyInfo({ property }: PropertyInfoProps) {
                         Select Sharing Type
                       </h3>
                       <div className="flex flex-wrap gap-3">
-                        {availableSharingTypes.map((type) => (
+                        {reversedAvailableSharingTypes.map((type) => (
                           <Button
                             key={type}
                             variant={
@@ -210,15 +215,7 @@ export default function PropertyInfo({ property }: PropertyInfoProps) {
                         Virtual Tour
                       </Badge>
                     )}
-                    {property.foodIncluded && (
-                      <Badge
-                        variant="outline"
-                        className="bg-green-100 text-green-800"
-                      >
-                        <Utensils className="h-3 w-3 mr-1" />
-                        Food Included
-                      </Badge>
-                    )}
+                    
                   </div>
 
                   {/*Rating */}
