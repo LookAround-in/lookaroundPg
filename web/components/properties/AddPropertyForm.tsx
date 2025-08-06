@@ -157,7 +157,6 @@ function AddPropertyForm() {
     appendSharingType({
       type: SharingType.SINGLE,
       description: "",
-      price: 0,
       pricePerMonth: 0,
       deposit: 0,
       refundableAmount: 0,
@@ -231,7 +230,9 @@ function AddPropertyForm() {
       formData.append("longitude", data.longitude.toString());
       formData.append("pgRules", data.pgRules || "");
       formData.append("moveInStatus", data.moveInStatus);
-      formData.append("virtualTourUrl", data.virtualTourUrl || "");
+      if (data.virtualTourUrl && data.virtualTourUrl.trim() !== "") {
+         formData.append("virtualTourUrl", data.virtualTourUrl.trim());
+      }
       // Add array fields as JSON strings
       formData.append("nearbyFacilities", JSON.stringify(data.nearbyFacilities || []));
       formData.append("furnitures", JSON.stringify(data.furnitures));
@@ -919,27 +920,6 @@ function AddPropertyForm() {
                   />
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={propertyForm.control}
-                      name={`sharingTypes.${index}.price`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Base Price (₹) *</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="15000"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Base price for this sharing type
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
                     <FormField
                       control={propertyForm.control}
                       name={`sharingTypes.${index}.pricePerMonth`}

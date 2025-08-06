@@ -812,7 +812,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                             {facility.title}
                           </p>
                           <p className="text-sm text-gray-600">
-                            {facility.distance}
+                            {facility.distance} Km
                           </p>
                         </div>
                       </div>

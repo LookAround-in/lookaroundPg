@@ -29,9 +29,6 @@ export const SharingTypeDetailsSchema = z.object({
     .min(1, 'Description is required')
     .max(1000, 'Description must be less than 1000 characters')
     .optional(),
-  price: z.union([z.number(), z.string()])
-    .transform((val) => Number(val))
-    .refine((val) => !isNaN(val) && val >= 0, 'Price must be a non-negative number'),
   availability: z.union([z.number(), z.string()])
     .transform((val) => Number(val))
     .refine((val) => !isNaN(val) && Number.isInteger(val) && val >= 1, 'Availability must be a whole number greater than 0'),
@@ -133,6 +130,15 @@ export const UpdatePgDataSchema = PgDataSchema.partial().extend({
 export const PgFormSchema = CreatePgDataSchema.extend({
   latitude: z.union([z.number(), z.string()]).transform((val) => Number(val)),
   longitude: z.union([z.number(), z.string()]).transform((val) => Number(val)),
+  virtualTourUrl: z.preprocess(
+    (val) => {
+      // Convert empty string, null, undefined to undefined
+      if (!val || val === '' || val === null) return undefined;
+      if (typeof val === 'string' && val.trim() === '') return undefined;
+      return val;
+    },
+    z.string().url('Virtual tour URL must be a valid URL').optional()
+  ),
   pgRules: z.union([
     z.string().min(1, 'PG rules cannot be empty'),
     z.array(z.string().min(1, 'Rule cannot be empty'))
@@ -152,8 +158,6 @@ export const SharingTypeFormSchema = z.object({
   description: z.string()
     .min(1, 'Description is required')
     .transform((val) => val.trim()),
-  price: z.union([z.number(), z.string()])
-    .transform((val) => Number(val) || 0),
   pricePerMonth: z.union([z.number(), z.string()])
     .transform((val) => Number(val))
     .refine((val) => val > 0, 'Monthly price must be greater than 0'),
