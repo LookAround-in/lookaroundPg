@@ -7,7 +7,7 @@ import { Textarea } from 'components/ui/textarea';
 import { Button } from 'components/ui/button';
 
 function PartnerForm() {
-  const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
@@ -22,55 +22,24 @@ function PartnerForm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    try {
-      const response = await fetch('/api/v1/partner', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const result = await response.json();
+    toast({
+      title: "Application submitted!",
+      description: "We'll get back to you within 24 hours to discuss partnership opportunities.",
+    });
 
-      if (result.success) {
-        toast({
-          title: "Application submitted!",
-          description: result.message,
-        });
-
-        // Reset form on success
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          propertyType: '',
-          location: '',
-          message: ''
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: result.message,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error('Partnership application error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to submit application. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      propertyType: '',
+      location: '',
+      message: ''
+    });
+    setIsSubmitting(false);
   };
-
-  const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
@@ -78,8 +47,7 @@ function PartnerForm() {
         <Input
           id="name"
           value={formData.name}
-          onChange={(e) => handleChange('name', e.target.value)}
-          placeholder="Enter your full name"
+          onChange={(e) => setFormData({...formData, name: e.target.value})}
           required
         />
       </div>
@@ -90,8 +58,7 @@ function PartnerForm() {
           id="email"
           type="email"
           value={formData.email}
-          onChange={(e) => handleChange('email', e.target.value)}
-          placeholder="Enter your email"
+          onChange={(e) => setFormData({...formData, email: e.target.value})}
           required
         />
       </div>
@@ -101,8 +68,7 @@ function PartnerForm() {
         <Input
           id="phone"
           value={formData.phone}
-          onChange={(e) => handleChange('phone', e.target.value)}
-          placeholder="Enter 10-digit phone number"
+          onChange={(e) => setFormData({...formData, phone: e.target.value})}
           required
         />
       </div>
@@ -113,7 +79,7 @@ function PartnerForm() {
           id="propertyType"
           placeholder="e.g., Men's PG, Women's PG, Co-living"
           value={formData.propertyType}
-          onChange={(e) => handleChange('propertyType', e.target.value)}
+          onChange={(e) => setFormData({...formData, propertyType: e.target.value})}
         />
       </div>
       
@@ -123,7 +89,7 @@ function PartnerForm() {
           id="location"
           placeholder="e.g., Koramangala, Bangalore"
           value={formData.location}
-          onChange={(e) => handleChange('location', e.target.value)}
+          onChange={(e) => setFormData({...formData, location: e.target.value})}
           required
         />
       </div>
@@ -134,7 +100,7 @@ function PartnerForm() {
           id="message"
           placeholder="Tell us about your property, number of rooms, amenities, etc."
           value={formData.message}
-          onChange={(e) => handleChange('message', e.target.value)}
+          onChange={(e) => setFormData({...formData, message: e.target.value})}
           rows={4}
         />
       </div>
