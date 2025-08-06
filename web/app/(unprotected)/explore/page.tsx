@@ -3,7 +3,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import ExploreProperties from "@/components/explore/explore-properties";
 import { fetchProperties } from "@/lib/api-server";
 
-export default async function Page({ searchParams }: { searchParams: { page?: string } }) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
     const resolvedSearchParams = await searchParams;
     const page = parseInt(resolvedSearchParams.page || "1", 10);
     const limit = 12;
