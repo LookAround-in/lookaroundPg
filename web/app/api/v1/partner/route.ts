@@ -41,13 +41,11 @@ export async function POST(request: NextRequest) {
                 { status: 400 }
             );
         }
-
-        console.log('Processing partner application');
         
         // Use resend to send an email to the super admin with the partner application data
         const emailResult = await resend.emails.send({
             from: process.env.FROM_EMAIL || "LookaroundPG <onboarding@resend.dev>",
-            to: ["try.bivek@gmail.com"], // Super admin email
+            to: ["info.lookaroundpg@gmail.com"], // Super admin email
             subject: `Partnership Application: ${name} - ${location}`,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -127,8 +125,6 @@ Application submitted on: ${new Date().toLocaleString()}
                 { status: 500 }
             );
         }
-
-        console.log('Partnership application email sent successfully:', emailResult.data?.id);
 
         return NextResponse.json(
             { 

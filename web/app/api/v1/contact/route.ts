@@ -41,12 +41,11 @@ export async function POST(request: NextRequest) {
                 { status: 400 }
             );
         }
-        console.log('control here');
         
         // Use resend to send an email to the super admin with the form data
         const emailResult = await resend.emails.send({
             from: process.env.FROM_EMAIL || "LookaroundPG <onboarding@resend.dev>",
-            to: ["try.bivek@gmail.com"], // Super admin email
+            to: ["info.lookaroundpg@gmail.com"], 
             subject: `Contact Form: ${subject}`,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -108,8 +107,6 @@ Submitted on: ${new Date().toLocaleString()}
                 { status: 500 }
             );
         }
-
-        console.log('Contact form email sent successfully:', emailResult.data?.id);
 
         return NextResponse.json(
             { 
