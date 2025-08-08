@@ -6,8 +6,11 @@ export enum PropertyType {
 }
 
 export enum FacilityIconsType{
+  POOL = "🏊",
   HOSPITAL = "🏥",
   SCHOOL = "🏫",
+  COWORKING = "🧑‍💻",
+  ITPARK = "🖥️",
   COLLEGE = "🎓",
   BUS_STOP = "🚌",
   RAILWAY_STATION = "🚉",
@@ -31,7 +34,6 @@ export enum FacilityIconsType{
   LIBRARY = "📚",
   POST_OFFICE = "🏤",
   STADIUM = "🏟️",
-  COMMUNITY_CENTER = "🏢",
   METRO_STATION = "🚇",
   TAXI_STAND = "🚕",
   PARKING_LOT = "🅿️",
@@ -42,8 +44,7 @@ export enum FacilityIconsType{
   MARKET = "🛍️",
   BRIDGE = "🌉",
   FERRY_TERMINAL = "⛴️",
-  OBSERVATORY = "🔭",
-  SKYSCRAPER = "🏙️"
+  YOGA = "🧘",
 }
 
 export enum FurnishingType {
@@ -124,7 +125,7 @@ export interface PgData {
   pgRules?: string;
   moveInStatus: MoveInStatus;
   virtualTourUrl?: string;
-  images: string[];
+  images?: string[];
 }
 
 // Response interfaces

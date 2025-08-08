@@ -197,6 +197,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
       );
     }
   }, [availableSharingTypes, selectedSharingType]);
+  const sharingTypeInAsc = [...availableSharingTypes].reverse();
 
   if (isLoading || isPending) {
     return (
@@ -544,7 +545,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                         Select Sharing Type
                       </h3>
                       <div className="flex flex-wrap gap-3">
-                        {availableSharingTypes.map((type) => (
+                        {sharingTypeInAsc.map((type) => (
                           <Button
                             key={type}
                             variant={
@@ -621,15 +622,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                         Virtual Tour
                       </Badge>
                     )}
-                    {property.foodIncluded && (
-                      <Badge
-                        variant="outline"
-                        className="bg-green-100 text-green-800"
-                      >
-                        <Utensils className="h-3 w-3 mr-1" />
-                        Food Included
-                      </Badge>
-                    )}
+                    
                   </div>
 
                   {/*Rating */}
@@ -926,56 +919,62 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                     </div>
                   
 
-                  <div className="space-y-2">
-                    {!showHostInfo ? (
-                      <Button
-                        onClick={handleRevealHostInfo}
-                        className="w-full bg-gradient-cool hover:opacity-90"
-                      >
-                        Reveal Host Info
-                      </Button>
-                    ) : (
+                  {user ? (
+                    <>
                       <div className="space-y-2">
-                        {property.Host?.contactNumber && (
-                          <a href={`tel:${property.Host.contactNumber}`}>
-                            <Button variant="outline" className="w-full">
-                              <Phone className="h-4 w-4 mr-2" />
-                              {property.Host.contactNumber}
-                            </Button>
-                          </a>
-                        )}
-                        {property.Host?.user?.email && (
-                          <a href={`mailto:${property.Host?.user?.email}`}>
-                            <Button variant="outline" className="w-full mt-2">
-                              <Mail className="h-4 w-4 mr-2" />
-                              Email Host
-                            </Button>
-                          </a>
-                        )}
-                        {property.Host?.contactNumber && (
-                          <a
-                            href={`https://wa.me/${property.Host.contactNumber.replace(
-                              /\D/g,
-                              ""
-                            )}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Button className="w-full bg-green-500 hover:bg-green-600 mt-2">
-                              <MessageSquareDot className="h-4 w-4 mr-2" />
-                              WhatsApp
-                            </Button>
-                          </a>
+                      {!showHostInfo ? (
+                        <Button
+                          onClick={handleRevealHostInfo}
+                          className="w-full bg-gradient-cool hover:opacity-90"
+                        >
+                          Reveal Host Info
+                        </Button>
+                      ) : (
+                        <div className="space-y-2">
+                          {property.Host?.contactNumber && (
+                            <a href={`tel:${property.Host.contactNumber}`}>
+                              <Button variant="outline" className="w-full">
+                                <Phone className="h-4 w-4 mr-2" />
+                                {property.Host.contactNumber}
+                              </Button>
+                            </a>
+                          )}
+                          {property.Host?.user?.email && (
+                            <a href={`mailto:${property.Host?.user?.email}`}>
+                              <Button variant="outline" className="w-full mt-2">
+                                <Mail className="h-4 w-4 mr-2" />
+                                Email Host
+                              </Button>
+                            </a>
+                          )}
+                          {property.Host?.contactNumber && (
+                            <a
+                              href={`https://wa.me/${property.Host.contactNumber.replace(
+                                /\D/g,
+                                ""
+                              )}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <Button className="w-full bg-green-500 hover:bg-green-600 mt-2">
+                                <MessageSquareDot className="h-4 w-4 mr-2" />
+                                WhatsApp
+                              </Button>
+                            </a>
+                          )}
+                        </div>
                         )}
                       </div>
-                    )}
-                  </div>
-
-                  <Link href={`/properties/${property.hostId}`}>
-                    <Button variant="ghost" className="w-full mt-2">
-                      View All Properties by Host
-                    </Button>
-                  </Link>
+    
+                      <Link href={`/properties/${property.hostId}`}>
+                        <Button variant="ghost" className="w-full mt-2">
+                          View All Properties by Host
+                        </Button>
+                      </Link>
+                    </>
+                  ): (
+                    <p className="text-lg font-thin">Please <Link href="/login" className="text-primary">login</Link> to reveal host information.</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -989,6 +988,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                     width="100%"
                     height="100%"
                     src={`https://www.google.com/maps?q=${property.latitude},${property.longitude}&z=15&output=embed`}
+                    className="rounded-lg"
                   ></iframe>
                 </div>
                 <p className="text-gray-600 text-sm">{property.address}</p>

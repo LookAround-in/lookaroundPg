@@ -268,6 +268,7 @@ const ContactUs = () => {
                     width="100%"
                     height="100%"
                     src={`https://www.google.com/maps?q=${12.953530},${77.710129}&z=15&output=embed`}
+                    className='rounded-lg'
                   ></iframe>
               </div>
             </div>

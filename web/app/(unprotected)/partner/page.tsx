@@ -171,7 +171,7 @@ export default async function Partner() {
         </section>
 
         {/* Virtual Tour Plans */}
-        <section className="mb-16">
+        {/* <section className="mb-16">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-charcoal mb-4">
               Virtual Tour Options
@@ -213,7 +213,7 @@ export default async function Partner() {
               </Card>
             ))}
           </div>
-        </section>
+        </section> */}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Enhanced Benefits Section */}

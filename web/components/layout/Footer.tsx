@@ -20,7 +20,7 @@ export const Footer = () => {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="font-bold md:text-xl text-gradient-cool">LookAroundPG</span>
+              <span className="font-bold text-xl md:text-2xl text-gradient-cool">LookAroundPG</span>
             </div>
             <p className="text-gray-50">
               Your trusted platform for finding safe, comfortable, and affordable PG accommodations.
@@ -112,19 +112,19 @@ export const Footer = () => {
             <h3 className="font-semibold text-lg text-gray-50 mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <a href="/privacy" className="text-gray-50 hover:text-primary transition-colors">
+                <Link href="/privacy" className="text-gray-50 hover:text-primary transition-colors">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/terms" className="text-gray-50 hover:text-primary transition-colors">
+                <Link href="/terms" className="text-gray-50 hover:text-primary transition-colors">
                   Terms of Service
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/cookie" className="text-gray-50 hover:text-primary transition-colors">
+                <Link href="/cookie" className="text-gray-50 hover:text-primary transition-colors">
                   Cookie Policy
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

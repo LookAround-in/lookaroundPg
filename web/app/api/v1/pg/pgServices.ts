@@ -583,6 +583,7 @@ export class PgServices {
             select: {
               id: true,
               contactNumber: true,
+              languagesSpokenByHost: true,
               user: {
                 select: {
                   name: true,
