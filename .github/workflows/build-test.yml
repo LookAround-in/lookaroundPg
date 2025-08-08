@@ -1,0 +1,44 @@
+name: Build Test
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+    
+    - name: Install dependencies
+      run: pnpm install
+    
+    - name: Generate Prisma Client
+      run: pnpm dlx prisma generate
+      working-directory: ./web
+    
+    - name: Build
+      run: pnpm run build
+      working-directory: ./web
+      env:
+        BETTER_AUTH_SECRET: test-secret
+        NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
+        DATABASE_URL: postgresql://test:test@localhost:5432/testdb
+        GOOGLE_CLIENT_ID: test-id
+        GOOGLE_CLIENT_SECRET: test-secret
+        CLOUDINARY_URL: cloudinary://test:test@test
+        RESEND_API_KEY: test-key
+        FROM_EMAIL: test@example.com
