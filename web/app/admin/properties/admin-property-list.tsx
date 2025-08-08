@@ -1,17 +1,21 @@
 'use client';
 import React, { useState, useMemo } from "react";
 import { PropertyCard } from "components/properties/PropertyCard";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "components/ui/button";
 import { Card, CardContent } from "components/ui/card";
 import { Badge } from "components/ui/badge";
 import { Input } from "components/ui/input";
 import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue} from "components/ui/select";
-import { Plus,Search,Filter,Home,Eye,Edit,Trash2} from "lucide-react";
+import { Plus,Search,Filter,Home,Eye,Edit,Trash2, Loader2} from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ExploreApiResponse } from "@/interfaces/property";
 import PropertySkeleton from "@/components/properties/PropertySkeleton";
 import { PaginationWithLinks } from "@/components/ui/pagination-with-links";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/hooks/use-toast";
 
 const fetchProperties = async (page: number, limit: number): Promise<ExploreApiResponse> => {
   const response = await fetch(`/api/v1/pg/getExplorePg?page=${page}&limit=${limit}`, {
@@ -27,21 +31,42 @@ const fetchProperties = async (page: number, limit: number): Promise<ExploreApiR
   return response.json();
 };
 
+const pgDeleteRequest = async (pgId: string) => {
+  if (!pgId) {
+    throw new Error("Pg Id is required");
+  }
+  const response = await fetch(`/api/v1/pg/${pgId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return response.json();
+};
+
 function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
+    const [showTermsDialog, setShowTermsDialog] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [currentPgId, setCurrentpgId] = useState("");
+    const {toast} = useToast();
+    const queryClient = useQueryClient();
 
     // In a real app, these would be filtered by the logged-in host
-    const explorePropertiesData = useQuery<ExploreApiResponse>({
+    const {data: explorePropertiesData, refetch, isError, isLoading, isPending, error} = useQuery<ExploreApiResponse>({
         queryKey: ["properties", page],
         queryFn: () => fetchProperties(page, limit),
     });
-    const totalProperties = explorePropertiesData?.data?.data?.totalItems || 0;
+    const totalProperties = explorePropertiesData?.data?.totalItems || 0;
     // Extract the data array from the API response
     const properties = useMemo(() => {
-      if (explorePropertiesData.data && explorePropertiesData.data.success) {
-        return explorePropertiesData.data.data.properties || [];
+      if (explorePropertiesData?.data && explorePropertiesData?.success) {
+        return explorePropertiesData?.data?.properties || [];
       }
       return [];
     }, [explorePropertiesData]);
@@ -57,8 +82,45 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
       return matchesSearch && matchesStatus;
     });
 
+    const { mutate: createPgDeleteMutation, isPending: pendingRequest } = useMutation({
+      mutationFn: pgDeleteRequest,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["properties"] });
+        setShowTermsDialog(false);
+        toast({
+          title: "Property deleted",
+          description: "You have successfully deleted the property.",
+        });
+        refetch();
+      },
+      onError: (error: Error) => {
+        console.error("Error creating delete request:", error);
+        toast({
+          title: "Error deleting the property",
+          description:
+            "There was an error deleting the property. Try again later.",
+          variant: "destructive",
+        });
+      },
+    });
+    // delete function
+    const handleDelete = () => {
+      setShowTermsDialog(true);
+    }
+    const handleTermsAcceptance = () => {
+        if (!confirmDelete) {
+          toast({
+            title: "Terms acceptance required",
+            description: "Please accept the terms and conditions to proceed.",
+            variant: "destructive",
+          });
+          return;
+        }
+        createPgDeleteMutation(currentPgId);
+      };
+  
     const stats = {
-      total: explorePropertiesData?.data?.data?.totalItems || 0,
+      total: explorePropertiesData?.data?.totalItems || 0,
       active: properties.filter((p) => p.sharingTypes.length > 0).length,
       inactive: properties.filter((p) => !p.sharingTypes.length).length,
       totalViews: properties.reduce((sum, p) => sum + (p.reviews.length || 0), 0),
@@ -161,25 +223,25 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
           </CardContent>
         </Card>
         {/* Error State - Outside grid */}
-        {explorePropertiesData.isError && (
+        {isError && (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
               <h1 className="text-2xl font-bold mb-4 text-red-600">
                 Error loading properties
               </h1>
               <p className="text-gray-600 mb-4">
-                {(explorePropertiesData.error as Error)?.message ||
+                {(error as Error)?.message ||
                   "Failed to load property details"}
               </p>
               <div className="space-x-4">
-                <Button onClick={() => explorePropertiesData.refetch()}>Try Again</Button>
+                <Button onClick={() => refetch()}>Try Again</Button>
               </div>
             </div>
           </div>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {(explorePropertiesData.isLoading || explorePropertiesData.isPending || properties.length === 0) &&
+          {(isLoading || isPending || properties.length === 0) &&
             // Show skeleton cards
             Array.from({ length: 6 }).map((_, index) => (
               <PropertySkeleton key={index} />
@@ -187,7 +249,7 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
         </div>
 
         {/* Properties Grid - Only show when data is loaded successfully */}
-        {!explorePropertiesData.isLoading && !explorePropertiesData.isPending && !explorePropertiesData.isError && (
+        {!isLoading && !isPending && !isError && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredProperties &&
               filteredProperties.map((property) => (
@@ -196,17 +258,20 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
 
                   {/* Management Overlay */}
                   <div className="absolute top-3 right-12 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button size="sm" variant="outline" className="h-8 w-8 p-0">
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="outline" className="h-8 w-8 p-0">
+                    <Link href={`/admin/editproperty/${property.id}`}>
+                      <Button size="sm" variant="outline" className="h-8 w-8 p-0">
                       <Edit className="h-4 w-4" />
                     </Button>
+                    </Link>
                     <Button
-                      size="sm"
-                      variant="destructive"
-                      className="h-8 w-8 p-0"
-                    >
+                        size="sm"
+                        variant="destructive"
+                        className="h-8 w-8 p-0"
+                        onClick={() => {
+                          setCurrentpgId(property.id)
+                          handleDelete()
+                        }}
+                      >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -228,7 +293,7 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
           </div>
         )}
 
-        {!explorePropertiesData.isLoading && filteredProperties.length === 0 && (
+        {!isLoading && filteredProperties.length === 0 && (
           <Card className="text-center py-12">
             <CardContent>
               <Home className="h-12 w-12 text-gray-400 mx-auto mb-4" />
@@ -255,6 +320,58 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
         <div className='mt-4 flex justify-center'>
           <PaginationWithLinks page={page} pageSize={limit} totalCount={totalProperties}/>
         </div>
+        <Dialog open={showTermsDialog} onOpenChange={setShowTermsDialog}>
+          <DialogContent className="max-w-md rounded-lg">
+            <DialogHeader>
+              <DialogTitle>Confirm Property Deletion</DialogTitle>
+              <DialogDescription>
+                Please read and confirm before proceeding.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                <h4 className="font-semibold mb-2">Delete Property</h4>
+                <p className="text-sm text-gray-600">
+                  Deleting this property will permanently remove all its details, listings, and associated data from LookAroundPG. This action cannot be undone. Please ensure you want to proceed before confirming deletion.
+                </p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="terms"
+                  checked={confirmDelete}
+                  onCheckedChange={(checked) =>
+                    setConfirmDelete(checked === true)
+                  }
+                />
+                <label htmlFor="terms" className="text-sm">
+                  I want to delete this property
+                </label>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setShowTermsDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleTermsAcceptance}
+                disabled={!confirmDelete}
+                className="mb-2 sm:mb-0"
+              >
+                {pendingRequest ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  "Accept & Continue"
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
     </>
   )
 }
