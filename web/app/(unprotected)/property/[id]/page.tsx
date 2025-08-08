@@ -6,14 +6,15 @@ import PropertyDetails from "@/components/propertydetails/PropertyDetails";
 export default async function PropertyPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const {id} = resolvedParams;
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-      queryKey: ["property", id],
-      queryFn: () => fetchPropertyById(id),
-  });
+//   const queryClient = getQueryClient();
+//   await queryClient.prefetchQuery({
+//       queryKey: ["property", id],
+//       queryFn: () => fetchPropertyById(id),
+//   });
   return (
-      <HydrationBoundary state={dehydrate(queryClient)}>
-          <PropertyDetails propertyId={id}/>
-      </HydrationBoundary>
+      <PropertyDetails propertyId={id}/>
+    //   <HydrationBoundary state={dehydrate(queryClient)}>
+    //       <PropertyDetails propertyId={id}/>
+    //   </HydrationBoundary>
   );
 }

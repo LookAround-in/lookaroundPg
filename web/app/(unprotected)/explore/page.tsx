@@ -7,15 +7,16 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
     const resolvedSearchParams = await searchParams;
     const page = parseInt(resolvedSearchParams.page || "1", 10);
     const limit = 12;
-    const queryClient = getQueryClient();
+    // const queryClient = getQueryClient();
 
-    await queryClient.prefetchQuery({
-        queryKey: ["properties", page],
-        queryFn: () => fetchProperties(page, limit),
-    });
+    // await queryClient.prefetchQuery({
+    //     queryKey: ["properties", page],
+    //     queryFn: () => fetchProperties(page, limit),
+    // });
     return (
-        <HydrationBoundary state={dehydrate(queryClient)}>
-            <ExploreProperties page={page} limit={limit} />
-        </HydrationBoundary>
+        <ExploreProperties page={page} limit={limit} />
+        // <HydrationBoundary state={dehydrate(queryClient)}>
+        //     <ExploreProperties page={page} limit={limit} />
+        // </HydrationBoundary>
     )
 }

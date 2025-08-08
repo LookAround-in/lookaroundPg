@@ -9,18 +9,18 @@ import { fetchFeaturedProperties, fetchTrendingProperties } from "@/lib/api-serv
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 export default async function HomePage() {
-  const queryClient = getQueryClient();
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ["featuredProperties"],
-      queryFn: fetchFeaturedProperties,
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["trendingProperties"],
-      queryFn: fetchTrendingProperties,
-    })
-  ])
-  const dehydratedState = dehydrate(queryClient);
+  // const queryClient = getQueryClient();
+  // await Promise.all([
+  //   queryClient.prefetchQuery({
+  //     queryKey: ["featuredProperties"],
+  //     queryFn: fetchFeaturedProperties,
+  //   }),
+  //   queryClient.prefetchQuery({
+  //     queryKey: ["trendingProperties"],
+  //     queryFn: fetchTrendingProperties,
+  //   })
+  // ])
+  // const dehydratedState = dehydrate(queryClient);
 
   const features = [
     {
@@ -46,7 +46,7 @@ export default async function HomePage() {
   ];
 
   return (
-    <HydrationBoundary state={dehydratedState}>
+    // <HydrationBoundary state={dehydratedState}>
       <div className="min-h-screen bg-background transition-colors duration-200">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 py-20 lg:py-28">
@@ -158,6 +158,6 @@ export default async function HomePage() {
         </div>
       </section>
     </div>
-    </HydrationBoundary>
+    // </HydrationBoundary>
   );
 };
