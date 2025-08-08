@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { PgController } from "../pgController";
-
-const pgController = new PgController();
+import { pgController } from "../route";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {

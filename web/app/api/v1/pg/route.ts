@@ -13,7 +13,7 @@ import {
   FurnitureType,
 } from "@/interfaces/pg";
 
-const pgController = new PgController();
+export const pgController = new PgController();
 
 export const POST =
   // isAdmin(
