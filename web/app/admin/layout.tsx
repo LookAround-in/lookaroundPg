@@ -14,7 +14,6 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
      refetch //refetch the session
    } = authClient.useSession();
  
-   console.log(session?.user);
  
 //    // Handle redirect in useEffect to avoid rendering issues
    useEffect(() => {

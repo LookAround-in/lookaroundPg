@@ -82,9 +82,7 @@ export class PgController {
     try {
       const pgData: PgCreateInput = await req.json();
 
-      console.log(id);
-
-      console.log(pgData);
+    
 
       if (!pgData || !pgData) {
         return NextResponse.json(
@@ -231,7 +229,6 @@ export class PgController {
 
   getPgById = async (req: Request, pgId: string) => {
     try {
-      console.log(pgId);
 
       if (!pgId) {
         return NextResponse.json(

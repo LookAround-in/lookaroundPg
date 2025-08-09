@@ -15,7 +15,7 @@ async function updatePgRating(pgDataId: string, tx?:  Omit<typeof prisma, "$conn
     const avgRating = result._avg.rating;
     const reviewCount = result._count.rating;
 
-    console.log(`Updating PG ${pgDataId}: avgRating=${avgRating}, reviewCount=${reviewCount}`);
+    // console.log(`Updating PG ${pgDataId}: avgRating=${avgRating}, reviewCount=${reviewCount}`);
 
     await prismaClient.pgData.update({
         where: { id: pgDataId },
