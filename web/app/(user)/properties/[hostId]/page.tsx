@@ -122,6 +122,11 @@ const HostProperties = () => {
     0
   );
 
+  // By default becuase if array is empty it will return true
+  let isHostVerified = false;
+  if (hostProperties.length > 0){
+    isHostVerified = hostProperties.every((p) => !!p.virtualTourUrl);
+  }
   const hostStats = {
     totalProperties: hostProperties.length,
     averageRating: averageRating,
@@ -131,6 +136,7 @@ const HostProperties = () => {
     yearsHosting: 5,
     occupancyRate: 92,
     repeatGuests: 78,
+    isHostVerified
   };
 
   return (
@@ -175,10 +181,12 @@ const HostProperties = () => {
                       )}
                     </div>
                   </div>
-                  <Badge className="absolute -bottom-2 -right-2 bg-green-500 text-white border-2 border-white">
-                    <Shield className="h-3 w-3 mr-1" />
-                    Verified
-                  </Badge>
+                  {hostStats.isHostVerified && (
+                    <Badge className="absolute -bottom-2 -right-2 bg-green-500 text-white border-2 border-white">
+                      <Shield className="h-3 w-3 mr-1" />
+                      Verified
+                    </Badge>
+                  )}
                 </div>
 
                 {/* Host Info */}

@@ -67,7 +67,7 @@ export const PgDataSchema = z.object({
     .uuid('ID must be a valid UUID'),
   title: z.string()
     .min(3, 'Title must be at least 3 characters')
-    .max(100, 'Title must be less than 100 characters')
+    .max(1000, 'Title must be less than 1000 characters')
     .trim(),
   hostId: z.string()
     .uuid('ID must be a valid UUID'),
@@ -82,7 +82,7 @@ export const PgDataSchema = z.object({
   furnishing: FurnishingTypeSchema,
   address: z.string()
     .min(5, 'Address must be at least 5 characters')
-    .max(200, 'Address must be less than 200 characters')
+    .max(2000, 'Address must be less than 2000 characters')
     .trim(),
   latitude: z.number()
     .min(-90, 'Latitude must be between -90 and 90')
@@ -192,8 +192,8 @@ export const reviewFormSchema = z.object({
     .min(10, {
       message: "Comment must be at least 10 characters.",
     })
-    .max(160, {
-      message: "Comment must not be longer than 160 characters.",
+    .max(2000, {
+      message: "Comment must not be longer than 2000 characters.",
     }),
   rating:  z.number()
     .min(0, 'Rating must be between 0 and 5')

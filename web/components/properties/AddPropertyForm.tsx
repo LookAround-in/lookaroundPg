@@ -788,7 +788,7 @@ function AddPropertyForm() {
                           <SelectContent>
                             {Object.values(FacilityIconsType).map((type) => (
                               <SelectItem key={type} value={type}>
-                                {formatText(type)}
+                                {type} {formatText(Object.keys(FacilityIconsType).find(key => FacilityIconsType[key] === type) || "")}
                               </SelectItem>
                             ))}
                           </SelectContent>
