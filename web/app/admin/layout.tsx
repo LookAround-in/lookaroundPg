@@ -14,14 +14,13 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
      refetch //refetch the session
    } = authClient.useSession();
  
-   console.log(session?.user);
  
 //    // Handle redirect in useEffect to avoid rendering issues
-   useEffect(() => {
-     if (!isPending && session?.user.role !== "admin") {
-       router.push("/");
-     }
-   }, [session, isPending, router]);
+  //  useEffect(() => {
+  //    if (!isPending && session?.user.role !== "admin") {
+  //      router.push("/");
+  //    }
+  //  }, [session, isPending, router]);
  
    if (error) return <div>Error: {error.message}</div>;
    if (isPending) return (
@@ -34,9 +33,9 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
    );
  
 //    // Don't render children if user is authenticated (redirect in progress)
-   if (session?.user.role !== "admin") {
-     return <div>Redirecting...</div>;
-   }
+  //  if (session?.user.role !== "admin") {
+  //    return <div>Redirecting...</div>;
+  //  }
 
   return <div>{children}</div>;
 };

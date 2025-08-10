@@ -98,6 +98,7 @@ export class PgServices {
         where: { id: pgId },
         data: {
           title: pgData.title,
+          hostId: pgData.hostId,
           description: pgData.description,
           propertyType: pgData.propertyType,
           foodIncluded: pgData.foodIncluded ?? false,

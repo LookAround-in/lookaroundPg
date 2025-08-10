@@ -202,6 +202,7 @@ function EditPropertyForm({ property }: { property: Property | null }) {
       console.log("Form data being set:", formData);
       propertyForm.reset(formData);
       setTimeout(() => {
+        propertyForm.setValue("hostId", formData.hostId);
         propertyForm.setValue("propertyType", formData.propertyType);
         propertyForm.setValue("furnishing", formData.furnishing);
         propertyForm.setValue("moveInStatus", formData.moveInStatus);  
@@ -249,6 +250,7 @@ function EditPropertyForm({ property }: { property: Property | null }) {
       console.log("Current form values:", currentValues);
       const safeData = {
         ...data,
+        hostId: data.hostId || currentValues.hostId || "",
         propertyType: data.propertyType || currentValues.propertyType || PropertyType.COLIVE,
         furnishing: data.furnishing || currentValues.furnishing || FurnishingType.FURNISHED,
         moveInStatus: data.moveInStatus || currentValues.moveInStatus || MoveInStatus.IMMEDIATE,
@@ -1118,7 +1120,7 @@ function EditPropertyForm({ property }: { property: Property | null }) {
             >
               {isSubmitting || updatePropertyMutation.isPending
                 ? "Updating Property..."
-                : "Submit Property"}
+                : "Update Property"}
             </Button>
             {updatePropertyMutation.isError && (
               <div className="text-center p-3 bg-red-100 text-red-700 border border-red-300 rounded-md">

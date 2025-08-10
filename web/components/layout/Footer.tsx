@@ -64,7 +64,7 @@ export const Footer = () => {
               </li>
               <li>
                 <Link href="/partner" className="text-gray-50 hover:text-primary transition-colors">
-                  List Property
+                  Partner With Us
                 </Link>
               </li>
               <li>

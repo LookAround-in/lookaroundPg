@@ -409,7 +409,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Image Gallery */}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden shadow-lg">
               <div className="relative aspect-[16/10]">
                 <Image
                   placeholder="blur"
@@ -496,7 +496,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
             </Card>
 
             {/* Property Info */}
-            <Card className="">
+            <Card className="shadow-lg">
               <CardContent className="p-6">
                 <div className="space-y-4">
                   {/* Title and Location */}
@@ -742,7 +742,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
 
             {/* Furniture List */}
             {property.Host.languagesSpokenByHost && property.Host.languagesSpokenByHost.length > 0 && (
-              <Card>
+              <Card className="shadow-lg">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
                     <User2 className="h-5 w-5 mr-2" />
@@ -764,7 +764,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
 
             {/* Furniture List */}
             {property.furnitures && property.furnitures.length > 0 && (
-              <Card>
+              <Card className="shadow-lg">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
                     <Sofa className="h-5 w-5 mr-2" />
@@ -786,7 +786,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
 
             {/* Nearby Facilities */}
             { property.nearbyFacilities && property.nearbyFacilities.length > 0 && (
-              <Card>
+              <Card className="shadow-lg">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4 flex items-center">
                   <MapPin className="h-5 w-5 mr-2" />
@@ -818,7 +818,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
 
             {/* Amenities*/}
             {property.amenities && property.amenities.length > 0 && (
-              <Card className="">
+              <Card className="shadow-lg">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
                     <PackagePlus className="h-5 w-5 mr-2" />
@@ -840,7 +840,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
 
             {/* House Rules */}
             {property.pgRules && (
-              <Card className="">
+              <Card className="shadow-lg">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
                     <PencilRuler className="h-5 w-5 mr-2" />
@@ -857,8 +857,8 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
             )}
 
             {/* Reviews Section */}
-            
-              <Card className="">
+
+              <Card className="shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-semibold">{property?.reviewCount > 0 ? "Guest Reviews" : "No Reviews Yet"}</h3>
@@ -885,7 +885,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Host Profile */}
-            <Card className="">
+            <Card className="shadow-lg">
               <CardContent className="p-6">
                 <div className="text-center space-y-4">
                   <div className="w-16 h-16 bg-gradient-cool rounded-full flex items-center justify-center mx-auto">
@@ -980,7 +980,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
             </Card>
 
             {/* Location */}
-            <Card className="">
+            <Card className="shadow-lg">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4">Location</h3>
                 <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center mb-4">

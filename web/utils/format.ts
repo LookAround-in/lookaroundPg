@@ -1,5 +1,5 @@
 export default function formatText(text: string): string {
-  const cleaned = text.replace(/_/g, "");
+  const cleaned = text.replace(/_/g, " ");
   return cleaned.charAt(0).toUpperCase() + cleaned.slice(1).toLowerCase();
 }
 export function formatRating(rating: number | null | undefined): string {
