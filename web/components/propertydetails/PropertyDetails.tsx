@@ -54,6 +54,7 @@ import formatText, { formatRating } from "@/utils/format";
 import { useAuth } from "@/contexts/AuthContext";
 import { PgRequestData } from "@/interfaces/pg";
 import Review from "../review/Review";
+import ShareButton from "../share/Share";
 
 const fetchPropertyById = async (
   propertyId: string
@@ -444,6 +445,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                       }`}
                   />
                 </Button>
+                <ShareButton isIcon={true}/>
 
                 {/* Image navigation */}
                 {property.images && property.images.length > 1 && (
@@ -1000,7 +1002,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
               <Button
                 onClick={handleWishlistToggle}
                 variant="outline"
-                className="w-full"
+                className="w-full shadow-lg"
               >
                 <Heart
                   className={`h-4 w-4 mr-2 ${isInWishlist ? "fill-current text-red-500" : ""
@@ -1008,6 +1010,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                 />
                 {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
               </Button>
+              <ShareButton isIcon={false}/>
 
               {/* Enhanced Virtual Tour Button */}
               {property.virtualTourUrl && (
