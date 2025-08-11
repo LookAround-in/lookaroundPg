@@ -20,7 +20,7 @@ export class PgController {
           { status: 400 }
         );
       }
-      
+
       if (!pgData.title || !pgData.hostId || !pgData.address) {
         return NextResponse.json(
           {
@@ -78,28 +78,26 @@ export class PgController {
     }
   };
 
-  updatePg = async (req: Request, id: string) => {
+
+  updatePg = async (pgData: Partial<PgCreateInput>, id: string) => {
     try {
-      const pgData: PgCreateInput = await req.json();
-
-    
-
-      if (!pgData || !pgData) {
+      if (!id) {
         return NextResponse.json(
           {
             success: false,
-            message: "Pg data with ID is required",
+            message: "PG ID is required",
           },
           { status: 400 }
         );
       }
 
-      const updatedPg = await this.pgService.updatePg(id, pgData);
+      // No field validation - allow partial updates
+      const updatedPg = await this.pgService.updatePg(id, pgData as PgCreateInput);
 
       return NextResponse.json(
         {
           success: true,
-          message: "Pg updated successfully",
+          message: "PG updated successfully",
           data: updatedPg,
         },
         { status: 200 }
@@ -110,7 +108,7 @@ export class PgController {
       return NextResponse.json(
         {
           success: false,
-          message: "Failed to update Pg",
+          message: "Failed to update PG",
           error: error instanceof Error ? error.message : "Unknown error",
         },
         { status: 500 }

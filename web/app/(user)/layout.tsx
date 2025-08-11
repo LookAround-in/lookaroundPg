@@ -1,9 +1,7 @@
 "use client";
-import React, { ReactNode, useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { Loader } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { ReactNode, useEffect } from "react";
 
 const UserLayout = ({ children }: { children: ReactNode }) => {
 
