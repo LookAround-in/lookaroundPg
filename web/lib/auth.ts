@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
+import { expo } from "@better-auth/expo";
 
 import { admin } from "better-auth/plugins/admin";
 import z from "zod";
@@ -12,7 +13,18 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  plugins: [admin(), nextCookies()],
+  trustedOrigins: [
+    // Basic scheme
+    "myapp://",
+
+    // Production & staging schemes
+    "myapp-prod://",
+    "myapp-staging://",
+
+    // Wildcard support for all paths following the scheme
+    "myapp://*"
+  ],
+  plugins: [admin(), nextCookies(), expo()],
   user: {
     additionalFields: {
       role: {
