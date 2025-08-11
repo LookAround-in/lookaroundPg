@@ -80,15 +80,13 @@ interface EditFormType {
   moveInStatus: MoveInStatus;
   virtualTourUrl: string;
   images?: string[];
+  existingImages?: string[];
 }
 
-const updateProperty = async (data: EditFormType, pgId: string) => {
+const updateProperty = async (formData: FormData, pgId: string) => {
   const response = await fetch(`/api/v1/pg/${pgId}`, {
     method: "PUT",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-    },
+    body: formData,
   });
 
   if (!response.ok) {
@@ -113,6 +111,9 @@ const getAllHosts = async () => {
 function EditPropertyForm({ property }: { property: Property | null }) {
   const [formIsReady, setFormIsReady] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>(property?.images || []);
   const router = useRouter();
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -124,7 +125,7 @@ function EditPropertyForm({ property }: { property: Property | null }) {
   const hosts = hostsData?.data || [];
 
   const updatePropertyMutation = useMutation({
-    mutationFn: (data: EditFormType) => updateProperty(data, property?.id),
+    mutationFn: (data: FormData) => updateProperty(data, property?.id),
     onMutate: () => {
       setIsSubmitting(true);
     },
@@ -147,6 +148,32 @@ function EditPropertyForm({ property }: { property: Property | null }) {
     },
   });
 
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const files = event.target.files;
+      if (!files) return;
+      const newFiles = Array.from(files);
+      setSelectedImages((prev) => [...prev, ...newFiles]);
+      newFiles.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (e.target?.result) {
+            setImagePreviews((prev) => [...prev, e.target.result as string]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+      event.target.value = "";
+    };
+  
+  const removeImage = (index: number) => {
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExistingImage = (index: number) => {
+    setExistingImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const propertyForm = useForm<EditFormType>({
     mode: "onSubmit",
     defaultValues: {
@@ -166,6 +193,8 @@ function EditPropertyForm({ property }: { property: Property | null }) {
       pgRules: "",
       moveInStatus: MoveInStatus.IMMEDIATE,
       virtualTourUrl: "",
+      images: [],
+      existingImages: [],
     },
   });
 
@@ -196,7 +225,6 @@ function EditPropertyForm({ property }: { property: Property | null }) {
         pgRules: property.pgRules || "",
         moveInStatus: (property.moveInStatus as MoveInStatus) || MoveInStatus.IMMEDIATE,
         virtualTourUrl: property.virtualTourUrl || "",
-        images: property.images || [],
       };
 
       console.log("Form data being set:", formData);
@@ -207,6 +235,7 @@ function EditPropertyForm({ property }: { property: Property | null }) {
         propertyForm.setValue("furnishing", formData.furnishing);
         propertyForm.setValue("moveInStatus", formData.moveInStatus);  
       }, 200);
+      setExistingImages(property.images || []);
       setFormIsReady(true);
     }
   }, [property, propertyForm]);
@@ -255,39 +284,75 @@ function EditPropertyForm({ property }: { property: Property | null }) {
         furnishing: data.furnishing || currentValues.furnishing || FurnishingType.FURNISHED,
         moveInStatus: data.moveInStatus || currentValues.moveInStatus || MoveInStatus.IMMEDIATE,
         images: data.images || currentValues.images || [],
+        sharingTypes: (data.sharingTypes || currentValues.sharingTypes || []).map(st => ({
+          type: st.type || SharingType.SINGLE,
+          description: st.description || "",
+          pricePerMonth: Number(st.pricePerMonth) || 0,
+          deposit: Number(st.deposit) || 0,
+          refundableAmount: Number(st.refundableAmount) || 0,
+          availability: Number(st.availability) || 1,
+        })),
+        latitude: Number(data.latitude) || Number(currentValues.latitude),
+        longitude: Number(data.longitude) || Number(currentValues.longitude),
       };
       
       console.log("Safe data being sent:", safeData);
   
-      const updateProperty: EditFormType = {
-        title: safeData.title,
-        hostId: safeData.hostId,
-        description: safeData.description,
-        propertyType: safeData.propertyType as PropertyType,
-        foodIncluded: safeData.foodIncluded,
-        furnishing: safeData.furnishing as FurnishingType,
-        address: safeData.address,
-        latitude: Number(safeData.latitude),
-        longitude: Number(safeData.longitude),
-        pgRules: safeData.pgRules || "",
-        moveInStatus: safeData.moveInStatus as MoveInStatus,
-        virtualTourUrl: safeData.virtualTourUrl?.trim() || "",
-        nearbyFacilities: safeData.nearbyFacilities || [],
-        furnitures: safeData.furnitures as FurnitureType[] || [],
-        amenities: safeData.amenities as AmenityType[] || [],
-        sharingTypes: safeData.sharingTypes.map(st => ({
-            type: st.type,
-            description: st.description || "",
-            availability: Number(st.availability) || 0,
-            pricePerMonth: Number(st.pricePerMonth) || 0,
-            deposit: Number(st.deposit) || 0,
-            refundableAmount: Number(st.refundableAmount) || 0,
-          })),
-        images: safeData.images,
+      // const updateProperty: EditFormType = {
+      //   title: safeData.title,
+      //   hostId: safeData.hostId,
+      //   description: safeData.description,
+      //   propertyType: safeData.propertyType as PropertyType,
+      //   foodIncluded: safeData.foodIncluded,
+      //   furnishing: safeData.furnishing as FurnishingType,
+      //   address: safeData.address,
+      //   latitude: Number(safeData.latitude),
+      //   longitude: Number(safeData.longitude),
+      //   pgRules: safeData.pgRules || "",
+      //   moveInStatus: safeData.moveInStatus as MoveInStatus,
+      //   virtualTourUrl: safeData.virtualTourUrl?.trim() || "",
+      //   nearbyFacilities: safeData.nearbyFacilities || [],
+      //   furnitures: safeData.furnitures as FurnitureType[] || [],
+      //   amenities: safeData.amenities as AmenityType[] || [],
+      //   sharingTypes: safeData.sharingTypes.map(st => ({
+      //       type: st.type,
+      //       description: st.description || "",
+      //       availability: Number(st.availability) || 0,
+      //       pricePerMonth: Number(st.pricePerMonth) || 0,
+      //       deposit: Number(st.deposit) || 0,
+      //       refundableAmount: Number(st.refundableAmount) || 0,
+      //     })),
+      //   images: safeData.images,
+      // }
+      // console.log("Updated values:", updateProperty)
+      const formData = new FormData();
+      // Add basic form fields - using validated data from React Hook Form
+      formData.append("title", safeData.title);
+      formData.append("hostId", safeData.hostId);
+      formData.append("description", safeData.description);
+      formData.append("propertyType", safeData.propertyType);
+      formData.append("foodIncluded", safeData.foodIncluded.toString());
+      formData.append("furnishing", safeData.furnishing);
+      formData.append("address", safeData.address);
+      formData.append("latitude", safeData.latitude.toString());
+      formData.append("longitude", safeData.longitude.toString());
+      formData.append("pgRules", safeData.pgRules || "");
+      formData.append("moveInStatus", safeData.moveInStatus);
+      if (safeData.virtualTourUrl && safeData.virtualTourUrl.trim() !== "") {
+         formData.append("virtualTourUrl", safeData.virtualTourUrl.trim());
       }
-      console.log("Updated values:", updateProperty)
-
-      await updatePropertyMutation.mutateAsync(updateProperty);
+      // Add array fields as JSON strings
+      formData.append("nearbyFacilities", JSON.stringify(safeData.nearbyFacilities || []));
+      formData.append("furnitures", JSON.stringify(safeData.furnitures));
+      formData.append("amenities", JSON.stringify(safeData.amenities));
+      formData.append("sharingTypes", JSON.stringify(safeData.sharingTypes));
+      formData.append("existingImages", JSON.stringify(existingImages || []));
+      // Add images
+      selectedImages.forEach((file) => {
+        formData.append("images", file);
+      });
+      
+      await updatePropertyMutation.mutateAsync(formData);
     } catch (error) {
       console.error("Form submission error:", error);
       toast({
@@ -1109,6 +1174,124 @@ function EditPropertyForm({ property }: { property: Property | null }) {
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          {/* For existing images with option to remove the images that are already there */}
+          <div className="space-y-4">
+            {existingImages.length > 0 && (
+              <>
+              <p className="text-xl">Existing Images, use the <strong>remove</strong> button to delete any unwanted images.</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                 {existingImages.map((image, index) => (
+                   <div key={index} className="relative group">
+                     <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 border-2 border-dashed border-gray-300">
+                       <img
+                         src={image}
+                         alt={`Existing Image ${index + 1}`}
+                         className="w-full h-full object-cover"
+                       />
+                     </div>
+                     <Button
+                       type="button"
+                       variant="destructive"
+                       size="sm"
+                       onClick={() => removeExistingImage(index)}
+                       className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                     >
+                       <X className="h-3 w-3" />
+                     </Button>
+                     
+                   </div>
+                 ))}
+              </div>
+              </>
+            )}
+          </div>
+
+           {/* Images section - same as before but with required indication */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <FormLabel className="text-lg font-semibold">
+                  Property Images *
+                </FormLabel>
+                <FormDescription>
+                  Upload upto 10 images of your property. At least one image is
+                  required.
+                </FormDescription>
+              </div>
+              <div className="relative">
+                <Input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    document.getElementById("image-upload")?.click()
+                  }
+                  className="flex items-center gap-2 hover:bg-primary hover:text-white"
+                  disabled={isSubmitting}
+                >
+                  <Upload className="h-4 w-4" />
+                  Select Images
+                </Button>
+              </div>
+            </div>
+
+            {imagePreviews.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="relative group">
+                    <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 border-2 border-dashed border-gray-300">
+                      <img
+                        src={preview}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeImage(index)}
+                      className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                    <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                      {selectedImages[index]?.name?.slice(0, 15)}...
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {imagePreviews.length === 0 && (
+              <div className="text-center py-8 border-2 border-dashed border-red-300 rounded-lg">
+                <ImageIcon className="mx-auto h-12 w-12 text-red-400" />
+                <div className="mt-2 text-sm text-red-600">
+                  No images selected yet - Required
+                </div>
+                <div className="mt-1 text-xs text-red-500">
+                  Click "Select Images" to add property photos
+                </div>
+              </div>
+            )}
+
+            {selectedImages.length > 0 && (
+              <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                <div className="text-sm text-green-800">
+                  ✓ <strong>{selectedImages.length}</strong> image(s) selected
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Submit Button Section */}

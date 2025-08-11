@@ -96,7 +96,64 @@ export class PgServices {
     try {
       const updatedPg = await this.prismaClient.pgData.update({
         where: { id: pgId },
-        data: pgData
+        data: {
+          title: pgData.title,
+          hostId: pgData.hostId,
+          description: pgData.description,
+          propertyType: pgData.propertyType,
+          foodIncluded: pgData.foodIncluded ?? false,
+          furnishing: pgData.furnishing,
+          address: pgData.address,
+          latitude: pgData.latitude,
+          longitude: pgData.longitude,
+          pgRules: pgData.pgRules,
+          moveInStatus: pgData.moveInStatus,
+          virtualTourUrl: pgData.virtualTourUrl,
+          images: pgData.images ?? [],
+          nearbyFacilities: pgData.nearbyFacilities ?? [],
+          
+          // ✅ Replace all furniture records
+          furnitures: {
+            deleteMany: {}, // Delete all existing for this PG
+            create: pgData.furnitures?.map((furnitureType: FurnitureType) => ({
+              type: furnitureType,
+            })) ?? [],
+          },
+          
+          // ✅ Replace all amenity records
+          amenities: {
+            deleteMany: {}, // Delete all existing for this PG
+            create: pgData.amenities?.map((amenityType: AmenityType) => ({
+              type: amenityType,
+            })) ?? [],
+          },
+          
+          // ✅ Replace all sharing type records
+          sharingTypes: {
+            deleteMany: {}, // Delete all existing for this PG
+            create: pgData.sharingTypes?.map((sharingType: SharingTypeDetails) => ({
+              type: sharingType.type || sharingType,
+              description: sharingType.description,
+              price: sharingType.price || 0,
+              availability: sharingType.availability || 0,
+              pricePerMonth: sharingType.pricePerMonth || sharingType.price || 0,
+              pricePerDay: sharingType.pricePerDay,
+              deposit: sharingType.deposit || 0,
+              refundableDeposit: sharingType.refundableDeposit ?? true,
+              refundableAmount: sharingType.refundableAmount || 0,
+              maintainanceCharges: sharingType.maintainanceCharges,
+              electricityCharges: sharingType.electricityCharges,
+              waterCharges: sharingType.waterCharges,
+              maintenanceIncluded: sharingType.maintenanceIncluded ?? false,
+            })) ?? [],
+          },
+        },
+        include: {
+          Host: true,
+          furnitures: true,
+          amenities: true,
+          sharingTypes: true,
+        },
       });
       return updatedPg;
     } catch (error) {

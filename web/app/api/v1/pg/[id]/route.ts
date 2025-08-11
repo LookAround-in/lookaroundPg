@@ -11,7 +11,6 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         const formData = await request.formData();
         const imageUrls: string[] = [];
         const images = formData.getAll("images") as File[];
-        const existingImages = formData.getAll("existingImages") as string[];
 
         // Process new image uploads
         if (images && images.length > 0) {
@@ -58,8 +57,15 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         const pgUpdateData: Partial<PgCreateInput> = {};
 
         // Only add fields if they exist in formData
+
+        const existingImagesJson = getFormField("existingImages");
+        const existingImages = existingImagesJson ? JSON.parse(existingImagesJson) : [];
+
         const title = getFormField("title");
         if (title !== null) pgUpdateData.title = title;
+
+        const hostId = getFormField("hostId");
+        if (hostId !== null) pgUpdateData.hostId = hostId;
 
         const description = getFormField("description");
         if (description !== null) pgUpdateData.description = description;
@@ -91,8 +97,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         const sharingTypes = parseJsonField<SharingTypeDetails>("sharingTypes");
         if (sharingTypes !== null) pgUpdateData.sharingTypes = sharingTypes;
 
-       const nearbyFacilities = parseJsonField<NearbyFacility>("nearbyFacilities");
-if (nearbyFacilities !== null) pgUpdateData.nearbyFacilities = nearbyFacilities;
+        const nearbyFacilities = parseJsonField<NearbyFacility>("nearbyFacilities");
+        if (nearbyFacilities !== null) pgUpdateData.nearbyFacilities = nearbyFacilities;
 
         const pgRules = getFormField("pgRules");
         if (pgRules !== null) pgUpdateData.pgRules = pgRules;

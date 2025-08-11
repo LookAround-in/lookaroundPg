@@ -1063,7 +1063,7 @@ function AddPropertyForm() {
                   Property Images *
                 </FormLabel>
                 <FormDescription>
-                  Upload multiple images of your property. At least one image is
+                  Upload upto 10 images of your property. At least one image is
                   required.
                 </FormDescription>
               </div>
