@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { pgController } from "../route";
 import { uploadImageToCloudinary } from "@/lib/cloudinary";
-import { PropertyType, FurnishingType, MoveInStatus, FurnitureType, AmenityType, SharingTypeDetails } from "@/interfaces/pg";
-
+import { PropertyType, FurnishingType, MoveInStatus, FurnitureType, AmenityType, SharingTypeDetails, PgCreateInput, NearbyFacility } from "@/interfaces/pg";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -56,7 +55,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         }
 
         // Build update data object - only include fields that are provided
-        const pgUpdateData: any = {};
+        const pgUpdateData: Partial<PgCreateInput> = {};
 
         // Only add fields if they exist in formData
         const title = getFormField("title");
@@ -92,8 +91,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         const sharingTypes = parseJsonField<SharingTypeDetails>("sharingTypes");
         if (sharingTypes !== null) pgUpdateData.sharingTypes = sharingTypes;
 
-        const nearbyFacilities = parseJsonField("nearbyFacilities");
-        if (nearbyFacilities !== null) pgUpdateData.nearbyFacilities = nearbyFacilities;
+       const nearbyFacilities = parseJsonField<NearbyFacility>("nearbyFacilities");
+if (nearbyFacilities !== null) pgUpdateData.nearbyFacilities = nearbyFacilities;
 
         const pgRules = getFormField("pgRules");
         if (pgRules !== null) pgUpdateData.pgRules = pgRules;
@@ -122,7 +121,6 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 }
 
-
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
@@ -130,10 +128,10 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         const result = await pgController.deletePg(request, id);
         return result;
     } catch (error) {
-        console.error("Error in PUT route:", error);
+        console.error("Error in DELETE route:", error);
         return NextResponse.json({
             success: false,
-            message: "Error updating PG",
+            message: "Error deleting PG",
             error: error instanceof Error ? error.message : "Unknown error"
         }, { status: 500 });
     }
