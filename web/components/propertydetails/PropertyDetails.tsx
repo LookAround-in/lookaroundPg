@@ -15,7 +15,6 @@ import {
   DialogFooter,
 } from "components/ui/dialog";
 import { Checkbox } from "components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "components/ui/tabs";
 import {
   MapPin,
   Heart,
