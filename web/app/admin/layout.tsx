@@ -15,12 +15,12 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
    } = authClient.useSession();
  
  
-//    // Handle redirect in useEffect to avoid rendering issues
-  //  useEffect(() => {
-  //    if (!isPending && session?.user.role !== "admin") {
-  //      router.push("/");
-  //    }
-  //  }, [session, isPending, router]);
+   // Handle redirect in useEffect to avoid rendering issues
+   useEffect(() => {
+     if (!isPending && session?.user.role !== "admin") {
+       router.push("/");
+     }
+   }, [session, isPending, router]);
  
    if (error) return <div>Error: {error.message}</div>;
    if (isPending) return (
@@ -32,10 +32,10 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
      </div>
    );
  
-//    // Don't render children if user is authenticated (redirect in progress)
-  //  if (session?.user.role !== "admin") {
-  //    return <div>Redirecting...</div>;
-  //  }
+   // Don't render children if user is authenticated (redirect in progress)
+   if (session?.user.role !== "admin") {
+     return <div>Redirecting...</div>;
+   }
 
   return <div>{children}</div>;
 };
