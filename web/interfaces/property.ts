@@ -77,12 +77,10 @@ export interface ExploreApiResponse {
   message: string;
   data: Properties;
 }
-interface Properties{
+export interface Properties{
   properties: Property[];
   totalItems: number;
   totalPages: number;
-  currentPage: number;
-  limit: number;
 }
 
 export interface PropertyApiResponse {

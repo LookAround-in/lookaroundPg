@@ -1,11 +1,9 @@
-'use client'
-import React from 'react';
 import Link from 'next/link';
 import { Button } from 'components/ui/button';
 import { Card, CardContent } from 'components/ui/card';
 import { Shield, Users, Star, Heart, MapPin, Search } from 'lucide-react';
 
-const About = () => {
+export default function About () {
   const values = [
     {
       icon: Shield,
@@ -259,5 +257,3 @@ const About = () => {
     </div>
   );
 };
-
-export default About;

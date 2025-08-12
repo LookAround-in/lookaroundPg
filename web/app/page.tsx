@@ -2,26 +2,42 @@ import Link from "next/link";
 import { Button } from "components/ui/button";
 import { SearchBar } from "components/search/SearchBar";
 import { Shield, Search, Star, Users } from "lucide-react";
+import { Suspense } from "react";
 import Featured from "@/components/properties/FeaturedProperties";
 import Trending from "@/components/properties/TrendingProperties";
-import { getQueryClient } from "@/lib/get-query-client";
-import { fetchFeaturedProperties, fetchTrendingProperties } from "@/lib/api-server";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import PropertySkeleton from "@/components/properties/PropertySkeleton";
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
+
+function LoadingSkeleton() {
+  return (
+    <>
+      {/* Mobile Horizontal Scroll Skeleton */}
+      <div className="md:hidden">
+        <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div
+              key={`mobile-trending-skeleton-${index}`}
+              className="flex-shrink-0 w-80"
+            >
+              <PropertySkeleton />
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Desktop Grid Skeleton */}
+      <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <PropertySkeleton
+            key={`desktop-trending-skeleton-${index}`}
+          />
+        ))}
+      </div>
+    </>
+  )
+}
 
 export default async function HomePage() {
-  // const queryClient = getQueryClient();
-  // await Promise.all([
-  //   queryClient.prefetchQuery({
-  //     queryKey: ["featuredProperties"],
-  //     queryFn: fetchFeaturedProperties,
-  //   }),
-  //   queryClient.prefetchQuery({
-  //     queryKey: ["trendingProperties"],
-  //     queryFn: fetchTrendingProperties,
-  //   })
-  // ])
-  // const dehydratedState = dehydrate(queryClient);
-
   const features = [
     {
       icon: Shield,
@@ -46,7 +62,6 @@ export default async function HomePage() {
   ];
 
   return (
-    // <HydrationBoundary state={dehydratedState}>
       <div className="min-h-screen bg-background transition-colors duration-200">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 py-20 lg:py-28">
@@ -63,15 +78,11 @@ export default async function HomePage() {
               Discover safe, comfortable, and affordable paying guest
               accommodations
             </p>
-
             {/* Search Bar */}
             <div
               className="max-w-2xl mx-auto mb-8 animate-scaleIn"
               style={{ animationDelay: "0.4s" }}
-            >
-              <SearchBar />
-            </div>
-
+            ><SearchBar /></div>
             {/* Quick Stats */}
             <div
               className="grid grid-cols-3 gap-8 max-w-md mx-auto text-center animate-fadeInUp"
@@ -106,7 +117,6 @@ export default async function HomePage() {
               reliable
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <div
@@ -128,8 +138,13 @@ export default async function HomePage() {
       </section>
 
       {/* Featured Properties and Trending Properties*/}
-      <Featured/>
-      <Trending/>
+      <Suspense fallback={<LoadingSkeleton />}>
+        <Featured/>
+      </Suspense>
+      <Suspense fallback={<LoadingSkeleton />}>
+        <Trending/>
+      </Suspense>
+      
       {/* Call to Action Section */}
       <section className="py-16 bg-gradient-cool">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
@@ -158,6 +173,5 @@ export default async function HomePage() {
         </div>
       </section>
     </div>
-    // </HydrationBoundary>
   );
 };

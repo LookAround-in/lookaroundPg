@@ -1,77 +1,42 @@
-import { ExploreApiResponse, PropertyApiResponse } from "@/interfaces/property";
+import { PgServices } from "@/app/api/v1/pg/pgServices"; 
 
-function getBaseUrl() {
-  if (typeof window !== 'undefined') {
-    return '';
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  return `http://localhost:${process.env.PORT ?? 3000}`;
-}
+const pgService = new PgServices();
 
-export const fetchProperties = async (page: number, limit: number): Promise<ExploreApiResponse> => {
-  const baseUrl = getBaseUrl();
-  const url = `${baseUrl}/api/v1/pg/getExplorePg?page=${page}&limit=${limit}`
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return response.json();
+// direct DB call
+export const fetchProperties = async (page: number, limit: number) => {
+  const result = await pgService.getExplorePgs(page, limit);
+  return result;
 };
 
-export const fetchTrendingProperties = async (): Promise<PropertyApiResponse> => {
-  const baseUrl = getBaseUrl();
-  const response = await fetch(`${baseUrl}/api/v1/pg/getTrendingPg`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch trending properties");
-  }
-  return response.json();
+// direct DB call
+export const fetchTrendingProperties = async () => {
+  const result = await pgService.getTrendingPgs();
+  return result;
 };
 
-
-export const fetchFeaturedProperties = async (): Promise<PropertyApiResponse> => {
-  const baseUrl = getBaseUrl();
-  const response = await fetch(`${baseUrl}/api/v1/pg/getFeaturedPg`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch featured properties");
-  }
-  return response.json();
+// direct DB call
+export const fetchFeaturedProperties = async () => {
+  const result = await pgService.getFeaturedPgs();
+  return result;
 };
 
-export const fetchPropertyById = async (
-  propertyId: string
-): Promise<PropertyApiResponse> => {
-  const baseUrl = getBaseUrl();
-  if (!propertyId) {
-    throw new Error("Pg Id is required");
-  }
-  const response = await fetch(`${baseUrl}/api/v1/pg/getPgById/${propertyId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return response.json();
+// direct DB call
+export const fetchPropertyById = async (propertyId: string) => {
+  if (!propertyId) throw new Error("Pg Id is required");
+  const result = await pgService.getPgById(propertyId);
+  return {
+    success: true,
+    message: "Pg fetched successfully",
+    data: result,
+  };
+};
+
+export const fetchPropertyByHostId = async (hostId: string) => {
+  if (!hostId) throw new Error("Host Id is required");
+  const result = await pgService.getPgsByHostId(hostId);
+  return {
+    success: true,
+    message: "Pg fetched successfully",
+    data: result,
+  };
 };

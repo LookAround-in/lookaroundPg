@@ -1,44 +1,43 @@
 'use client';
 import { PropertyCard } from '@/components/properties/PropertyCard';
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ExploreApiResponse, Property } from '@/interfaces/property'
+import { Property } from '@/interfaces/property';
 import { Search } from 'lucide-react';
+import PropertySkeleton from '../properties/PropertySkeleton';
 interface PropertyListProps{
-  data: {
-    isFetching: boolean;
-    isLoading: boolean;
-    isPending?: boolean;
-    isError: boolean;
-    error?: unknown;
-    refetch: () => void;
-    data: ExploreApiResponse;
-  };
   filteredProperties: Property[];
+  isLoading?: boolean;
+  error?: string | null;
 }
 
-function PropertyList({ data, filteredProperties }: PropertyListProps) {
-  const isLoading = data.isLoading || data.isFetching || data.isPending;
+function PropertyList({ filteredProperties, isLoading, error }: PropertyListProps) {
   return (
     <div className="flex-1">
       {/* Error State */}
-      {data.isError && (
+      {error && (
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4 text-red-600">
               Error loading properties
             </h1>
             <p className="text-gray-600 mb-4">
-              {(data.error as Error)?.message ||
-                "Failed to load property details"}
+              {error}
             </p>
             <div className="space-x-4">
-              <Button onClick={() => data.refetch()}>Try Again</Button>
+              <Button onClick={() => window.location.reload()}>Try Again</Button>
             </div>
           </div>
         </div>
       )}
-      {!isLoading && !data.isError && (
+      { isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+              <PropertySkeleton key={`skeleton-${index}`} />
+            ))}
+        </div>
+      )}
+      {!isLoading && !error && (
         <div>
           {filteredProperties.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
@@ -69,7 +68,7 @@ function PropertyList({ data, filteredProperties }: PropertyListProps) {
             </Card>
           )}
         </div>
-      )}
+     )}
     </div>
   )
 }

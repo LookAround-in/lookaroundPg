@@ -1,7 +1,15 @@
 "use client";
 import React, { useState, useMemo, useCallback, useTransition} from "react";
 import { Property } from "@/interfaces/property";
-import { CityFilter, LocationFilter, PriceRangeFilter, GenderFilter, RatingFilter, AmenitiesFilter, SharingTypeFilter, VirtualTourFilter} from './filter-components';
+import dynamic from "next/dynamic";
+const CityFilter = dynamic(() => import("./filter-components").then(mod => mod.CityFilter));
+const LocationFilter = dynamic(() => import("./filter-components").then(mod => mod.LocationFilter));
+const PriceRangeFilter = dynamic(() => import("./filter-components").then(mod => mod.PriceRangeFilter));
+const GenderFilter = dynamic(() => import("./filter-components").then(mod => mod.GenderFilter));
+const RatingFilter = dynamic(() => import("./filter-components").then(mod => mod.RatingFilter));
+const AmenitiesFilter = dynamic(() => import("./filter-components").then(mod => mod.AmenitiesFilter));
+const SharingTypeFilter = dynamic(() => import("./filter-components").then(mod => mod.SharingTypeFilter));
+const VirtualTourFilter = dynamic(() => import("./filter-components").then(mod => mod.VirtualTourFilter));
 import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card";
 import { Button } from "components/ui/button";
 import { Badge, Filter, SlidersHorizontal, X } from "lucide-react";
@@ -74,8 +82,8 @@ export default function FilterComponent({
       max: Math.ceil(maxPrice * 1.2),
     };
   }, [properties]);
-  const lowerRange = priceRange.min < 2000 ? priceRange.min : priceRange.min - 1000;
-  const upperRange = priceRange.max + 5000 ;
+  const minFilterPrice = priceRange.min > 2000 ? priceRange.min - 1000 : priceRange.min;
+  const maxFilterPrice = priceRange.max < 50000 ? priceRange.max + 1000 : priceRange.max;
 
   // Debounced price range update
   const debouncedSetPriceRange = useDebouncedCallback((value: number[]) => {
@@ -175,8 +183,8 @@ export default function FilterComponent({
       <PriceRangeFilter
         priceFilter={filters.priceFilter}
         onPriceChange={handlePriceRangeChange}
-        min={lowerRange}
-        max={upperRange}
+        min={minFilterPrice}
+        max={maxFilterPrice}
         step={500}
       />
       
@@ -208,7 +216,7 @@ export default function FilterComponent({
         </Button>
       )}
     </div>
-  ), [filters, handleCityChange, handleLocationChange, handlePriceRangeChange, handleGenderChange, handleRatingChange, handleSharingTypeChange, handleVirtualTourChange, handleAmenityChange, clearFilters, activeFiltersCount, locations, lowerRange, upperRange]);
+  ), [filters, handleCityChange, handleLocationChange, handlePriceRangeChange, handleGenderChange, handleRatingChange, handleSharingTypeChange, handleVirtualTourChange, handleAmenityChange, clearFilters, activeFiltersCount, locations, minFilterPrice, maxFilterPrice]);
 
   return (
     <div>

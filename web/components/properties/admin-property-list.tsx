@@ -1,7 +1,10 @@
 'use client';
 import React, { useState, useMemo } from "react";
 import { PropertyCard } from "components/properties/PropertyCard";
+<<<<<<< HEAD:web/app/admin/properties/admin-property-list.tsx
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+=======
+>>>>>>> fix:web/components/properties/admin-property-list.tsx
 import { Button } from "components/ui/button";
 import { Card, CardContent } from "components/ui/card";
 import { Badge } from "components/ui/badge";
@@ -9,22 +12,25 @@ import { Input } from "components/ui/input";
 import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue} from "components/ui/select";
 import { Plus,Search,Filter,Home,Eye,Edit,Trash2, Loader2} from "lucide-react";
 import { useRouter } from "next/navigation";
+<<<<<<< HEAD:web/app/admin/properties/admin-property-list.tsx
 import Link from "next/link";
 import { ExploreApiResponse } from "@/interfaces/property";
 import PropertySkeleton from "@/components/properties/PropertySkeleton";
+=======
+import { Properties } from "@/interfaces/property";
+>>>>>>> fix:web/components/properties/admin-property-list.tsx
 import { PaginationWithLinks } from "@/components/ui/pagination-with-links";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
-const fetchProperties = async (page: number, limit: number): Promise<ExploreApiResponse> => {
-  const response = await fetch(`/api/v1/pg/getExplorePg?page=${page}&limit=${limit}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+interface AdminPropertyProps{
+  page: number;
+  limit: number;
+  explorePropertiesData: Properties;
+}
 
+<<<<<<< HEAD:web/app/admin/properties/admin-property-list.tsx
   if (!response.ok) {
     throw new Error("Failed to fetch data");
   }
@@ -48,6 +54,9 @@ const pgDeleteRequest = async (pgId: string) => {
 };
 
 function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}) {
+=======
+function AdminPropertyList({page = 1, limit = 12, explorePropertiesData}: AdminPropertyProps) {
+>>>>>>> fix:web/components/properties/admin-property-list.tsx
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
@@ -57,6 +66,7 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
     const {toast} = useToast();
     const queryClient = useQueryClient();
 
+<<<<<<< HEAD:web/app/admin/properties/admin-property-list.tsx
     // In a real app, these would be filtered by the logged-in host
     const {data: explorePropertiesData, refetch, isError, isLoading, isPending, error} = useQuery<ExploreApiResponse>({
         queryKey: ["properties", page],
@@ -70,6 +80,10 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
       }
       return [];
     }, [explorePropertiesData]);
+=======
+    const totalProperties = explorePropertiesData?.totalItems || 0;
+    const properties = explorePropertiesData?.properties || [];
+>>>>>>> fix:web/components/properties/admin-property-list.tsx
 
     const filteredProperties = properties.filter((property) => {
       const matchesSearch =
@@ -120,7 +134,11 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
       };
   
     const stats = {
+<<<<<<< HEAD:web/app/admin/properties/admin-property-list.tsx
       total: explorePropertiesData?.data?.totalItems || 0,
+=======
+      total: explorePropertiesData?.totalItems || 0,
+>>>>>>> fix:web/components/properties/admin-property-list.tsx
       active: properties.filter((p) => p.sharingTypes.length > 0).length,
       inactive: properties.filter((p) => !p.sharingTypes.length).length,
       totalViews: properties.reduce((sum, p) => sum + (p.reviews.length || 0), 0),
@@ -222,6 +240,7 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
             </div>
           </CardContent>
         </Card>
+<<<<<<< HEAD:web/app/admin/properties/admin-property-list.tsx
         {/* Error State - Outside grid */}
         {isError && (
           <div className="flex items-center justify-center py-12">
@@ -250,6 +269,10 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
 
         {/* Properties Grid - Only show when data is loaded successfully */}
         {!isLoading && !isPending && !isError && (
+=======
+
+        {/* Properties Grid - Only show when data is loaded successfully */}
+>>>>>>> fix:web/components/properties/admin-property-list.tsx
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredProperties &&
               filteredProperties.map((property) => (
@@ -291,9 +314,12 @@ function AdminPropertyList({page = 1, limit = 12}: {page: number, limit: number}
                 </div>
               ))}
           </div>
-        )}
 
+<<<<<<< HEAD:web/app/admin/properties/admin-property-list.tsx
         {!isLoading && filteredProperties.length === 0 && (
+=======
+        { filteredProperties.length === 0 && (
+>>>>>>> fix:web/components/properties/admin-property-list.tsx
           <Card className="text-center py-12">
             <CardContent>
               <Home className="h-12 w-12 text-gray-400 mx-auto mb-4" />

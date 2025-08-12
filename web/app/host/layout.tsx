@@ -2,39 +2,54 @@
 import React, { ReactNode, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
+import { UserRole } from "@/interfaces/session";
 
 const HostLayout = ({ children }: { children: ReactNode }) => {
+  const { isLoading, user } = useAuth();
   const router = useRouter();
 
-  const {
-    data: session,
-    isPending, //loading state
-    error, //error object
-    refetch //refetch the session
-  } = authClient.useSession();
-
-
-  // Handle redirect in useEffect to avoid rendering issues
   useEffect(() => {
-    if (!isPending && session?.user.role !== "host") {
-      router.push("/");
+    if (!isLoading) {
+      if (!user) {
+        router.replace("/login");
+        return;
+      }
+
+      if (user.role !== "host") {
+        router.replace("/");
+        return;
+      }
     }
-  }, [session, isPending, router]);
+  }, [isLoading, user, router]);
 
-  if (error) return <div>Error: {error.message}</div>;
-  if (isPending) return (
-    <div className="min-h-screen flex items-center justify-center bg-light-gray">
-      <div className="text-center">
-        <img src="/logo.png" alt="Loading" className="animate-spin sm:h-24 sm:w-24 h-16 w-16 animate-bounce" />
-        <p className="text-gray-900 font-thin text-lg">Loading...</p>
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-light-gray">
+        <div className="text-center">
+          <img
+            src="/logo.png"
+            alt="Loading"
+            className="animate-spin sm:h-24 sm:w-24 h-16 w-16 animate-bounce"
+          />
+          <p className="text-gray-900 font-thin text-lg">Loading...</p>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 
-  // Don't render children if user is authenticated (redirect in progress)
-  if (session?.user.role !== "host") {
-    return <div>Redirecting...</div>;
+  if (!user || user.role !== UserRole.host) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-light-gray">
+        <div className="text-center">
+          <img
+            src="/logo.png"
+            alt="Redirecting"
+            className="animate-spin sm:h-24 sm:w-24 h-16 w-16 animate-bounce"
+          />
+          <p className="text-gray-900 font-thin text-lg">Checking permissions...</p>
+        </div>
+      </div>
+    );
   }
 
   return <div>{children}</div>;

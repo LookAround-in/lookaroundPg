@@ -1,4 +1,4 @@
-import AddPropertyForm from '@/components/properties/AddPropertyForm'
+import AddPropertyForm from '@/components/forms/AddPropertyForm'
 
 export default async function AddProperty() {
   return (
