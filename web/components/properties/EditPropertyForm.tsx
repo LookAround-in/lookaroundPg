@@ -297,34 +297,6 @@ function EditPropertyForm({ property }: { property: Property | null }) {
       };
       
       console.log("Safe data being sent:", safeData);
-  
-      // const updateProperty: EditFormType = {
-      //   title: safeData.title,
-      //   hostId: safeData.hostId,
-      //   description: safeData.description,
-      //   propertyType: safeData.propertyType as PropertyType,
-      //   foodIncluded: safeData.foodIncluded,
-      //   furnishing: safeData.furnishing as FurnishingType,
-      //   address: safeData.address,
-      //   latitude: Number(safeData.latitude),
-      //   longitude: Number(safeData.longitude),
-      //   pgRules: safeData.pgRules || "",
-      //   moveInStatus: safeData.moveInStatus as MoveInStatus,
-      //   virtualTourUrl: safeData.virtualTourUrl?.trim() || "",
-      //   nearbyFacilities: safeData.nearbyFacilities || [],
-      //   furnitures: safeData.furnitures as FurnitureType[] || [],
-      //   amenities: safeData.amenities as AmenityType[] || [],
-      //   sharingTypes: safeData.sharingTypes.map(st => ({
-      //       type: st.type,
-      //       description: st.description || "",
-      //       availability: Number(st.availability) || 0,
-      //       pricePerMonth: Number(st.pricePerMonth) || 0,
-      //       deposit: Number(st.deposit) || 0,
-      //       refundableAmount: Number(st.refundableAmount) || 0,
-      //     })),
-      //   images: safeData.images,
-      // }
-      // console.log("Updated values:", updateProperty)
       const formData = new FormData();
       // Add basic form fields - using validated data from React Hook Form
       formData.append("title", safeData.title);

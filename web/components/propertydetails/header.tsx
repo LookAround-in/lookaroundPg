@@ -2,7 +2,8 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Card, CardContent } from "../ui/card";
-import { Badge, Eye, Heart, Star } from "lucide-react";
+import { Eye, Heart, Star } from "lucide-react";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import dynamic from "next/dynamic";
 const PropertyInfo = dynamic(() => import("./info"));
@@ -10,6 +11,7 @@ const Features = dynamic(() => import("./features"));
 const Review = dynamic(() => import("../review/Review"));
 import { Property } from "@/interfaces/property";
 import { formatRating } from "@/utils/format";
+import ShareButton from "../share/Share";
 
 interface HeaderProps {
   property: Property;
@@ -25,7 +27,7 @@ export default function Header({ property, refetch, handleWishlistToggle, isInWi
       {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Image Gallery */}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden shadow-lg">
               <div className="relative aspect-[16/10]">
                 <Image
                   placeholder="blur"
@@ -46,6 +48,8 @@ export default function Header({ property, refetch, handleWishlistToggle, isInWi
                     360° Tour Available
                   </Badge>
                 )}
+
+                <ShareButton isIcon={true} />
 
                 {/* Wishlist Button */}
                 <Button
@@ -117,7 +121,7 @@ export default function Header({ property, refetch, handleWishlistToggle, isInWi
             <Features property={property} />
 
             {/* Reviews Section */}
-            <Card className="">
+            <Card className="shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold">{property?.reviewCount > 0 ? "Guest Reviews" : "No Reviews Yet"}</h3>

@@ -89,7 +89,7 @@ export default function PropertyInfo({ property }: PropertyInfoProps) {
     };
     return (
         <>
-        <Card className="">
+        <Card className="shadow-lg">
               <CardContent className="p-6">
                 <div className="space-y-4">
                   {/* Title and Location */}

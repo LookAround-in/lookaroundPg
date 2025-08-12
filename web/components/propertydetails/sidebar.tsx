@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { Property } from "@/interfaces/property";
 import { formatRating } from "@/utils/format";
+import ShareButton from "../share/Share";
 
 interface PropertyDetailsProps {
   property: Property;
@@ -42,7 +43,7 @@ export default function Sidebar({ property, setShowHostInfo, setShowTermsDialog,
   return (
     <div className="space-y-6">
             {/* Host Profile */}
-            <Card className="">
+            <Card className="shadow-lg">
               <CardContent className="p-6">
                 <div className="text-center space-y-4">
                   <div className="w-16 h-16 bg-gradient-cool rounded-full flex items-center justify-center mx-auto">
@@ -72,62 +73,68 @@ export default function Sidebar({ property, setShowHostInfo, setShowTermsDialog,
                         ({property?.reviewCount || 0} reviews)
                       </span>
                     </div>
-                  <div className="space-y-2">
-                    {!showHostInfo ? (
-                      <Button
-                        onClick={handleRevealHostInfo}
-                        className="w-full bg-gradient-cool hover:opacity-90"
-                      >
-                        Reveal Host Info
-                      </Button>
-                    ) : (
+                    {user ? (
+                    <>
                       <div className="space-y-2">
-                        {property.Host?.contactNumber && (
-                          <a href={`tel:${property.Host.contactNumber}`}>
-                            <Button variant="outline" className="w-full">
-                              <Phone className="h-4 w-4 mr-2" />
-                              {property.Host.contactNumber}
-                            </Button>
-                          </a>
-                        )}
-                        {property.Host?.user?.email && (
-                          <a href={`mailto:${property.Host?.user?.email}`}>
-                            <Button variant="outline" className="w-full mt-2">
-                              <Mail className="h-4 w-4 mr-2" />
-                              Email Host
-                            </Button>
-                          </a>
-                        )}
-                        {property.Host?.contactNumber && (
-                          <a
-                            href={`https://wa.me/${property.Host.contactNumber.replace(
-                              /\D/g,
-                              ""
-                            )}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Button className="w-full bg-green-500 hover:bg-green-600 mt-2">
-                              <MessageSquareDot className="h-4 w-4 mr-2" />
-                              WhatsApp
-                            </Button>
-                          </a>
+                      {!showHostInfo ? (
+                        <Button
+                          onClick={handleRevealHostInfo}
+                          className="w-full bg-gradient-cool hover:opacity-90"
+                        >
+                          Reveal Host Info
+                        </Button>
+                      ) : (
+                        <div className="space-y-2">
+                          {property.Host?.contactNumber && (
+                            <a href={`tel:${property.Host.contactNumber}`}>
+                              <Button variant="outline" className="w-full">
+                                <Phone className="h-4 w-4 mr-2" />
+                                {property.Host.contactNumber}
+                              </Button>
+                            </a>
+                          )}
+                          {property.Host?.user?.email && (
+                            <a href={`mailto:${property.Host?.user?.email}`}>
+                              <Button variant="outline" className="w-full mt-2">
+                                <Mail className="h-4 w-4 mr-2" />
+                                Email Host
+                              </Button>
+                            </a>
+                          )}
+                          {property.Host?.contactNumber && (
+                            <a
+                              href={`https://wa.me/${property.Host.contactNumber.replace(
+                                /\D/g,
+                                ""
+                              )}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <Button className="w-full bg-green-500 hover:bg-green-600 mt-2">
+                                <MessageSquareDot className="h-4 w-4 mr-2" />
+                                WhatsApp
+                              </Button>
+                            </a>
+                          )}
+                        </div>
                         )}
                       </div>
-                    )}
-                  </div>
-
-                  <Link href={`/properties/${property.hostId}`}>
-                    <Button variant="ghost" className="w-full mt-2">
-                      View All Properties by Host
-                    </Button>
-                  </Link>
+    
+                      <Link href={`/properties/${property.hostId}`}>
+                        <Button variant="ghost" className="w-full mt-2">
+                          View All Properties by Host
+                        </Button>
+                      </Link>
+                    </>
+                  ): (
+                    <p className="text-lg font-thin">Please <Link href="/login" className="text-primary">login</Link> to reveal host information.</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
 
             {/* Location */}
-            <Card className="">
+            <Card className="shadow-lg">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4">Location</h3>
                 <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center mb-4">
@@ -146,7 +153,7 @@ export default function Sidebar({ property, setShowHostInfo, setShowTermsDialog,
               <Button
                 onClick={handleWishlistToggle}
                 variant="outline"
-                className="w-full"
+                className="w-full shadow-lg"
               >
                 <Heart
                   className={`h-4 w-4 mr-2 ${isInWishlist ? "fill-current text-red-500" : ""
@@ -154,6 +161,7 @@ export default function Sidebar({ property, setShowHostInfo, setShowTermsDialog,
                 />
                 {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
               </Button>
+              <ShareButton isIcon={false}/>
 
               {/* Enhanced Virtual Tour Button */}
               {property.virtualTourUrl && (

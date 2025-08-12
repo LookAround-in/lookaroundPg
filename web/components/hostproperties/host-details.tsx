@@ -228,7 +228,7 @@ const HostProperties = ({ hostId, initialData, error }: HostPropertiesProps) => 
                         Languages
                       </h4>
                       <p className="text-sm text-gray-600">
-                        English, Hindi, Kannada
+                        {hostProperties[0]?.Host?.languagesSpokenByHost.join(", ") || ""}
                       </p>
                     </div>
                     <div className="bg-gradient-cool-light p-4 rounded-lg">

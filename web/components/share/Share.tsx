@@ -33,7 +33,7 @@ export default function ShareButton({ isIcon }: { isIcon?: boolean }) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={`absolute top-16 right-4 p-2 h-10 w-10 bg-white/80 hover:bg-white`}
+                  className={`absolute top-4 right-16 p-2 h-10 w-10 bg-white/80 hover:bg-white`}
                   onClick={handleNativeShare}
                 >
                   <Share
@@ -46,7 +46,7 @@ export default function ShareButton({ isIcon }: { isIcon?: boolean }) {
             return (
                 <Button
                 onClick={handleNativeShare}
-                className="w-full bg-gradient-cool text-white shadow-lg transform transition-all duration-200 hover:scale-105 hidden md:flex items-center justify-center"
+                className="w-full bg-gradient-cool text-white shadow-lg transform transition-all duration-200 hover:scale-105"
                 >
                 <Share className="h-4 w-4 mr-2" />
                     Share

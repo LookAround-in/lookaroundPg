@@ -3,7 +3,6 @@ import { Property } from "@/interfaces/property";
 import React from "react";
 import { Star } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -239,8 +238,8 @@ export default function ReviewForm({ property, refetchProperty, editingReview, s
                 </FormItem>
               )}
             />
-            <Button type="submit" className="bg-gradient-cool hover:opacity-90">
-              {editingReview ? "Update Review" : "Submit"}
+            <Button type="submit" className="bg-gradient-cool hover:opacity-90" disabled={isSubmitting}>
+              {editingReview ? (isSubmitting ? "Updating..." : "Update Review") : (isSubmitting ? "Submitting..." : "Submit")}
             </Button>
           </form>
         </Form>

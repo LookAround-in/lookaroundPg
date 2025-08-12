@@ -8,7 +8,7 @@ export default function Features({ property }: { property: Property }) {
     <>
       {/* Languages List */}
       {property.Host.languagesSpokenByHost && property.Host.languagesSpokenByHost.length > 0 && (
-              <Card>
+              <Card className="shadow-lg">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
                     <User2 className="h-5 w-5 mr-2" />
@@ -30,7 +30,7 @@ export default function Features({ property }: { property: Property }) {
 
             {/* Furniture List */}
             {property.furnitures && property.furnitures.length > 0 && (
-              <Card>
+              <Card className="shadow-lg">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
                     <Sofa className="h-5 w-5 mr-2" />
@@ -52,7 +52,7 @@ export default function Features({ property }: { property: Property }) {
 
             {/* Nearby Facilities */}
             { property.nearbyFacilities && property.nearbyFacilities.length > 0 && (
-              <Card>
+              <Card className="shadow-lg">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4 flex items-center">
                   <MapPin className="h-5 w-5 mr-2" />
@@ -84,7 +84,7 @@ export default function Features({ property }: { property: Property }) {
 
             {/* Amenities*/}
             {property.amenities && property.amenities.length > 0 && (
-              <Card className="">
+              <Card className="shadow-lg">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
                     <PackagePlus className="h-5 w-5 mr-2" />
@@ -106,7 +106,7 @@ export default function Features({ property }: { property: Property }) {
 
             {/* House Rules */}
             {property.pgRules && (
-              <Card className="">
+              <Card className="shadow-lg">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
                     <PencilRuler className="h-5 w-5 mr-2" />

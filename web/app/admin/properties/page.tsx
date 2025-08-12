@@ -1,19 +1,27 @@
 import { Button } from "components/ui/button";
-import {ArrowLeft,Plus} from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import Link from "next/link";
 import AdminPropertyList from "../../../components/properties/admin-property-list";
 import { fetchProperties } from "@/lib/api-server";
 
-export default async function AdminProperties({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
-  let propertiesData;
+export default async function AdminProperties({ 
+  searchParams 
+}: { 
+  searchParams: Promise<{ page?: string }> 
+}) {
   const resolvedSearchParams = await searchParams;
   const page = parseInt(resolvedSearchParams.page || "1", 10);
   const limit = 12;
+  
+  // ✅ Handle SSR errors gracefully
+  let propertiesData = null;
+  let ssrError = null;
+  
   try {
     propertiesData = await fetchProperties(page, limit);
   } catch (error) {
-    propertiesData = null;
-    console.error("Error fetching properties:", error);
+    console.error("SSR Error fetching properties:", error);
+    ssrError = error;
   }
 
   return (
@@ -30,12 +38,11 @@ export default async function AdminProperties({ searchParams }: { searchParams: 
             Back to Properties
           </Button>
         </form>
+        
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                All Properties
-              </h1>
+              <h1 className="text-2xl font-bold text-gray-900">All Properties</h1>
               <p className="text-gray-600">Manage your property listings</p>
             </div>
           </div>
@@ -46,8 +53,13 @@ export default async function AdminProperties({ searchParams }: { searchParams: 
             </Button>
           </Link>
         </div>
-        <AdminPropertyList page={page} limit={limit} explorePropertiesData={propertiesData}/>
+
+        <AdminPropertyList 
+          page={page} 
+          limit={limit} 
+          explorePropertiesData={propertiesData}
+        />
       </div>
     </div>
   );
-};
+}
