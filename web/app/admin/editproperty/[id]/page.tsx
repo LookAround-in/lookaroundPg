@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
-const EditPropertyForm = dynamic(() => import("@/components/properties/EditPropertyForm"), { ssr: false });
+const EditPropertyForm = dynamic(() => import("@/components/forms/EditPropertyForm"), { ssr: false });
 
 const fetchPropertyById = async (
   propertyId: string

@@ -133,7 +133,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 mt-8 pt-8 text-center">
           <p className="text-gray-50">
-            © 2025 LookAroundPG. Built for better living by <a href="http://lookaround.in" target="_blank" rel="noopener noreferrer"><span className='text-primary'>lookaround.in</span></a>.
+            © 2025 LookAroundPG. Built for better living by <a href="http://lookaround.in" target="_blank" rel="noopener noreferrer"><span className='text-primary'>lookaround.in</span></a>
           </p>
         </div>
       </div>

@@ -62,18 +62,7 @@ const PropertyDetails = ({propertyId, initialData, error}: PropertyDetailsProps)
     refetchOnWindowFocus: false,
   });
 
-  const property: Property = useMemo(() => {
-    if (isLoading || isPending) {
-      return null;
-    }
-    if (isError || !data.data) {
-      console.error("Error fetching property:");
-      return null;
-    }
-    // If data.data is an array, pick the first item; otherwise, use as is
-    const response = Array.isArray(data.data) ? data.data[0] : data.data;
-    return response;
-  }, [data, isLoading, isPending, isError]);
+  const property: Property = data?.data ? (Array.isArray(data.data) ? data.data[0] : data.data) : null;
 
   // Show not found state when data is loaded but property is null
   if (error || isError || !property) {
@@ -116,16 +105,6 @@ const PropertyDetails = ({propertyId, initialData, error}: PropertyDetailsProps)
               </Button>
             )}
           </div>
-          {process.env.NODE_ENV === 'development' && (
-            <details className="mt-4 text-left">
-              <summary className="cursor-pointer text-sm text-gray-500">
-                Debug Info
-              </summary>
-              <pre className="text-xs text-gray-400 mt-2 overflow-auto">
-                {JSON.stringify({ error, isError, queryError, propertyId }, null, 2)}
-              </pre>
-            </details>
-          )}
         </div>
       </div>
     );

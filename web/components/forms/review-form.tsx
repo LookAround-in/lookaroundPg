@@ -97,9 +97,11 @@ export default function ReviewForm({ property, refetchProperty, editingReview, s
     onMutate: () => {
       setIsSubmitting(true);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const newReview = data?.data?.newReview;
       setIsSubmitting(false);
       form.reset();
+      
       queryClient.invalidateQueries({ queryKey: ["reviews"] });
       refetchProperty();
     },
