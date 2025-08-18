@@ -22,7 +22,7 @@ function ExploreProperties({page = 1, limit = 12, explorePropertiesData, isLoadi
   
   // Initialize filter state
   const [filters, setFilters] = useState<FilterState>({
-    selectedCity: "bangalore",
+    selectedCity: "",
     selectedLocation: "",
     priceFilter: [0, 0],
     debouncedPriceRange: [0, 0],
@@ -78,6 +78,11 @@ function ExploreProperties({page = 1, limit = 12, explorePropertiesData, isLoadi
   // Filter and sort properties - moved from Filter component
   const filteredProperties = useMemo(() => {
     const filtered = originalProperties?.filter((property) => {
+      // city filter
+      const propertyAddress = property.address.toLowerCase();
+      if (!propertyAddress.includes(filters.selectedCity.toLowerCase())) {
+        return false;
+      }
       // Location filter
       if (
         filters.selectedLocation &&
@@ -229,8 +234,7 @@ function ExploreProperties({page = 1, limit = 12, explorePropertiesData, isLoadi
             onFiltersChange={updateFilters}
           />
           {/* Properties Grid */}
-            <PropertyList filteredProperties={filteredProperties} isLoading={isLoading}
-                        error={error}/>
+          <PropertyList filteredProperties={filteredProperties} isLoading={isLoading} error={error}/>
         </div>
         <div className='mt-4 flex justify-center'>
           <PaginationWithLinks page={page} pageSize={limit} totalCount={totalProperties}/>

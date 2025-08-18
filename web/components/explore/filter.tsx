@@ -25,7 +25,7 @@ const availableAmenities = [
 
 const cities = [
   { value: "bangalore", label: "Bangalore", available: true },
-  { value: "hyderabad", label: "Hyderabad", available: false },
+  { value: "hyderabad", label: "Hyderabad", available: true },
   { value: "chennai", label: "Chennai", available: false },
 ];
 
@@ -61,6 +61,8 @@ export default function FilterComponent({
   const [isPending, startTransition] = useTransition();
 
   // Compute derived values from properties
+  // Choose locations based on selected city
+  // Spread syntax to create unique locations array
   const locations = useMemo(
     () => [...new Set(properties.map((p) => p.address))],
     [properties]
@@ -129,9 +131,10 @@ export default function FilterComponent({
     onFiltersChange({ amenities: newAmenities });
   }, [filters.amenities, onFiltersChange]);
 
+  // State where there is no filter applied
   const clearFilters = useCallback(() => {
     const defaultFilters: FilterState = {
-      selectedCity: "bangalore",
+      selectedCity: "",
       selectedLocation: "",
       priceFilter: [priceRange.min, priceRange.max],
       debouncedPriceRange: [priceRange.min, priceRange.max],
@@ -148,7 +151,7 @@ export default function FilterComponent({
 
   // Calculate active filters count
   const activeFiltersCount = [
-    filters.selectedCity !== "bangalore",
+    filters.selectedCity !== "",
     filters.selectedLocation !== "" && filters.selectedLocation !== "all",
     filters.genderPreference !== "any",
     filters.amenities.length > 0,
@@ -172,7 +175,7 @@ export default function FilterComponent({
         selectedLocation={filters.selectedLocation}
         onLocationChange={handleLocationChange}
         locations={locations}
-        disabled={filters.selectedCity !== "bangalore"}
+        disabled={filters.selectedCity == "chennai"}
       />
       
       <SharingTypeFilter

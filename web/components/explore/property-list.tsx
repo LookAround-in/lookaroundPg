@@ -52,7 +52,7 @@ function PropertyList({ filteredProperties, isLoading, error }: PropertyListProp
               ))}
             </div>
           ) : (
-            <Card className="text-center py-12 lg:py-16 ">
+            <Card className="text-center py-12 lg:py-16 h-full">
               <CardContent>
                 <div className="w-20 lg:w-24 h-20 lg:h-24 bg-gradient-cool-light rounded-full flex items-center justify-center mx-auto mb-6 animate-float">
                   <Search className="h-10 lg:h-12 w-10 lg:w-12 text-gray-400" />
