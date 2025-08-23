@@ -22,19 +22,16 @@ jobs:
       with:
         node-version: '20'
         cache: 'pnpm'
-        cache-dependency-path: ./web/pnpm-lock.yaml
+        cache-dependency-path: pnpm-lock.yaml
     
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
-      working-directory: ./web
     
     - name: Generate Prisma Client
-      run: pnpm dlx prisma generate
-      working-directory: ./web
+      run: pnpm --filter web exec prisma generate
     
     - name: Build
-      run: pnpm run build
-      working-directory: ./web
+      run: pnpm --filter web run build
       env:
         BETTER_AUTH_SECRET: test-secret
         NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
