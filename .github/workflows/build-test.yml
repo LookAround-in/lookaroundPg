@@ -35,6 +35,7 @@ jobs:
     
     - name: Install dependencies
       run: pnpm install
+      working-directory: ./web
     
     - name: Generate Prisma Client
       run: pnpm dlx prisma generate
