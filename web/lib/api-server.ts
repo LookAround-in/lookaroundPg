@@ -3,8 +3,8 @@ import { PgServices } from "@/app/api/v1/pg/pgServices";
 const pgService = new PgServices();
 
 // direct DB call
-export const fetchProperties = async (page: number, limit: number) => {
-  const result = await pgService.getExplorePgs(page, limit);
+export const fetchProperties = async (page: number, limit: number, searchTerm?: string) => {
+  const result = await pgService.getExplorePgs(page, limit, searchTerm);
   return result;
 };
 

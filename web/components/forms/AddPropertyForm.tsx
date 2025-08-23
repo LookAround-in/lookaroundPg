@@ -108,7 +108,7 @@ function AddPropertyForm() {
       queryClient.invalidateQueries({ queryKey: ["properties"] });
       setTimeout(() => {
         router.push("/admin/properties");
-      }, 2000);
+      }, 10000);
     },
     onError: (error: Error) => {
       console.error("Mutation error:", error);
@@ -242,6 +242,9 @@ function AddPropertyForm() {
       // Add images
       selectedImages.forEach((file) => {
         formData.append("images", file);
+      });
+      formData.forEach((value, key) => {
+        console.log(`FormData key: ${key}, value: ${value}`);
       });
       await createPropertyMutation.mutateAsync(formData);
     } catch (error) {

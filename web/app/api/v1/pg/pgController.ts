@@ -201,9 +201,9 @@ export class PgController {
     }
   };
 
-  getExplorePgs = async (req: Request, page: number, limit: number) => {
+  getExplorePgs = async (req: Request, page: number, limit: number, searchTerm?: string) => {
     try {
-      const explorePgs = await this.pgService.getExplorePgs(page, limit);
+      const explorePgs = await this.pgService.getExplorePgs(page, limit, searchTerm);
       return NextResponse.json(
         {
           success: true,
