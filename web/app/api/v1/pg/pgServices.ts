@@ -494,7 +494,7 @@ export class PgServices {
       const totalPages = Math.ceil(totalItems / limit)
 
       // Add some randomization to explore results for variety
-      const results = location 
+      const results = searchTerm 
       ? explorePgs 
       : explorePgs.sort(() => Math.random() - 0.5);
 

@@ -12,10 +12,23 @@ export async function uploadImageToCloudinary(
   fileBuffer: Buffer,
   filename: string
 ): Promise<string> {
+   const timestamp = Date.now();
+   const randomId = crypto.randomUUID();
+   const fileExtension = filename.split('.').pop();
+   const uniqueFilename = `${timestamp}-${randomId}${fileExtension ? `.${fileExtension}` : ''}`;
+
+  const uploadOptions = {
+    resource_type: "image" as const,
+    public_id: uniqueFilename,
+    transformation: [
+        { quality: "auto", fetch_format: "auto" }, // Optimize quality and format
+        { width: 1920, height: 1920, crop: "limit" } // Limit max dimensions
+      ],
+  };
   return new Promise((resolve, reject) => {
     cloudinary.uploader
       .upload_stream(
-        { resource_type: "image", public_id: filename },
+        uploadOptions,
         (error, result) => {
           if (error) return reject(error);
           resolve(result?.secure_url || "");
