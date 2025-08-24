@@ -29,7 +29,7 @@ function ExploreProperties({page = 1, limit = 12}: {page: number, limit: number}
   
   // Initialize filter state
   const [filters, setFilters] = useState<FilterState>({
-    selectedCity: "bangalore",
+    selectedCity: "",
     selectedLocation: "",
     priceFilter: [0, 0],
     debouncedPriceRange: [0, 0],
@@ -90,6 +90,11 @@ function ExploreProperties({page = 1, limit = 12}: {page: number, limit: number}
   // Filter and sort properties - moved from Filter component
   const filteredProperties = useMemo(() => {
     const filtered = originalProperties?.filter((property) => {
+      // City filter 
+      const city = property.city.toLowerCase();
+      if (!city.includes(filters.selectedCity.toLowerCase())){
+        return false;
+      }
       // Location filter
       if (
         filters.selectedLocation &&
@@ -202,6 +207,11 @@ function ExploreProperties({page = 1, limit = 12}: {page: number, limit: number}
     return filtered;
   }, [originalProperties, filters, sortBy]);
 
+  const locations = useMemo(
+    () => [...new Set(filteredProperties.map((p) =>  p.address))],
+    [filteredProperties]
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
@@ -240,6 +250,7 @@ function ExploreProperties({page = 1, limit = 12}: {page: number, limit: number}
             properties={originalProperties}
             filters={filters}
             onFiltersChange={updateFilters}
+            locations={locations}
           />
           {/* Properties Grid */}
           { originalProperties.length === 0 ? (
@@ -266,6 +277,7 @@ function ExploreProperties({page = 1, limit = 12}: {page: number, limit: number}
           properties={originalProperties}
           filters={filters}
           onFiltersChange={updateFilters}
+          locations={locations}
         />
       </div>
     </div>

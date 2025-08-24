@@ -56,6 +56,7 @@ export interface Property {
   foodIncluded: boolean;
   furnishing: string;
   address: string;
+  city: string;
   latitude: number;
   longitude: number;
   pgRules: string;

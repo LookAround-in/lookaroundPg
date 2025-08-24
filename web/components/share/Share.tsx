@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import {EmailIcon, EmailShareButton, FacebookIcon, FacebookShareButton, TelegramIcon, TelegramShareButton, TwitterIcon, TwitterShareButton, WhatsappIcon, WhatsappShareButton }from "react-share";
 import { Button } from "../ui/button";
 import { Share } from "lucide-react";
 
@@ -33,7 +32,7 @@ export default function ShareButton({ isIcon }: { isIcon?: boolean }) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={`absolute top-16 right-4 p-2 h-10 w-10 bg-white/80 hover:bg-white`}
+                  className={`absolute top-4 right-16 p-2 h-10 w-10 bg-white/80 hover:bg-white`}
                   onClick={handleNativeShare}
                 >
                   <Share
@@ -54,27 +53,4 @@ export default function ShareButton({ isIcon }: { isIcon?: boolean }) {
            )
         }
     }
-    return (
-    <div className="flex gap-2">
-      <FacebookShareButton url={shareUrl} hashtag={title}>
-        <FacebookIcon size={32} round />
-      </FacebookShareButton>
-
-      <TelegramShareButton url={shareUrl} title={title}>
-        <TelegramIcon size={32} round />
-      </TelegramShareButton>
-
-      <EmailShareButton url={shareUrl} subject={title} body="Check out this PG!">
-        <EmailIcon size={32} round />
-      </EmailShareButton>
-
-      <TwitterShareButton url={shareUrl} title={title}>
-        <TwitterIcon size={32} round />
-      </TwitterShareButton>
-
-      <WhatsappShareButton url={shareUrl} title={title} separator=" - ">
-        <WhatsappIcon size={32} round />
-      </WhatsappShareButton>
-    </div>
-  );
 }

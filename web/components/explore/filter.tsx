@@ -17,7 +17,7 @@ const availableAmenities = [
 
 const cities = [
   { value: "bangalore", label: "Bangalore", available: true },
-  { value: "hyderabad", label: "Hyderabad", available: false },
+  { value: "hyderabad", label: "Hyderabad", available: true },
   { value: "chennai", label: "Chennai", available: false },
 ];
 
@@ -40,6 +40,7 @@ interface FilterProps {
   properties: Property[];
   filters: FilterState;
   onFiltersChange: (newFilters: Partial<FilterState>) => void;
+  locations: string[];
 }
 
 export default function FilterComponent({ 
@@ -47,16 +48,11 @@ export default function FilterComponent({
   setSortBy, 
   properties, 
   filters,
-  onFiltersChange 
+  onFiltersChange,
+  locations, 
 }: FilterProps) {
   const [showFilters, setShowFilters] = useState(false);
   const [isPending, startTransition] = useTransition();
-
-  // Compute derived values from properties
-  const locations = useMemo(
-    () => [...new Set(properties.map((p) => p.address))],
-    [properties]
-  );
 
   const priceRange = useMemo(() => {
     if (properties.length === 0) return { min: 500, max: 50000 };
@@ -123,7 +119,7 @@ export default function FilterComponent({
 
   const clearFilters = useCallback(() => {
     const defaultFilters: FilterState = {
-      selectedCity: "bangalore",
+      selectedCity: "",
       selectedLocation: "",
       priceFilter: [priceRange.min, priceRange.max],
       debouncedPriceRange: [priceRange.min, priceRange.max],
@@ -140,7 +136,7 @@ export default function FilterComponent({
 
   // Calculate active filters count
   const activeFiltersCount = [
-    filters.selectedCity !== "bangalore",
+    filters.selectedCity !== "",
     filters.selectedLocation !== "" && filters.selectedLocation !== "all",
     filters.genderPreference !== "any",
     filters.amenities.length > 0,
@@ -164,7 +160,7 @@ export default function FilterComponent({
         selectedLocation={filters.selectedLocation}
         onLocationChange={handleLocationChange}
         locations={locations}
-        disabled={filters.selectedCity !== "bangalore"}
+        disabled={filters.selectedCity == "chennai"}
       />
       
       <SharingTypeFilter
