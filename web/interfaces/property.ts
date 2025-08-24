@@ -82,8 +82,6 @@ interface Properties{
   properties: Property[];
   totalItems: number;
   totalPages: number;
-  currentPage: number;
-  limit: number;
 }
 
 export interface PropertyApiResponse {

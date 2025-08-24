@@ -7,7 +7,7 @@ import { Label } from "components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "components/ui/select";
 import { Checkbox } from "components/ui/checkbox";
 import { Slider } from "components/ui/slider";
-import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card";
+import { Card, CardContent } from "components/ui/card";
 import { Badge } from "components/ui/badge";
 import { Star } from "lucide-react";
 import formatText from "@/utils/format";

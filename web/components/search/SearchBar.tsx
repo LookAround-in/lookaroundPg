@@ -12,7 +12,7 @@ export const SearchBar = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (location.trim()) {
-      router.push(`/explore?location=${encodeURIComponent(location.trim())}`);
+      router.push(`/explore?search=${encodeURIComponent(location.trim())}`);
     } else {
       router.push('/explore');
     }

@@ -389,10 +389,17 @@ export class PgServices {
     }
   }
 
-  async getExplorePgs(page: number = 1, limit: number = 12) {
+  async getExplorePgs(page: number = 1, limit: number = 12, searchTerm?: string) {
     try {
       const skip = (page - 1) * limit;
       const commonWhereClause = {
+        ...(searchTerm && {
+          OR: [
+            { address: { search: searchTerm } },
+            { title: { search: searchTerm } },
+            { city: { search: searchTerm } }
+          ],
+        }),
         sharingTypes: {
           some: {
             availability: {
@@ -487,9 +494,9 @@ export class PgServices {
       const totalPages = Math.ceil(totalItems / limit)
 
       // Add some randomization to explore results for variety
-      const shuffledResults = explorePgs.sort(() => Math.random() - 0.5);
+      // const shuffledResults = explorePgs.sort(() => Math.random() - 0.5);
       return {
-        properties: shuffledResults,
+        properties: explorePgs,
         totalItems,
         totalPages
       };
