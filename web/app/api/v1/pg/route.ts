@@ -66,6 +66,7 @@ export const POST =
         address: getFormField("address"),
         latitude: parseNumber("latitude"),
         longitude: parseNumber("longitude"),
+        city : getFormField("city"),
         furnitures: parseJsonField<FurnitureType>("furnitures"),
         amenities: parseJsonField("amenities"),
         sharingTypes: parseJsonField("sharingTypes"),

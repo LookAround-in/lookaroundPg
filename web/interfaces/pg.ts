@@ -5,7 +5,7 @@ export enum PropertyType {
   COLIVE = "COLIVE",
 }
 
-export enum FacilityIconsType{
+export enum FacilityIconsType {
   POOL = "🏊",
   HOSPITAL = "🏥",
   SCHOOL = "🏫",
@@ -118,6 +118,7 @@ export interface PgData {
   address: string;
   latitude: number;
   longitude: number;
+  city: string;
   furnitures: FurnitureType[];
   amenities: AmenityType[];
   sharingTypes: SharingTypeDetails[];

@@ -124,6 +124,7 @@ model PgData {
   address      String
   latitude     Float
   longitude    Float
+  city         String @default("Unknown")
   furnitures   Furniture[]
   amenities    Amenity[]
   sharingTypes SharingType[]

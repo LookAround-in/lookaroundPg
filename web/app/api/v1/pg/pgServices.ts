@@ -26,6 +26,7 @@ export class PgServices {
           address: pgData.address,
           latitude: pgData.latitude,
           longitude: pgData.longitude,
+          city: pgData.city,
           pgRules: pgData.pgRules,
           moveInStatus: pgData.moveInStatus,
           virtualTourUrl: pgData.virtualTourUrl,
@@ -106,12 +107,13 @@ export class PgServices {
           address: pgData.address,
           latitude: pgData.latitude,
           longitude: pgData.longitude,
+          city: pgData.city,
           pgRules: pgData.pgRules,
           moveInStatus: pgData.moveInStatus,
           virtualTourUrl: pgData.virtualTourUrl,
           images: pgData.images ?? [],
           nearbyFacilities: pgData.nearbyFacilities ?? [],
-          
+
           // ✅ Replace all furniture records
           furnitures: {
             deleteMany: {}, // Delete all existing for this PG
@@ -119,7 +121,7 @@ export class PgServices {
               type: furnitureType,
             })) ?? [],
           },
-          
+
           // ✅ Replace all amenity records
           amenities: {
             deleteMany: {}, // Delete all existing for this PG
@@ -127,7 +129,7 @@ export class PgServices {
               type: amenityType,
             })) ?? [],
           },
-          
+
           // ✅ Replace all sharing type records
           sharingTypes: {
             deleteMany: {}, // Delete all existing for this PG
@@ -392,19 +394,19 @@ export class PgServices {
       const skip = (page - 1) * limit;
       const commonWhereClause = {
         sharingTypes: {
-            some: {
-              availability: {
-                gt: 0,
-              },
+          some: {
+            availability: {
+              gt: 0,
             },
           },
-          // Must have basic information
-          description: {
-            not: null,
-          },
-          address: {
-            not: "",
-          },
+        },
+        // Must have basic information
+        description: {
+          not: null,
+        },
+        address: {
+          not: "",
+        },
       }
       const totalItems = await this.prismaClient.pgData.count({
         where: commonWhereClause

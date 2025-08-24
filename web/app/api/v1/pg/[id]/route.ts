@@ -88,6 +88,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         const longitude = parseNumber("longitude");
         if (longitude !== null) pgUpdateData.longitude = longitude;
 
+        const city = getFormField("city");
+        if (city !== null) pgUpdateData.city = city;
+
         const furnitures = parseJsonField<FurnitureType>("furnitures");
         if (furnitures !== null) pgUpdateData.furnitures = furnitures;
 
