@@ -84,6 +84,10 @@ export const PgDataSchema = z.object({
     .min(5, 'Address must be at least 5 characters')
     .max(2000, 'Address must be less than 2000 characters')
     .trim(),
+  city: z.string()
+    .min(2, 'City must be at least 2 characters')
+    .max(100, 'City must be less than 100 characters')
+    .trim(),
   latitude: z.number()
     .min(-90, 'Latitude must be between -90 and 90')
     .max(90, 'Latitude must be between -90 and 90'),

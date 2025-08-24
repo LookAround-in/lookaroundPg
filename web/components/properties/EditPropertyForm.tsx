@@ -61,6 +61,7 @@ interface EditFormType {
   address: string;
   latitude: number;
   longitude: number;
+  city: string;
   furnitures: FurnitureType[];
   amenities: AmenityType[];
   nearbyFacilities: Array<{
@@ -186,6 +187,7 @@ function EditPropertyForm({ property }: { property: Property | null }) {
       address: "",
       latitude: 0,
       longitude: 0,
+      city: "",
       furnitures: [],
       amenities: [],
       nearbyFacilities: [],
@@ -211,6 +213,7 @@ function EditPropertyForm({ property }: { property: Property | null }) {
         address: property.address || "",
         latitude: property.latitude || 0,
         longitude: property.longitude || 0,
+        city: property.city || "",
         furnitures: property.furnitures?.map(f => f.type as FurnitureType) || [],
         amenities: property.amenities?.map(a => a.type as AmenityType) || [],
         nearbyFacilities: property.nearbyFacilities || [],
@@ -294,37 +297,10 @@ function EditPropertyForm({ property }: { property: Property | null }) {
         })),
         latitude: Number(data.latitude) || Number(currentValues.latitude),
         longitude: Number(data.longitude) || Number(currentValues.longitude),
+        city : data.city || currentValues.city || "",
       };
       
       console.log("Safe data being sent:", safeData);
-  
-      // const updateProperty: EditFormType = {
-      //   title: safeData.title,
-      //   hostId: safeData.hostId,
-      //   description: safeData.description,
-      //   propertyType: safeData.propertyType as PropertyType,
-      //   foodIncluded: safeData.foodIncluded,
-      //   furnishing: safeData.furnishing as FurnishingType,
-      //   address: safeData.address,
-      //   latitude: Number(safeData.latitude),
-      //   longitude: Number(safeData.longitude),
-      //   pgRules: safeData.pgRules || "",
-      //   moveInStatus: safeData.moveInStatus as MoveInStatus,
-      //   virtualTourUrl: safeData.virtualTourUrl?.trim() || "",
-      //   nearbyFacilities: safeData.nearbyFacilities || [],
-      //   furnitures: safeData.furnitures as FurnitureType[] || [],
-      //   amenities: safeData.amenities as AmenityType[] || [],
-      //   sharingTypes: safeData.sharingTypes.map(st => ({
-      //       type: st.type,
-      //       description: st.description || "",
-      //       availability: Number(st.availability) || 0,
-      //       pricePerMonth: Number(st.pricePerMonth) || 0,
-      //       deposit: Number(st.deposit) || 0,
-      //       refundableAmount: Number(st.refundableAmount) || 0,
-      //     })),
-      //   images: safeData.images,
-      // }
-      // console.log("Updated values:", updateProperty)
       const formData = new FormData();
       // Add basic form fields - using validated data from React Hook Form
       formData.append("title", safeData.title);
@@ -336,6 +312,7 @@ function EditPropertyForm({ property }: { property: Property | null }) {
       formData.append("address", safeData.address);
       formData.append("latitude", safeData.latitude.toString());
       formData.append("longitude", safeData.longitude.toString());
+      formData.append("city", safeData.city);
       formData.append("pgRules", safeData.pgRules || "");
       formData.append("moveInStatus", safeData.moveInStatus);
       if (safeData.virtualTourUrl && safeData.virtualTourUrl.trim() !== "") {
@@ -602,6 +579,41 @@ function EditPropertyForm({ property }: { property: Property | null }) {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={propertyForm.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>City *</FormLabel>
+                <Select
+                  onValueChange={(value)=>{
+                    field.onChange(value);
+                    propertyForm.setValue("city", value as string);
+                  }}
+                  value={field.value || ""}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select City" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {["Bangalore", "Hyderabad", "Chennai"].map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {formatText(type)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  Select the city where your property is located.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
 
           <FormField
             control={propertyForm.control}

@@ -397,8 +397,8 @@ export default function Review({
                 </FormItem>
               )}
             />
-            <Button type="submit" className="bg-gradient-cool hover:opacity-90">
-              {editingReview ? "Update Review" : "Submit"}
+            <Button type="submit" className="bg-gradient-cool hover:opacity-90" disabled={isSubmitting}>
+              {editingReview ? (isSubmitting ? "Updating..." : "Update Review") : (isSubmitting ? "Submitting..." : "Submit")}
             </Button>
           </form>
         </Form>

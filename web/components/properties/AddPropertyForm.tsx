@@ -132,6 +132,7 @@ function AddPropertyForm() {
       foodIncluded: false,
       furnishing: FurnishingType.FURNISHED,
       address: "",
+      city: "",
       latitude: 0,
       longitude: 0,
       furnitures: [],
@@ -227,6 +228,7 @@ function AddPropertyForm() {
       formData.append("foodIncluded", data.foodIncluded.toString());
       formData.append("furnishing", data.furnishing);
       formData.append("address", data.address);
+      formData.append("city", data.city);
       formData.append("latitude", data.latitude.toString());
       formData.append("longitude", data.longitude.toString());
       formData.append("pgRules", data.pgRules || "");
@@ -473,6 +475,37 @@ function AddPropertyForm() {
                 </FormControl>
                 <FormDescription>
                   Enter the complete address of your property.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={propertyForm.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>City *</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  defaultValue={""}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select City" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {["Bangalore", "Hyderabad", "Chennai"].map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {formatText(type)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  Select the city where your property is located.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
