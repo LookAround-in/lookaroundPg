@@ -198,6 +198,8 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
     }
   }, [availableSharingTypes, selectedSharingType]);
   const sharingTypeInAsc = [...availableSharingTypes].reverse();
+  const propertyAddress = property?.description.split("@").pop()?.trim();
+  const propertyDescription = property?.description.split("@")[0].trim();
 
   if (isLoading || isPending) {
     return (
@@ -507,7 +509,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                     </h1>
                     <div className="flex items-center text-gray-600">
                       <MapPin className="h-4 w-4 mr-1" />
-                      <span>{property.address}</span>
+                      <span>{propertyAddress}</span>
                     </div>
                   </div>
 
@@ -734,7 +736,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                       About this place
                     </h3>
                     <p className="text-gray-600 leading-relaxed">
-                      {property.description}
+                      {propertyDescription}
                     </p>
                   </div>
                 </div>
