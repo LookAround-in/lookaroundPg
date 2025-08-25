@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { pgController } from "../../../route";
+import pgController  from "../../../pgController";
 
 export async function GET(request: Request, { params }: { params: Promise<{ hostId: string }> }) {
     try {

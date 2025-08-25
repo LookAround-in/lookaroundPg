@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PgController } from "./pgController";
+import pgController  from "./pgController";
 import { isAdmin } from "@/lib/auth-middleware";
-
 
 import { uploadImageToCloudinary } from "@/lib/cloudinary";
 
@@ -12,8 +11,6 @@ import {
   MoveInStatus,
   FurnitureType,
 } from "@/interfaces/pg";
-
-export const pgController = new PgController();
 
 export const POST =
   // isAdmin(

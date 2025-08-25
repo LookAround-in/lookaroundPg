@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { pgController } from "../route";
+import pgController from "../pgController";
 import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import { PropertyType, FurnishingType, MoveInStatus, FurnitureType, AmenityType, SharingTypeDetails, PgCreateInput, NearbyFacility } from "@/interfaces/pg";
 

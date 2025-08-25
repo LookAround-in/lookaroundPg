@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { PgServices } from "./pgServices";
 import { PgCreateInput } from "@/interfaces/pg";
 
-export class PgController {
+class PgController {
   private pgService: PgServices;
 
   constructor() {
@@ -308,3 +308,6 @@ export class PgController {
     }
   };
 }
+
+const pgController = new PgController();
+export default pgController;
