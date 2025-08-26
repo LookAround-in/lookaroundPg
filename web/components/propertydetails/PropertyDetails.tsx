@@ -994,7 +994,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                     className="rounded-lg"
                   ></iframe>
                 </div>
-                <p className="text-gray-600 text-sm">{property.address}</p>
+                <p className="text-gray-600 text-sm">{propertyAddress}</p>
               </CardContent>
             </Card>
 

@@ -397,7 +397,8 @@ export class PgServices {
           OR: [
             { address: { search: searchTerm } },
             { title: { search: searchTerm } },
-            { city: { search: searchTerm } }
+            { city: { search: searchTerm } },
+            { description : { search: searchTerm } }
           ],
         }),
         sharingTypes: {
