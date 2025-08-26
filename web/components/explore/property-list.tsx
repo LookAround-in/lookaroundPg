@@ -8,7 +8,7 @@ import PropertySkeleton from '../properties/PropertySkeleton';
 interface PropertyListProps{
   filteredProperties: Property[];
   isLoading?: boolean;
-  error?: string | null;
+  error?: boolean;
 }
 
 function PropertyList({ filteredProperties, isLoading, error }: PropertyListProps) {

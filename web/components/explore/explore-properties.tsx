@@ -5,17 +5,32 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "c
 import { ExploreApiResponse, Property } from "@/interfaces/property";
 import { SharingType } from "@/interfaces/pg";
 import dynamic from "next/dynamic";
+import { useQuery } from "@tanstack/react-query";
 const PaginationWithLinks = dynamic(() => import("../ui/pagination-with-links").then(mod => mod.PaginationWithLinks), { ssr: false });
 const PropertyList = dynamic(() => import("./property-list"), { ssr: false });
+
+const fetchExploreProperties = async (page: number, limit: number, searchTerm?: string): Promise<ExploreApiResponse> => {
+    const response = await fetch(`/api/v1/pg/getExplorePg?page=${page}&limit=${limit}&search=${searchTerm}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch explore properties");
+    }
+
+    return response.json();
+};
+
 interface ExplorePropertiesProps {
     page: number;
     limit: number;
-    explorePropertiesData: ExploreApiResponse;
-    isLoading: boolean;
-    error: string | null;
+    searchTerm?: string;
 }
 
-function ExploreProperties({page = 1, limit = 12, explorePropertiesData, isLoading, error}: ExplorePropertiesProps) {
+function ExploreProperties({page = 1, limit, searchTerm}: ExplorePropertiesProps) {
   const [sortBy, setSortBy] = useState("newest");
   const [originalProperties, setOriginalProperties] = useState<Property[]>([]);
 
@@ -33,12 +48,17 @@ function ExploreProperties({page = 1, limit = 12, explorePropertiesData, isLoadi
     rating: 0,
   });
 
-  const totalProperties = explorePropertiesData?.data?.totalItems || 0;
+  const explorePropertiesData = useQuery({
+    queryKey: ["exploreProperties", page, limit, searchTerm],
+    queryFn: () => fetchExploreProperties(page, limit, searchTerm),
+  });
+
+  const totalProperties = explorePropertiesData?.data?.data?.totalItems || 0;
 
   // Set original properties and update price range when data changes
   useEffect(() => {
     if (explorePropertiesData.data ) {
-      const properties = explorePropertiesData.data.properties || [];
+      const properties = explorePropertiesData.data.data.properties || [];
       setOriginalProperties(properties);
 
       // Calculate price range from properties
@@ -240,7 +260,7 @@ function ExploreProperties({page = 1, limit = 12, explorePropertiesData, isLoadi
             onFiltersChange={updateFilters}
             locations={locations}
           />
-          <PropertyList filteredProperties={filteredProperties} isLoading={isLoading} error={error} />
+          <PropertyList filteredProperties={filteredProperties} isLoading={explorePropertiesData.isLoading} error={explorePropertiesData.isError} />
         </div>
         <div className='mt-4 flex justify-center'>
           <PaginationWithLinks page={page} pageSize={limit} totalCount={totalProperties}/>
