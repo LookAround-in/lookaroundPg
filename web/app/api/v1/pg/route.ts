@@ -10,9 +10,19 @@ import {
   MoveInStatus,
   FurnitureType,
 } from "@/interfaces/pg";
+import { requireAdmin } from "@/lib/auth-middleware";
 
-export const POST = async (request: Request) => {
+export const POST = async (request: NextRequest) => {
   try {
+
+    // checking if the user is Admin or not
+    const authResult = await requireAdmin(request);
+    if (authResult.error) {
+      return authResult.error;
+    }
+
+    // const user = authResult.user;
+
     const formData = await request.formData();
     const imageUrls: string[] = [];
     const images = formData.getAll("images") as File[];
