@@ -97,6 +97,9 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/auth/signin", request.url));
     }
 
+    console.log('control here for sure.');
+    console.log(session.user.role);
+    
     // Check authorization
     if (!requiredRoles.includes(session.user.role)) {
       if (pathname.startsWith("/api")) {
