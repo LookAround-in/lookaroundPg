@@ -216,8 +216,8 @@ function ExploreProperties({page = 1, limit, searchTerm}: ExplorePropertiesProps
   }, [originalProperties, filters, sortBy]);
 
   const locations = useMemo(
-    () => [...new Set(filteredProperties.map((p) =>  p.address))],
-    [filteredProperties]
+    () => [...new Set(originalProperties.map((p) =>  p.address))],
+    [originalProperties]
   );
 
   return (
