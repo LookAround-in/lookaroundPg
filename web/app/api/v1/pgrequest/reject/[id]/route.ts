@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { pgRequestController } from "../../route";
+import pgRequestController from "../../pgrequest.controller";
 import { requireHost } from "@/lib/auth-middleware";
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {

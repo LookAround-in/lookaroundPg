@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PgRequestController } from "./pgrequest.controller";
+import pgRequestController from "./pgrequest.controller";
 import { requireUser } from "@/lib/auth-middleware";
-
-export const pgRequestController = new PgRequestController();
 
 export const POST = async (request: NextRequest) => {
     try {
