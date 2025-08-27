@@ -1,12 +1,20 @@
+import { requireUser } from "@/lib/auth-middleware";
 import prisma from "@/lib/Prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     const { userId } = await params;
+
+    // checking if the user is Logged in or not
+            const authResult = await requireUser(request);
+            if (authResult.error) {
+                return authResult.error;
+            }
+            // const user = authResult.user;
 
     // Validate userId
     if (!userId) {

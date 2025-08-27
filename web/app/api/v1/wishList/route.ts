@@ -1,8 +1,17 @@
+import { requireUser } from "@/lib/auth-middleware";
 import prisma from "@/lib/Prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export const POST = async (request: Request) => {
+export const POST = async (request: NextRequest) => {
     try {
+
+        // checking if the user is Logged in or not
+        const authResult = await requireUser(request);
+        if (authResult.error) {
+            return authResult.error;
+        }
+        // const user = authResult.user;
+
         // Get propertyId and userId from request body
         const body = await request.json();
         const { pgDataId, userId } = body;

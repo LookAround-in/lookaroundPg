@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resend } from "@/lib/resend";
+import { requireUser } from "@/lib/auth-middleware";
 
-export async function POST(request: NextRequest) { 
+export async function POST(request: NextRequest) {
     try {
+
+        // checking if the user is Logged in or not
+        const authResult = await requireUser(request);
+        if (authResult.error) {
+            return authResult.error;
+        }
+        // const user = authResult.user;
+
         // Get the form data from the request body
         const body = await request.json();
         const { name, email, phone, category, subject, message } = body;
@@ -10,9 +19,9 @@ export async function POST(request: NextRequest) {
         // Validate required fields
         if (!name || !email || !phone || !category || !subject || !message) {
             return NextResponse.json(
-                { 
-                    success: false, 
-                    message: "All fields are required (name, email, phone, category, subject, message)" 
+                {
+                    success: false,
+                    message: "All fields are required (name, email, phone, category, subject, message)"
                 },
                 { status: 400 }
             );
@@ -22,9 +31,9 @@ export async function POST(request: NextRequest) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             return NextResponse.json(
-                { 
-                    success: false, 
-                    message: "Please provide a valid email address" 
+                {
+                    success: false,
+                    message: "Please provide a valid email address"
                 },
                 { status: 400 }
             );
@@ -34,18 +43,18 @@ export async function POST(request: NextRequest) {
         const phoneRegex = /^\d{10}$/;
         if (!phoneRegex.test(phone)) {
             return NextResponse.json(
-                { 
-                    success: false, 
-                    message: "Phone number must be exactly 10 digits" 
+                {
+                    success: false,
+                    message: "Phone number must be exactly 10 digits"
                 },
                 { status: 400 }
             );
         }
-        
+
         // Use resend to send an email to the super admin with the form data
         const emailResult = await resend.emails.send({
             from: process.env.FROM_EMAIL || "LookaroundPG <onboarding@resend.dev>",
-            to: ["info.lookaroundpg@gmail.com"], 
+            to: ["info.lookaroundpg@gmail.com"],
             subject: `Contact Form: ${subject}`,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -100,29 +109,29 @@ Submitted on: ${new Date().toLocaleString()}
         if (emailResult.error) {
             console.error('Email sending failed:', emailResult.error);
             return NextResponse.json(
-                { 
-                    success: false, 
-                    message: "Failed to send message. Please try again later." 
+                {
+                    success: false,
+                    message: "Failed to send message. Please try again later."
                 },
                 { status: 500 }
             );
         }
 
         return NextResponse.json(
-            { 
-                success: true, 
-                message: "Your message has been sent successfully. We'll get back to you soon!" 
+            {
+                success: true,
+                message: "Your message has been sent successfully. We'll get back to you soon!"
             },
             { status: 200 }
         );
 
     } catch (error) {
         console.error('Contact form error:', error);
-        
+
         return NextResponse.json(
-            { 
-                success: false, 
-                message: "An unexpected error occurred. Please try again later." 
+            {
+                success: false,
+                message: "An unexpected error occurred. Please try again later."
             },
             { status: 500 }
         );
