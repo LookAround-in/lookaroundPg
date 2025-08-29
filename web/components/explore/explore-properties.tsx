@@ -60,31 +60,11 @@ function ExploreProperties({page = 1, limit, searchTerm}: ExplorePropertiesProps
     if (explorePropertiesData.data ) {
       const properties = explorePropertiesData.data.data.properties || [];
       setOriginalProperties(properties);
-
-      // Calculate price range from properties
-      if (properties.length > 0) {
-        const allPrices = properties
-          .flatMap((property) =>
-            property.sharingTypes.map((st) => st.pricePerMonth)
-          )
-          .filter((price) => price > 0);
-        
-        if (allPrices.length > 0) {
-          const minPrice = Math.min(...allPrices);
-          const maxPrice = Math.max(...allPrices);
-          const priceRange = {
-            min: Math.max(500, Math.floor(minPrice * 0.8)),
-            max: Math.ceil(maxPrice * 1.2),
-          };
-          
-          // Update price filter only if it's different from current
-          setFilters(prev => ({
+      setFilters(prev => ({
             ...prev,
-            priceFilter: [priceRange.min, priceRange.max],
-            debouncedPriceRange: [priceRange.min, priceRange.max],
+            priceFilter: [3000, 45000],
+            debouncedPriceRange: [3000, 45000],
           }));
-        }
-      }
     } else {
       setOriginalProperties([]);
     }

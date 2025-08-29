@@ -391,7 +391,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back button and Virtual Tour button for mobile */}
         <div className="flex justify-between items-center mb-6">
-          <Button variant="outline" onClick={() => router.push("/explore")}>
+          <Button variant="outline" onClick={() => router.back()}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
@@ -421,7 +421,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                   src={
                     property.images?.[currentImageIndex] || '/placeholder.svg'
                   }
-                  alt={property.title || 'Property image'}
+                  alt={property.images?.[currentImageIndex] || 'Property image'}
                   className="w-full h-full object-cover"
                 />
 

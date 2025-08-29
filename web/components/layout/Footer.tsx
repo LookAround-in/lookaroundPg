@@ -16,7 +16,7 @@ export const Footer = () => {
                   src="/logo.png"
                   width={32}
                   height={32}
-                  alt="LookaroundPG"
+                  alt="LookaroundPG logo for footer"
                   className="w-full h-full object-contain"
                 />
               </div>

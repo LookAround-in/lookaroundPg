@@ -14,8 +14,7 @@ export async function uploadImageToCloudinary(
 ): Promise<string> {
    const timestamp = Date.now();
    const randomId = crypto.randomUUID();
-   const fileExtension = filename.split('.').pop();
-   const uniqueFilename = `${timestamp}-${randomId}${fileExtension ? `.${fileExtension}` : ''}`;
+   const uniqueFilename = `${timestamp}-${randomId}`;
 
   const uploadOptions = {
     resource_type: "image" as const,
