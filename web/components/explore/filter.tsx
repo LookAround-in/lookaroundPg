@@ -110,8 +110,8 @@ export default function FilterComponent({
     const defaultFilters: FilterState = {
       selectedCity: "",
       selectedLocation: "",
-      priceFilter: [3000, 45000],
-      debouncedPriceRange: [3000, 45000],
+      priceFilter: [3000, 30000],
+      debouncedPriceRange: [3000, 30000],
       genderPreference: "any",
       amenities: [],
       virtualTour: false,
@@ -134,7 +134,7 @@ export default function FilterComponent({
     filters.sharingType !== "any",
     filters.rating > 0,
     (filters.debouncedPriceRange[0] !== 3000 && filters.debouncedPriceRange[0] !== 0) ||
-    (filters.debouncedPriceRange[1] !== 45000 && filters.debouncedPriceRange[1] !== 0),
+    (filters.debouncedPriceRange[1] !== 30000 && filters.debouncedPriceRange[1] !== 0),
   ].filter(Boolean).length;
 
   const filterContent = useMemo(() => (

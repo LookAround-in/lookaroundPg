@@ -62,8 +62,8 @@ function ExploreProperties({page = 1, limit, searchTerm}: ExplorePropertiesProps
       setOriginalProperties(properties);
       setFilters(prev => ({
             ...prev,
-            priceFilter: [3000, 45000],
-            debouncedPriceRange: [3000, 45000],
+            priceFilter: [3000, 30000],
+            debouncedPriceRange: [3000, 30000],
           }));
     } else {
       setOriginalProperties([]);
