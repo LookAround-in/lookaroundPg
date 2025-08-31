@@ -179,7 +179,7 @@ export default function HomePage() {
               <Link href="/about" className="w-full sm:flex-1">
                 <Button
                   variant="outline"
-                  className="w-full text-base px-6 py-3 sm:py-4 rounded-xl border-2 border-white text-white font-semibold hover:bg-white/10 transition-all"
+                  className="w-full text-base px-6 py-3 sm:py-4 rounded-xl border-2 border-white text-primary font-semibold hover:bg-white/10 transition-all"
                 >
                   Learn More
                 </Button>
