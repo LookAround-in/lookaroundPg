@@ -1,8 +1,17 @@
+import { requireAdmin } from "@/lib/auth-middleware";
 import prisma from "@/lib/Prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request : NextRequest) {
   try {
+    // checking if the user is Admin or not
+    const authResult = await requireAdmin(request);
+    if (authResult.error) {
+      return authResult.error;
+    }
+
+    // const user = authResult.user;
+
     const hosts = await prisma.hostProfile.findMany({
       include: {
         user: {

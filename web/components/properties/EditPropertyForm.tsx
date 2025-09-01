@@ -230,7 +230,7 @@ function EditPropertyForm({ property }: { property: Property | null }) {
         virtualTourUrl: property.virtualTourUrl || "",
       };
 
-      console.log("Form data being set:", formData);
+      // console.log("Form data being set:", formData);
       propertyForm.reset(formData);
       setTimeout(() => {
         propertyForm.setValue("hostId", formData.hostId);
@@ -279,7 +279,7 @@ function EditPropertyForm({ property }: { property: Property | null }) {
   const onSubmit = async (data: EditFormType) => {
     try {
       const currentValues = propertyForm.getValues();
-      console.log("Current form values:", currentValues);
+      // console.log("Current form values:", currentValues);
       const safeData = {
         ...data,
         hostId: data.hostId || currentValues.hostId || "",
@@ -300,7 +300,7 @@ function EditPropertyForm({ property }: { property: Property | null }) {
         city : data.city || currentValues.city || "",
       };
       
-      console.log("Safe data being sent:", safeData);
+      // console.log("Safe data being sent:", safeData);
       const formData = new FormData();
       // Add basic form fields - using validated data from React Hook Form
       formData.append("title", safeData.title);

@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resend } from "@/lib/resend";
+import { requireUser } from "@/lib/auth-middleware";
 
-export async function POST(request: NextRequest) { 
+export async function POST(request: NextRequest) {
     try {
+
+        // checking if the user is Logged in or not
+        const authResult = await requireUser(request);
+        if (authResult.error) {
+            return authResult.error;
+        }
+        // const user = authResult.user;
+
         // Get the form data from the request body
         const body = await request.json();
         const { name, email, phone, propertyType, location, message } = body;
@@ -10,9 +19,9 @@ export async function POST(request: NextRequest) {
         // Validate required fields
         if (!name || !email || !phone || !location) {
             return NextResponse.json(
-                { 
-                    success: false, 
-                    message: "Required fields are missing (name, email, phone, location)" 
+                {
+                    success: false,
+                    message: "Required fields are missing (name, email, phone, location)"
                 },
                 { status: 400 }
             );
@@ -22,9 +31,9 @@ export async function POST(request: NextRequest) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             return NextResponse.json(
-                { 
-                    success: false, 
-                    message: "Please provide a valid email address" 
+                {
+                    success: false,
+                    message: "Please provide a valid email address"
                 },
                 { status: 400 }
             );
@@ -34,14 +43,14 @@ export async function POST(request: NextRequest) {
         const phoneRegex = /^\d{10}$/;
         if (!phoneRegex.test(phone)) {
             return NextResponse.json(
-                { 
-                    success: false, 
-                    message: "Phone number must be exactly 10 digits" 
+                {
+                    success: false,
+                    message: "Phone number must be exactly 10 digits"
                 },
                 { status: 400 }
             );
         }
-        
+
         // Use resend to send an email to the super admin with the partner application data
         const emailResult = await resend.emails.send({
             from: process.env.FROM_EMAIL || "LookaroundPG <onboarding@resend.dev>",
@@ -118,29 +127,29 @@ Application submitted on: ${new Date().toLocaleString()}
         if (emailResult.error) {
             console.error('Partnership email sending failed:', emailResult.error);
             return NextResponse.json(
-                { 
-                    success: false, 
-                    message: "Failed to submit partnership application. Please try again later." 
+                {
+                    success: false,
+                    message: "Failed to submit partnership application. Please try again later."
                 },
                 { status: 500 }
             );
         }
 
         return NextResponse.json(
-            { 
-                success: true, 
-                message: "Your partnership application has been submitted successfully. We'll get back to you within 24 hours!" 
+            {
+                success: true,
+                message: "Your partnership application has been submitted successfully. We'll get back to you within 24 hours!"
             },
             { status: 200 }
         );
 
     } catch (error) {
         console.error('Partnership application error:', error);
-        
+
         return NextResponse.json(
-            { 
-                success: false, 
-                message: "An unexpected error occurred. Please try again later." 
+            {
+                success: false,
+                message: "An unexpected error occurred. Please try again later."
             },
             { status: 500 }
         );
