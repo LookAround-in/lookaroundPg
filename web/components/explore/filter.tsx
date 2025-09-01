@@ -52,7 +52,6 @@ interface FilterProps {
 }
 
 export default function FilterComponent({ 
-  sortBy, 
   setSortBy, 
   properties, 
   filters,
@@ -61,25 +60,6 @@ export default function FilterComponent({
 }: FilterProps) {
   const [showFilters, setShowFilters] = useState(false);
   const [isPending, startTransition] = useTransition();
-
-  const priceRange = useMemo(() => {
-    if (properties.length === 0) return { min: 500, max: 50000 };
-    const allPrices = properties
-      .flatMap((property) =>
-        property.sharingTypes.map((st) => st.pricePerMonth)
-      )
-      .filter((price) => price > 0);
-    
-    if (allPrices.length === 0) return { min: 500, max: 50000 };
-    const minPrice = Math.min(...allPrices);
-    const maxPrice = Math.max(...allPrices);
-    return {
-      min: Math.max(500, Math.floor(minPrice * 0.8)),
-      max: Math.ceil(maxPrice * 1.2),
-    };
-  }, [properties]);
-  const minFilterPrice = priceRange.min > 2000 ? priceRange.min - 1000 : priceRange.min;
-  const maxFilterPrice = priceRange.max < 50000 ? priceRange.max + 1000 : priceRange.max;
 
   // Debounced price range update
   const debouncedSetPriceRange = useDebouncedCallback((value: number[]) => {
@@ -130,8 +110,8 @@ export default function FilterComponent({
     const defaultFilters: FilterState = {
       selectedCity: "",
       selectedLocation: "",
-      priceFilter: [priceRange.min, priceRange.max],
-      debouncedPriceRange: [priceRange.min, priceRange.max],
+      priceFilter: [3000, 30000],
+      debouncedPriceRange: [3000, 30000],
       genderPreference: "any",
       amenities: [],
       virtualTour: false,
@@ -141,7 +121,7 @@ export default function FilterComponent({
     };
     onFiltersChange(defaultFilters);
     setSortBy("newest");
-  }, [priceRange.min, priceRange.max, setSortBy, onFiltersChange]);
+  }, [setSortBy, onFiltersChange]);
 
   // Calculate active filters count
   const activeFiltersCount = [
@@ -153,8 +133,8 @@ export default function FilterComponent({
     filters.propertyType !== "any",
     filters.sharingType !== "any",
     filters.rating > 0,
-    (filters.debouncedPriceRange[0] !== priceRange.min && filters.debouncedPriceRange[0] !== 0) ||
-    (filters.debouncedPriceRange[1] !== priceRange.max && filters.debouncedPriceRange[1] !== 0),
+    (filters.debouncedPriceRange[0] !== 3000 && filters.debouncedPriceRange[0] !== 0) ||
+    (filters.debouncedPriceRange[1] !== 30000 && filters.debouncedPriceRange[1] !== 0),
   ].filter(Boolean).length;
 
   const filterContent = useMemo(() => (
@@ -180,8 +160,8 @@ export default function FilterComponent({
       <PriceRangeFilter
         priceFilter={filters.priceFilter}
         onPriceChange={handlePriceRangeChange}
-        min={minFilterPrice}
-        max={maxFilterPrice}
+        min={1000}
+        max={50000}
         step={500}
       />
       
@@ -213,7 +193,7 @@ export default function FilterComponent({
         </Button>
       )}
     </div>
-  ), [filters, handleCityChange, handleLocationChange, handlePriceRangeChange, handleGenderChange, handleRatingChange, handleSharingTypeChange, handleVirtualTourChange, handleAmenityChange, clearFilters, activeFiltersCount, locations, minFilterPrice, maxFilterPrice]);
+  ), [filters, handleCityChange, handleLocationChange, handlePriceRangeChange, handleGenderChange, handleRatingChange, handleSharingTypeChange, handleVirtualTourChange, handleAmenityChange, clearFilters, activeFiltersCount, locations]);
 
   return (
     <div>

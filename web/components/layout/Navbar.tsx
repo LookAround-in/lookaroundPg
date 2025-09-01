@@ -40,7 +40,7 @@ export const Navbar = () => {
                    src="/logo.png"
                    width={32}
                    height={32}
-                   alt="LookaroundPG"
+                   alt="LookaroundPG logo for navbar"
                    className="w-full h-full object-contain"
                  />
               </div>

@@ -212,22 +212,32 @@ export class PgServices {
             createdAt: "desc", // Tertiary: Most recent
           },
         ],
+        omit : {
+          nearbyFacilities: true,
+          pgRules: true,
+          latitude: true,
+          longitude: true,
+          moveInStatus: true,
+          furnishing: true
+        },
         include: {
           Host: {
             select: {
               id: true,
-              contactNumber: true,
               user: {
                 select: {
                   name: true,
-                  email: true,
                   image: true
                 },
               },
             },
           },
-          furnitures: true,
-          amenities: true,
+          amenities: {
+            select: {
+              id: true,
+              type: true
+            }
+          },
           sharingTypes: {
             where: {
               availability: {
@@ -237,21 +247,11 @@ export class PgServices {
             orderBy: {
               pricePerMonth: "asc", // Show cheapest option first
             },
-          },
-          reviews: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  name: true,
-                  image: true,
-                },
-              },
-            },
-            orderBy: {
-              createdAt: "desc",
-            },
-            take: 5, // Include recent reviews
+            select: {
+              id: true,
+              type: true,
+              pricePerMonth: true
+            }
           },
           _count: {
             select: {
@@ -333,22 +333,32 @@ export class PgServices {
             avgRating: "desc", // Good rating as tiebreaker (can be null)
           },
         ],
+        omit : {
+          nearbyFacilities: true,
+          pgRules: true,
+          latitude: true,
+          longitude: true,
+          moveInStatus: true,
+          furnishing: true
+        },
         include: {
           Host: {
             select: {
               id: true,
-              contactNumber: true,
               user: {
                 select: {
                   name: true,
-                  email: true,
                   image: true
                 },
               },
             },
           },
-          furnitures: true,
-          amenities: true,
+          amenities: {
+            select: {
+              id: true,
+              type: true
+            }
+          },
           sharingTypes: {
             where: {
               availability: {
@@ -358,21 +368,11 @@ export class PgServices {
             orderBy: {
               pricePerMonth: "asc",
             },
-          },
-          reviews: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  name: true,
-                  image: true,
-                },
-              },
-            },
-            orderBy: {
-              createdAt: "desc",
-            },
-            take: 3, // Include some recent reviews
+            select: {
+              id: true,
+              type: true,
+              pricePerMonth: true
+            }
           },
           _count: {
             select: {
@@ -415,11 +415,9 @@ export class PgServices {
         address: {
           not: "",
         },
-      }
-      const totalItems = await this.prismaClient.pgData.count({
-        where: commonWhereClause
-      })
-      const explorePgs = await this.prismaClient.pgData.findMany({
+      };
+      const [explorePgs,totalItems] = await this.prismaClient.$transaction([
+        this.prismaClient.pgData.findMany({
         where: commonWhereClause,
         take: limit, // Show more options for exploration
         skip: skip,
@@ -441,15 +439,19 @@ export class PgServices {
             createdAt: "desc", // Freshness
           },
         ],
+        omit: {
+          nearbyFacilities: true,
+          pgRules: true,
+          latitude: true,
+          longitude: true
+        },
         include: {
           Host: {
             select: {
               id: true,
-              contactNumber: true,
               user: {
                 select: {
                   name: true,
-                  email: true,
                   image: true
                 },
               },
@@ -466,21 +468,11 @@ export class PgServices {
             orderBy: {
               pricePerMonth: "asc",
             },
-          },
-          reviews: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  name: true,
-                  image: true,
-                },
-              },
-            },
-            orderBy: {
-              createdAt: "desc",
-            },
-            take: 3, // Include some recent reviews
+            select: {
+              id: true,
+              type: true,
+              pricePerMonth: true
+            }
           },
           _count: {
             select: {
@@ -491,7 +483,11 @@ export class PgServices {
             },
           },
         },
-      });
+      }),
+        this.prismaClient.pgData.count({
+          where: commonWhereClause
+        })
+      ])
       const totalPages = Math.ceil(totalItems / limit)
 
       // Add some randomization to explore results for variety
