@@ -1,11 +1,20 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import pgController from "../pgController";
 import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import { PropertyType, FurnishingType, MoveInStatus, FurnitureType, AmenityType, SharingTypeDetails, PgCreateInput, NearbyFacility } from "@/interfaces/pg";
+import { requireAdmin } from "@/lib/auth-middleware";
 
-export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
+
+        // checking if the user is Admin or not
+        const authResult = await requireAdmin(request);
+        if (authResult.error) {
+            return authResult.error;
+        }
+
+        // const user = authResult.user;
 
         // Handle FormData for image uploads
         const formData = await request.formData();
@@ -130,9 +139,17 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 }
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
+
+        // checking if the user is Admin or not
+        const authResult = await requireAdmin(request);
+        if (authResult.error) {
+            return authResult.error;
+        }
+
+        // const user = authResult.user;
 
         const result = await pgController.deletePg(request, id);
         return result;

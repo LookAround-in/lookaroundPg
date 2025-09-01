@@ -96,3 +96,7 @@ export class PgRequestController {
     }
 
 }
+
+const pgRequestController = new PgRequestController();
+
+export default pgRequestController;
