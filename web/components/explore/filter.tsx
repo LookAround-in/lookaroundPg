@@ -202,7 +202,7 @@ export default function FilterComponent({
           <div
             className={`lg:w-80 ${showFilters ? "block" : "hidden lg:block"}`}
           >
-            <Card className="gradient-border sticky ">
+            <Card className="gradient-border sticky shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between text-lg font-bold">
                   <span className="flex items-center text-gradient-cool">

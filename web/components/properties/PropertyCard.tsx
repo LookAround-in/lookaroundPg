@@ -51,7 +51,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 
   return (
     <div
-      className={`property-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden ${className}`}
+      className={`property-card bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden ${className}`}
     >
       {/* Image Section */}
       <div className="relative aspect-[4/3] overflow-hidden">

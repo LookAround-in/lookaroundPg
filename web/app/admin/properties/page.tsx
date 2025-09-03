@@ -1,24 +1,18 @@
 import { Button } from "components/ui/button";
-import {ArrowLeft,Plus} from "lucide-react";
-import { useRouter } from "next/navigation";
+import { ArrowLeft, Plus } from "lucide-react";
 import Link from "next/link";
 import AdminPropertyList from "./admin-property-list";
-import { getQueryClient } from "@/lib/get-query-client";
-import { fetchProperties } from "@/lib/api-server";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-export default async function HostAllProperties({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+export default async function HostAllProperties({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const resolvedSearchParams = await searchParams;
   const page = parseInt(resolvedSearchParams.page || "1", 10);
   const limit = 12;
-  // const queryClient = getQueryClient();
-  // await queryClient.prefetchQuery({
-  //     queryKey: ["properties", page],
-  //     queryFn: () => fetchProperties(page, limit),
-  // });
 
   return (
-    // <HydrationBoundary state={dehydrate(queryClient)}>
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Header */}
@@ -51,6 +45,5 @@ export default async function HostAllProperties({ searchParams }: { searchParams
         <AdminPropertyList page={page} limit={limit} />
       </div>
     </div>
-    // </HydrationBoundary>
   );
-};
+}

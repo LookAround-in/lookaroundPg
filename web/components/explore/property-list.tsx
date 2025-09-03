@@ -45,7 +45,7 @@ function PropertyList({ filteredProperties, isLoading, error }: PropertyListProp
                 <div
                   key={property.id}
                   className="animate-fadeInUp"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  style={{ animationDelay: `${index * 0.05}s` }}
                 >
                   <PropertyCard property={property} className="h-full" />
                 </div>
