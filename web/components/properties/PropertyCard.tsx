@@ -1,21 +1,24 @@
-'use client'
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Heart, MapPin, User, Star } from 'lucide-react';
-import { Button } from 'components/ui/button';
-import { Badge } from 'components/ui/badge';
-import { useWishlist } from 'contexts/WishlistContext';
-import Image from 'next/image';
-import { Property } from '@/interfaces/property';
-import formatText, { formatRating } from '@/utils/format';
-import { useAuth } from '@/contexts/AuthContext';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { Heart, MapPin, User, Star } from "lucide-react";
+import { Button } from "components/ui/button";
+import { Badge } from "components/ui/badge";
+import { useWishlist } from "contexts/WishlistContext";
+import Image from "next/image";
+import { Property } from "@/interfaces/property";
+import formatText, { formatRating } from "@/utils/format";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface PropertyCardProps {
   property: Property;
   className?: string;
 }
 
-export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className = '' }) => {
+export const PropertyCard: React.FC<PropertyCardProps> = ({
+  property,
+  className = "",
+}) => {
   const user = useAuth();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -25,7 +28,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (isInWishlist) {
       removeFromWishlist(property.id);
     } else {
@@ -35,27 +38,33 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
 
   const getGenderBadgeColor = (gender: string) => {
     switch (gender) {
-      case 'men': return 'bg-blue-100 text-blue-800 hover:text-white';
-      case 'women': return 'bg-pink-100 text-pink-800 hover:text-white';
-      case 'co-living': return 'bg-purple-100 text-purple-800 hover:text-white';
-      default: return 'bg-gray-100 text-gray-800';
+      case "MEN":
+        return "bg-blue-100 text-blue-800 hover:text-white";
+      case "WOMEN":
+        return "bg-pink-100 text-pink-800 hover:text-white";
+      case "COLIVE":
+        return "bg-purple-100 text-purple-800 hover:text-white";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   return (
-    <div className={`property-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden ${className}`}>
+    <div
+      className={`property-card bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden ${className}`}
+    >
       {/* Image Section */}
       <div className="relative aspect-[4/3] overflow-hidden">
         <Link href={`/property/${property.id}`}>
           <Image
-            placeholder='blur'
-            blurDataURL='/blurImg.png'
-            src={property.images[0] || '/placeholder.svg'}
+            placeholder="blur"
+            blurDataURL="/blurImg.png"
+            src={property.images[0] || "/placeholder.svg"}
             alt={property.title}
             width={400}
             height={300}
             className={`w-full h-full object-cover transition-all duration-300 hover:scale-105 ${
-              imageLoaded ? 'opacity-100' : 'opacity-0'
+              imageLoaded ? "opacity-100" : "opacity-0"
             }`}
             onLoad={() => setImageLoaded(true)}
           />
@@ -63,25 +72,29 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
             <div className="absolute inset-0 bg-gray-200 animate-pulse" />
           )}
         </Link>
-        
+
         {/* Virtual Tour Badge */}
         {property.virtualTourUrl && (
           <Badge className="absolute top-3 left-3 bg-accent text-primary hover:text-white">
             360° Tour
           </Badge>
         )}
-        
+
         {/* Wishlist Button */}
         {user && (
           <Button
             variant="ghost"
             size="sm"
             className={`absolute top-3 right-3 p-2 h-8 w-8 bg-white/80 hover:bg-white wishlist-heart ${
-              isInWishlist ? 'active' : ''
+              isInWishlist ? "active" : ""
             }`}
             onClick={handleWishlistToggle}
           >
-            <Heart className={`h-4 w-4 ${isInWishlist ? 'fill-current text-red-500' : ''}`} />
+            <Heart
+              className={`h-4 w-4 ${
+                isInWishlist ? "fill-current text-red-500" : ""
+              }`}
+            />
           </Button>
         )}
       </div>
@@ -111,8 +124,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
           {/* Gender Preference */}
           <div className="mb-3">
             <Badge className={getGenderBadgeColor(property.propertyType)}>
-              {property.propertyType === 'COLIVE' ? 'Co-living' : 
-               property.propertyType === 'MEN' ? 'Men Only' : 'Women Only'}
+              {property.propertyType === "COLIVE"
+                ? "Co-living"
+                : property.propertyType === "MEN"
+                ? "Men Only"
+                : "Women Only"}
             </Badge>
           </div>
 
@@ -141,7 +157,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
                 <Image
                   placeholder="blur"
                   blurDataURL="/blurImg.png"
-                  src={property.Host?.user?.image || `https://ui-avatars.com/api/?name=${property.Host?.user?.name}&background=random`}
+                  src={
+                    property.Host?.user?.image ||
+                    `https://ui-avatars.com/api/?name=${property.Host?.user?.name}&background=random`
+                  }
                   alt={property.hostId}
                   width={32}
                   height={32}
@@ -151,14 +170,20 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, className 
                 <User className="h-3 w-3 text-white" />
               )}
             </div>
-            <span className="text-sm text-gray-600">{property.Host?.user?.name}</span>
+            <span className="text-sm text-gray-600">
+              {property.Host?.user?.name}
+            </span>
           </div>
-          
-            <div className="flex items-center space-x-1">
-              <Star className="h-3 w-3 text-yellow-400 fill-current" />
-              <span className="text-sm font-medium">{formatRating(property?.avgRating)}</span>
-              <span className="text-xs text-gray-500">({property?.reviewCount})</span>
-            </div>
+
+          <div className="flex items-center space-x-1">
+            <Star className="h-3 w-3 text-yellow-400 fill-current" />
+            <span className="text-sm font-medium">
+              {formatRating(property?.avgRating)}
+            </span>
+            <span className="text-xs text-gray-500">
+              ({property?.reviewCount})
+            </span>
+          </div>
         </div>
       </div>
     </div>

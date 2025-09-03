@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { Button } from "components/ui/button";
 import { SearchBar } from "components/search/SearchBar";
-import { Shield, Search, Star, Users, Building, MapPin, Smile } from "lucide-react";
+import {
+  Shield,
+  Search,
+  Star,
+  Users,
+  Building,
+  MapPin,
+  Smile,
+} from "lucide-react";
 import Featured from "@/components/properties/FeaturedProperties";
 import Trending from "@/components/properties/TrendingProperties";
 import { motion } from "framer-motion";
@@ -61,7 +69,8 @@ export default function HomePage() {
             transition={{ delay: 0.2, duration: 0.6 }}
             className="text-xl md:text-2xl text-gray-700 mb-6"
           >
-            Discover safe, comfortable, and affordable paying guest accommodations
+            Discover safe, comfortable, and affordable paying guest
+            accommodations
           </motion.p>
 
           {/* Search Bar with Glassmorphism */}
@@ -90,7 +99,9 @@ export default function HomePage() {
                 <div className="text-xl sm:text-3xl md:text-4xl font-extrabold text-primary mb-1">
                   {stat.value}
                 </div>
-                <div className="text-xs sm:text-base text-gray-600">{stat.label}</div>
+                <div className="text-xs sm:text-base text-gray-600">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </motion.div>
@@ -109,7 +120,8 @@ export default function HomePage() {
               ?
             </h2>
             <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
-              We make finding the perfect PG accommodation simple, safe, and reliable
+              We make finding the perfect PG accommodation simple, safe, and
+              reliable
             </p>
           </div>
 
@@ -179,7 +191,7 @@ export default function HomePage() {
               <Link href="/about" className="w-full sm:flex-1">
                 <Button
                   variant="outline"
-                  className="w-full text-base px-6 py-3 sm:py-4 rounded-xl border-2 border-white text-primary font-semibold hover:bg-white/10 transition-all"
+                  className="w-full text-base px-6 py-3 sm:py-4 rounded-xl border-2 border-white text-primary font-semibold hover:bg-white/10 hover:text-white transition-all"
                 >
                   Learn More
                 </Button>

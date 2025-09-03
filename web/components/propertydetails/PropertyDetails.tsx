@@ -54,6 +54,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PgRequestData } from "@/interfaces/pg";
 import Review from "../review/Review";
 import ShareButton from "../share/Share";
+import {motion} from "framer-motion"
 
 const fetchPropertyById = async (
   propertyId: string
@@ -751,7 +752,13 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                     <User2 className="h-5 w-5 mr-2" />
                     Languages Spoken By Host
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <motion.div
+                  initial={{opacity: 0, y: 20}}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{duration: 0.5, delay: 0.1}}
+                  viewport={{ once: true}}
+                  className="grid grid-cols-2 md:grid-cols-3 gap-3"
+                  >
                     {property.Host.languagesSpokenByHost.map((item, index) => (
                       <div key={index} className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-primary rounded-full"></div>
@@ -760,7 +767,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                         </span>
                       </div>
                     ))}
-                  </div>
+                  </motion.div>
                 </CardContent>
               </Card>
             )}
@@ -773,7 +780,13 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                     <Sofa className="h-5 w-5 mr-2" />
                     Furniture & Amenities Included
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <motion.div
+                    initial={{opacity: 0, y: 20}}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{duration: 0.5, delay: 0.1}}
+                    viewport={{ once: true}} 
+                    className="grid grid-cols-2 md:grid-cols-3 gap-3"
+                  >
                     {property.furnitures.map((item, index) => (
                       <div key={index} className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-primary rounded-full"></div>
@@ -782,7 +795,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                         </span>
                       </div>
                     ))}
-                  </div>
+                  </motion.div>
                 </CardContent>
               </Card>
             )}
@@ -795,7 +808,13 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                   <MapPin className="h-5 w-5 mr-2" />
                   Nearby Facilities
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <motion.div
+                  initial={{opacity: 0, y: 20}}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{duration: 0.5, delay: 0.1}}
+                  viewport={{ once: true}}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                >
                   {property.nearbyFacilities.map((facility, index) => {
                     return (
                       <div
@@ -814,7 +833,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                       </div>
                     );
                   })}
-                </div>
+                </motion.div>
               </CardContent>
             </Card>
             )}
@@ -827,7 +846,13 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                     <PackagePlus className="h-5 w-5 mr-2" />
                     Additional Amenities
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <motion.div
+                    initial={{opacity: 0, y: 20}}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{duration: 0.5, delay: 0.1}}
+                    viewport={{ once: true}}
+                    className="grid grid-cols-2 md:grid-cols-3 gap-3"
+                  >
                     {property.amenities.map((amenity, index) => (
                       <div key={index} className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-primary rounded-full"></div>
@@ -836,7 +861,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                         </span>
                       </div>
                     ))}
-                  </div>
+                  </motion.div>
                 </CardContent>
               </Card>
             )}
@@ -860,7 +885,6 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
             )}
 
             {/* Reviews Section */}
-
               <Card className="shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-6">
