@@ -61,11 +61,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
             blurDataURL="/blurImg.png"
             src={property.images[0] || "/placeholder.svg"}
             alt={property.title}
-            width={400}
-            height={300}
-            className={`w-full h-full object-cover transition-all duration-300 hover:scale-105 ${
-              imageLoaded ? "opacity-100" : "opacity-0"
-            }`}
+            width={1920}
+            height={1080}
+            className={`w-full h-full object-cover transition-all duration-300 hover:scale-105 ${imageLoaded ? "opacity-100" : "opacity-0"
+              }`}
             onLoad={() => setImageLoaded(true)}
           />
           {!imageLoaded && (
@@ -85,15 +84,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           <Button
             variant="ghost"
             size="sm"
-            className={`absolute top-3 right-3 p-2 h-8 w-8 bg-white/80 hover:bg-white wishlist-heart ${
-              isInWishlist ? "active" : ""
-            }`}
+            className={`absolute top-3 right-3 p-2 h-8 w-8 bg-white/80 hover:bg-white wishlist-heart ${isInWishlist ? "active" : ""
+              }`}
             onClick={handleWishlistToggle}
           >
             <Heart
-              className={`h-4 w-4 ${
-                isInWishlist ? "fill-current text-red-500" : ""
-              }`}
+              className={`h-4 w-4 ${isInWishlist ? "fill-current text-red-500" : ""
+                }`}
             />
           </Button>
         )}
@@ -127,8 +124,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
               {property.propertyType === "COLIVE"
                 ? "Co-living"
                 : property.propertyType === "MEN"
-                ? "Men Only"
-                : "Women Only"}
+                  ? "Men Only"
+                  : "Women Only"}
             </Badge>
           </div>
 
