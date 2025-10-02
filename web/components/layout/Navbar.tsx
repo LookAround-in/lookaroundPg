@@ -17,7 +17,7 @@ export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { wishlist } = useWishlist();
   const router = useRouter();
-  const { logout, user} = useAuth();
+  const { logout, user } = useAuth();
 
 
   const handleSearch = (e: React.FormEvent) => {
@@ -36,20 +36,20 @@ export const Navbar = () => {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 rounded-full flex items-center justify-center">
-                 <Image
-                   src="/logo.png"
-                   width={32}
-                   height={32}
-                   alt="LookaroundPG logo for navbar"
-                   className="w-full h-full object-contain"
-                 />
+                <Image
+                  src="/logo.png"
+                  width={32}
+                  height={32}
+                  alt="LookaroundPG logo for navbar"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <span className="font-bold text-xl text-gradient-cool">LookAroundPG</span>
             </Link>
           </div>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
+          {/* <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
             <form onSubmit={handleSearch} className="w-full relative">
               <Input
                 type="text"
@@ -60,7 +60,7 @@ export const Navbar = () => {
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             </form>
-          </div>
+          </div> */}
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
@@ -165,7 +165,7 @@ export const Navbar = () => {
         </div>
 
         {/* Mobile Search Bar */}
-        <div className="md:hidden pb-4">
+        {/* <div className="md:hidden pb-4">
           <form onSubmit={handleSearch} className="relative">
             <Input
               type="text"
@@ -176,7 +176,7 @@ export const Navbar = () => {
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           </form>
-        </div>
+        </div> */}
 
         {/* Enhanced Mobile Navigation Menu */}
         {isMenuOpen && (

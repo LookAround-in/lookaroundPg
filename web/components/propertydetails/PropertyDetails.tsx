@@ -673,61 +673,75 @@ const PropertyDetails = ({ propertyId }: { propertyId: string }) => {
 
                   {/* Pricing Details with Refundable Deposit */}
                   {getCurrentSharingTypeData && (
-                    <div className="mt-6 p-4 bg-gray-200 rounded-lg">
-                      <h3 className="text-lg font-semibold mb-3">
-                        Pricing Details ({selectedSharingType} sharing)
-                      </h3>
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="text-gray-700">Monthly Rent:</span>
-                          <span className="font-medium">
-                            ₹
-                            {getCurrentSharingTypeData.pricePerMonth?.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-700">
-                            Security Deposit:
-                          </span>
-                          <span className="font-medium">
-                            ₹
-                            {getCurrentSharingTypeData.deposit?.toLocaleString()}
-                          </span>
-                        </div>
-                        {getCurrentSharingTypeData.maintainanceCharges && (
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600 ml-4">
-                              - Maintenance:
-                            </span>
-                            <span className="text-red-600 font-medium">
-                              - ₹
-                              {getCurrentSharingTypeData.maintainanceCharges.toLocaleString()}
+                    <div className="mt-6 relative">
+                      <div className={`mt-6 p-4 bg-gray-200 rounded-lg ${user ? 'blur-none' : 'blur-md'}`}>
+                        <h3 className="text-lg font-semibold mb-3">
+                          Pricing Details ({selectedSharingType} sharing)
+                        </h3>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-gray-700">Monthly Rent:</span>
+                            <span className="font-medium">
+                              ₹
+                              {getCurrentSharingTypeData.pricePerMonth?.toLocaleString()}
                             </span>
                           </div>
-                        )}
-                        {getCurrentSharingTypeData.refundableAmount && (
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600 ml-4">
-                              - Refundable Amount:
+                          <div className="flex justify-between">
+                            <span className="text-gray-700">
+                              Security Deposit:
                             </span>
-                            <span className="text-green-600 font-medium">
-                              + ₹
-                              {getCurrentSharingTypeData.refundableAmount.toLocaleString()}
+                            <span className="font-medium">
+                              ₹
+                              {getCurrentSharingTypeData.deposit?.toLocaleString()}
                             </span>
                           </div>
-                        )}
-                        <hr className="my-2" />
-                        <div className="flex justify-between font-semibold text-md">
-                          <span>Total Move-in Cost:</span>
-                          <span className="text-primary">
-                            ₹
-                            {(
-                              getCurrentSharingTypeData.pricePerMonth +
-                              getCurrentSharingTypeData.deposit
-                            ).toLocaleString()}
-                          </span>
+                          {getCurrentSharingTypeData.maintainanceCharges && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600 ml-4">
+                                - Maintenance:
+                              </span>
+                              <span className="text-red-600 font-medium">
+                                - ₹
+                                {getCurrentSharingTypeData.maintainanceCharges.toLocaleString()}
+                              </span>
+                            </div>
+                          )}
+                          {getCurrentSharingTypeData.refundableAmount && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600 ml-4">
+                                - Refundable Amount:
+                              </span>
+                              <span className="text-green-600 font-medium">
+                                + ₹
+                                {getCurrentSharingTypeData.refundableAmount.toLocaleString()}
+                              </span>
+                            </div>
+                          )}
+                          <hr className="my-2" />
+                          <div className="flex justify-between font-semibold text-md">
+                            <span>Total Move-in Cost:</span>
+                            <span className="text-primary">
+                              ₹
+                              {(
+                                getCurrentSharingTypeData.pricePerMonth +
+                                getCurrentSharingTypeData.deposit
+                              ).toLocaleString()}
+                            </span>
+                          </div>
                         </div>
                       </div>
+                      {/* Overlay text when user is not logged in */}
+                      {!user && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-transparent">
+                          <p className="text-lg font-semibold text-gray-800 mb-2">
+                            🔒 Please
+                            <Link href="/login" className="text-primary hover:underline pl-1 pr-1">
+                              login
+                            </Link>
+                            to see price details
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -1176,7 +1190,7 @@ const PropertyDetails = ({ propertyId }: { propertyId: string }) => {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </div >
   );
 };
 
