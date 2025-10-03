@@ -54,7 +54,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PgRequestData } from "@/interfaces/pg";
 import Review from "../review/Review";
 import ShareButton from "../share/Share";
-import {motion} from "framer-motion"
+import { motion } from "framer-motion"
 
 const fetchPropertyById = async (
   propertyId: string
@@ -92,7 +92,7 @@ const createPropertyRequest = async (pgRequest: PgRequestData) => {
   return response.json();
 };
 
-const PropertyDetails = ({propertyId}: {propertyId: string}) => {
+const PropertyDetails = ({ propertyId }: { propertyId: string }) => {
   const router = useRouter();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const { toast } = useToast();
@@ -286,7 +286,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
             Error loading property
           </h1>
           <p className="text-gray-600 mb-4">
-            {isError || 
+            {isError ||
               "Failed to load property details"}
           </p>
           <div className="space-x-4">
@@ -417,8 +417,8 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                 <Image
                   placeholder="blur"
                   blurDataURL="/blurImg.png"
-                  width={800}
-                  height={600}
+                  width={1920}
+                  height={1080}
                   src={
                     property.images?.[currentImageIndex] || '/placeholder.svg'
                   }
@@ -447,7 +447,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                       }`}
                   />
                 </Button>
-                <ShareButton isIcon={true}/>
+                <ShareButton isIcon={true} />
 
                 {/* Image navigation */}
                 {property.images && property.images.length > 1 && (
@@ -487,8 +487,8 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                         <button
                           key={index}
                           className={`w-2 h-2 rounded-full ${index === currentImageIndex
-                              ? "bg-white"
-                              : "bg-white/50"
+                            ? "bg-white"
+                            : "bg-white/50"
                             }`}
                           onClick={() => setCurrentImageIndex(index)}
                         />
@@ -626,7 +626,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                         Virtual Tour
                       </Badge>
                     )}
-                    
+
                   </div>
 
                   {/*Rating */}
@@ -673,61 +673,75 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
 
                   {/* Pricing Details with Refundable Deposit */}
                   {getCurrentSharingTypeData && (
-                    <div className="mt-6 p-4 bg-gray-200 rounded-lg">
-                      <h3 className="text-lg font-semibold mb-3">
-                        Pricing Details ({selectedSharingType} sharing)
-                      </h3>
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="text-gray-700">Monthly Rent:</span>
-                          <span className="font-medium">
-                            ₹
-                            {getCurrentSharingTypeData.pricePerMonth?.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-700">
-                            Security Deposit:
-                          </span>
-                          <span className="font-medium">
-                            ₹
-                            {getCurrentSharingTypeData.deposit?.toLocaleString()}
-                          </span>
-                        </div>
-                        {getCurrentSharingTypeData.maintainanceCharges && (
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600 ml-4">
-                              - Maintenance:
-                            </span>
-                            <span className="text-red-600 font-medium">
-                              - ₹
-                              {getCurrentSharingTypeData.maintainanceCharges.toLocaleString()}
+                    <div className="mt-6 relative">
+                      <div className={`mt-6 p-4 bg-gray-200 rounded-lg ${user ? 'blur-none' : 'blur-md'}`}>
+                        <h3 className="text-lg font-semibold mb-3">
+                          Pricing Details ({selectedSharingType} sharing)
+                        </h3>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-gray-700">Monthly Rent:</span>
+                            <span className="font-medium">
+                              ₹
+                              {getCurrentSharingTypeData.pricePerMonth?.toLocaleString()}
                             </span>
                           </div>
-                        )}
-                        {getCurrentSharingTypeData.refundableAmount && (
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600 ml-4">
-                              - Refundable Amount:
+                          <div className="flex justify-between">
+                            <span className="text-gray-700">
+                              Security Deposit:
                             </span>
-                            <span className="text-green-600 font-medium">
-                              + ₹
-                              {getCurrentSharingTypeData.refundableAmount.toLocaleString()}
+                            <span className="font-medium">
+                              ₹
+                              {getCurrentSharingTypeData.deposit?.toLocaleString()}
                             </span>
                           </div>
-                        )}
-                        <hr className="my-2" />
-                        <div className="flex justify-between font-semibold text-md">
-                          <span>Total Move-in Cost:</span>
-                          <span className="text-primary">
-                            ₹
-                            {(
-                              getCurrentSharingTypeData.pricePerMonth +
-                              getCurrentSharingTypeData.deposit
-                            ).toLocaleString()}
-                          </span>
+                          {getCurrentSharingTypeData.maintainanceCharges && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600 ml-4">
+                                - Maintenance:
+                              </span>
+                              <span className="text-red-600 font-medium">
+                                - ₹
+                                {getCurrentSharingTypeData.maintainanceCharges.toLocaleString()}
+                              </span>
+                            </div>
+                          )}
+                          {getCurrentSharingTypeData.refundableAmount && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600 ml-4">
+                                - Refundable Amount:
+                              </span>
+                              <span className="text-green-600 font-medium">
+                                + ₹
+                                {getCurrentSharingTypeData.refundableAmount.toLocaleString()}
+                              </span>
+                            </div>
+                          )}
+                          <hr className="my-2" />
+                          <div className="flex justify-between font-semibold text-md">
+                            <span>Total Move-in Cost:</span>
+                            <span className="text-primary">
+                              ₹
+                              {(
+                                getCurrentSharingTypeData.pricePerMonth +
+                                getCurrentSharingTypeData.deposit
+                              ).toLocaleString()}
+                            </span>
+                          </div>
                         </div>
                       </div>
+                      {/* Overlay text when user is not logged in */}
+                      {!user && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-transparent">
+                          <p className="text-lg font-semibold text-gray-800 mb-2">
+                            🔒 Please
+                            <Link href="/login" className="text-primary hover:underline pl-1 pr-1">
+                              login
+                            </Link>
+                            to see price details
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -753,11 +767,11 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                     Languages Spoken By Host
                   </h3>
                   <motion.div
-                  initial={{opacity: 0, y: 20}}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{duration: 0.5, delay: 0.1}}
-                  viewport={{ once: true}}
-                  className="grid grid-cols-2 md:grid-cols-3 gap-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    viewport={{ once: true }}
+                    className="grid grid-cols-2 md:grid-cols-3 gap-3"
                   >
                     {property.Host.languagesSpokenByHost.map((item, index) => (
                       <div key={index} className="flex items-center space-x-2">
@@ -781,10 +795,10 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                     Furniture & Amenities Included
                   </h3>
                   <motion.div
-                    initial={{opacity: 0, y: 20}}
+                    initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{duration: 0.5, delay: 0.1}}
-                    viewport={{ once: true}} 
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    viewport={{ once: true }}
                     className="grid grid-cols-2 md:grid-cols-3 gap-3"
                   >
                     {property.furnitures.map((item, index) => (
@@ -801,41 +815,41 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
             )}
 
             {/* Nearby Facilities */}
-            { property.nearbyFacilities && property.nearbyFacilities.length > 0 && (
+            {property.nearbyFacilities && property.nearbyFacilities.length > 0 && (
               <Card className="shadow-lg">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold mb-4 flex items-center">
-                  <MapPin className="h-5 w-5 mr-2" />
-                  Nearby Facilities
-                </h3>
-                <motion.div
-                  initial={{opacity: 0, y: 20}}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{duration: 0.5, delay: 0.1}}
-                  viewport={{ once: true}}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                >
-                  {property.nearbyFacilities.map((facility, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg"
-                      >
-                        <span className="h-5 w-5">{facility.icon}</span>
-                        <div>
-                          <p className="font-medium text-gray-800">
-                            {facility.title}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {facility.distance} Km
-                          </p>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                    <MapPin className="h-5 w-5 mr-2" />
+                    Nearby Facilities
+                  </h3>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    viewport={{ once: true }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  >
+                    {property.nearbyFacilities.map((facility, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg"
+                        >
+                          <span className="h-5 w-5">{facility.icon}</span>
+                          <div>
+                            <p className="font-medium text-gray-800">
+                              {facility.title}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              {facility.distance} Km
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </motion.div>
-              </CardContent>
-            </Card>
+                      );
+                    })}
+                  </motion.div>
+                </CardContent>
+              </Card>
             )}
 
             {/* Amenities*/}
@@ -847,10 +861,10 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                     Additional Amenities
                   </h3>
                   <motion.div
-                    initial={{opacity: 0, y: 20}}
+                    initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{duration: 0.5, delay: 0.1}}
-                    viewport={{ once: true}}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    viewport={{ once: true }}
                     className="grid grid-cols-2 md:grid-cols-3 gap-3"
                   >
                     {property.amenities.map((amenity, index) => (
@@ -885,28 +899,28 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
             )}
 
             {/* Reviews Section */}
-              <Card className="shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-semibold">{property?.reviewCount > 0 ? "Guest Reviews" : "No Reviews Yet"}</h3>
-                    <div className="flex items-center space-x-2">
-                      <div className="flex items-center">
-                        <Star className="h-5 w-5 text-yellow-400 fill-current" />
-                        <span className="ml-1 font-semibold">
-                          {formatRating(property?.avgRating)}
-                        </span>
-                      </div>
-                      <span className="text-gray-600">
-                        ({property?.reviewCount || 0} reviews)
+            <Card className="shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold">{property?.reviewCount > 0 ? "Guest Reviews" : "No Reviews Yet"}</h3>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center">
+                      <Star className="h-5 w-5 text-yellow-400 fill-current" />
+                      <span className="ml-1 font-semibold">
+                        {formatRating(property?.avgRating)}
                       </span>
                     </div>
+                    <span className="text-gray-600">
+                      ({property?.reviewCount || 0} reviews)
+                    </span>
                   </div>
-                  <div className="space-y-6">
-                    <Review property={property} refetchProperty={refetch} />
-                  </div>
-                </CardContent>
-              </Card>
-            
+                </div>
+                <div className="space-y-6">
+                  <Review property={property} refetchProperty={refetch} />
+                </div>
+              </CardContent>
+            </Card>
+
           </div>
 
           {/* Sidebar */}
@@ -936,70 +950,70 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                     <p className="text-gray-600">Property Host</p>
                   </div>
 
-                  
-                    <div className="flex items-center justify-center space-x-1">
-                      <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                      <span className="font-medium">{formatRating(property.avgRating)}</span>
-                      <span className="text-gray-600">
-                        ({property?.reviewCount || 0} reviews)
-                      </span>
-                    </div>
-                  
+
+                  <div className="flex items-center justify-center space-x-1">
+                    <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                    <span className="font-medium">{formatRating(property.avgRating)}</span>
+                    <span className="text-gray-600">
+                      ({property?.reviewCount || 0} reviews)
+                    </span>
+                  </div>
+
 
                   {user ? (
                     <>
                       <div className="space-y-2">
-                      {!showHostInfo ? (
-                        <Button
-                          onClick={handleRevealHostInfo}
-                          className="w-full bg-gradient-cool hover:opacity-90"
-                        >
-                          Reveal Host Info
-                        </Button>
-                      ) : (
-                        <div className="space-y-2">
-                          {property.Host?.contactNumber && (
-                            <a href={`tel:${property.Host.contactNumber}`}>
-                              <Button variant="outline" className="w-full">
-                                <Phone className="h-4 w-4 mr-2" />
-                                {property.Host.contactNumber}
-                              </Button>
-                            </a>
-                          )}
-                          {property.Host?.user?.email && (
-                            <a href={`mailto:${property.Host?.user?.email}`}>
-                              <Button variant="outline" className="w-full mt-2">
-                                <Mail className="h-4 w-4 mr-2" />
-                                Email Host
-                              </Button>
-                            </a>
-                          )}
-                          {property.Host?.contactNumber && (
-                            <a
-                              href={`https://wa.me/${property.Host.contactNumber.replace(
-                                /\D/g,
-                                ""
-                              )}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <Button className="w-full bg-green-500 hover:bg-green-600 mt-2">
-                                <MessageSquareDot className="h-4 w-4 mr-2" />
-                                WhatsApp
-                              </Button>
-                            </a>
-                          )}
-                        </div>
+                        {!showHostInfo ? (
+                          <Button
+                            onClick={handleRevealHostInfo}
+                            className="w-full bg-gradient-cool hover:opacity-90"
+                          >
+                            Reveal Host Info
+                          </Button>
+                        ) : (
+                          <div className="space-y-2">
+                            {property.Host?.contactNumber && (
+                              <a href={`tel:${property.Host.contactNumber}`}>
+                                <Button variant="outline" className="w-full">
+                                  <Phone className="h-4 w-4 mr-2" />
+                                  {property.Host.contactNumber}
+                                </Button>
+                              </a>
+                            )}
+                            {property.Host?.user?.email && (
+                              <a href={`mailto:${property.Host?.user?.email}`}>
+                                <Button variant="outline" className="w-full mt-2">
+                                  <Mail className="h-4 w-4 mr-2" />
+                                  Email Host
+                                </Button>
+                              </a>
+                            )}
+                            {property.Host?.contactNumber && (
+                              <a
+                                href={`https://wa.me/${property.Host.contactNumber.replace(
+                                  /\D/g,
+                                  ""
+                                )}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Button className="w-full bg-green-500 hover:bg-green-600 mt-2">
+                                  <MessageSquareDot className="h-4 w-4 mr-2" />
+                                  WhatsApp
+                                </Button>
+                              </a>
+                            )}
+                          </div>
                         )}
                       </div>
-    
+
                       <Link href={`/properties/${property.hostId}`}>
                         <Button variant="ghost" className="w-full mt-2">
                           View All Properties by Host
                         </Button>
                       </Link>
                     </>
-                  ): (
+                  ) : (
                     <p className="text-lg font-thin">Please <Link href="/login" className="text-primary">login</Link> to reveal host information.</p>
                   )}
                 </div>
@@ -1035,7 +1049,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
                 />
                 {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
               </Button>
-              <ShareButton isIcon={false}/>
+              <ShareButton isIcon={false} />
 
               {/* Enhanced Virtual Tour Button */}
               {property.virtualTourUrl && (
@@ -1176,7 +1190,7 @@ const PropertyDetails = ({propertyId}: {propertyId: string}) => {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </div >
   );
 };
 

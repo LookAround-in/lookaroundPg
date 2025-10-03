@@ -11,10 +11,15 @@ import {
   Building,
   MapPin,
   Smile,
+  ShieldCheck,
+  Clock,
+  HandCoins,
 } from "lucide-react";
 import Featured from "@/components/properties/FeaturedProperties";
 import Trending from "@/components/properties/TrendingProperties";
 import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import LocationCard from "@/components/properties/LocationCard";
 
 export default function HomePage() {
   const features = [
@@ -40,6 +45,33 @@ export default function HomePage() {
     },
   ];
 
+  const locations = [
+    {
+      imageUrl: "82a24a6c21f33f5b67bd4e7cbd58170eeeb1fb22.jpg",
+      available: true,
+      locationName: "Bengaluru",
+      locationTagline: "Silicon Valley of India",
+      propertyCount: 100,
+      popularAreas: ["Koramangala", "Whitefield", "HSR Layout"],
+    },
+    {
+      imageUrl: "9e1446df6ba430f04d81e6b84d77312e608e6b6a.jpg",
+      available: false,
+      locationName: "Hyderabad",
+      locationTagline: "City of Pearls",
+      propertyCount: 50,
+      popularAreas: ["Banjara Hills", "Gachibowli", "Hitech City"],
+    },
+    {
+      imageUrl: "c3dd39364c3508d0ad9972b9bf7934684392a8a9.jpg",
+      available: false,
+      locationName: "Chennai",
+      locationTagline: "Gateway to South India",
+      propertyCount: 50,
+      popularAreas: ["Adyar", "T Nagar", "Velachery", "OMR"],
+    }
+  ]
+
   const stats = [
     { icon: Building, value: "500+", label: "Properties" },
     { icon: MapPin, value: "50+", label: "Locations" },
@@ -49,16 +81,35 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-white to-background transition-colors duration-300">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 py-16 lg:py-20">
+      <section className="relative isolate py-16 lg:py-20">
+        <div className="absolute inset-0 -z-10">
+          <img
+            src="d1dd92063b3086d81244769ccd705b36cbb54747.jpg"
+            alt="Cozy bedroom interior suitable for PG stay"
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/50"></div>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-9 px-2 lg:px-8 mb-12">
+          <Badge variant="secondary" className="h-8 flex-1 max-w-48 flex items-center justify-center p-5">
+            <ShieldCheck className="mr-2" />Verified Listings
+          </Badge>
+          <Badge variant="secondary" className="h-8 flex-1 max-w-48 flex items-center justify-center p-5">
+            <Clock className="mr-2" />24/7 Support
+          </Badge>
+          <Badge variant="secondary" className="h-8 flex-1 max-w-48 flex items-center justify-center p-5">
+            <HandCoins className="mr-2" />Best Price
+          </Badge>
+        </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-charcoa mb-6"
+            className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6"
           >
             Find Your Perfect{" "}
-            <span className="text-gradient-cool drop-shadow-lg animate-pulse">
+            <span className="text-gradient-cool drop-shadow-lg">
               PG Home
             </span>
           </motion.h1>
@@ -67,7 +118,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-xl md:text-2xl text-gray-700 mb-6"
+            className="text-xl md:text-2xl text-white mb-6"
           >
             Discover safe, comfortable, and affordable paying guest
             accommodations
@@ -78,9 +129,14 @@ export default function HomePage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="max-w-2xl mx-auto mb-10 backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl shadow-lg p-4"
+            className="max-w-2xl mx-auto mb-10 backdrop-blur-xl bg-gray-700/10 border border-gray-700/70 rounded-2xl shadow-lg p-8"
           >
             <SearchBar />
+            <Link href="/explore">
+              <Button className="bg-gradient-cool hover:bg-primary/90 text-white w-48 mt-8 py-6 rounded-xl shadow-lg font-semibold transition-all">
+                Explore Properties
+              </Button>
+            </Link>
           </motion.div>
 
           {/* Quick Stats */}
@@ -93,13 +149,13 @@ export default function HomePage() {
             {stats.map((stat, i) => (
               <div
                 key={i}
-                className="rounded-xl bg-white/80 shadow-md py-4 px-2 hover:shadow-xl hover:-translate-y-1 transform transition-all duration-300 text-center"
+                className="rounded-x py-4 px-2 hover:shadow-xl hover:-translate-y-1 transform transition-all duration-300 text-center"
               >
-                <stat.icon className="mx-auto mb-1 text-primary h-6 w-6 sm:h-8 sm:w-8" />
-                <div className="text-xl sm:text-3xl md:text-4xl font-extrabold text-primary mb-1">
+                <stat.icon className="mx-auto mb-1 text-white h-6 w-6 sm:h-8 sm:w-8" />
+                <div className="text-xl sm:text-3xl md:text-4xl font-extrabold text-white mb-1">
                   {stat.value}
                 </div>
-                <div className="text-xs sm:text-base text-gray-600">
+                <div className="text-xs sm:text-base text-gray-100">
                   {stat.label}
                 </div>
               </div>
@@ -146,6 +202,40 @@ export default function HomePage() {
             ))}
           </div>
         </div>
+      </section>
+      <section className="pt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-charcoa mb-4 tracking-tight">
+              Choose Your City
+            </h2>
+            <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+              Find the perfect PG accommodation in your preferred city
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {locations.map((location, index) => (
+              <LocationCard
+                key={index}
+                imageUrl={location.imageUrl}
+                available={location.available}
+                locationName={location.locationName}
+                locationTagline={location.locationTagline}
+                propertyCount={location.propertyCount}
+                popularAreas={location.popularAreas}
+              />
+            ))}
+          </div>
+          <div className="bg-gray-100 mt-12 rounded-md p-6 text-center shadow-xl">
+            <p className="text-lg md:text-xl text-gray-900 max-w-2xl mx-auto">
+              Don`t see your city? we`re expanding rapidly!
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold text-charcoa mt-4 tracking-tight">
+              Coming Soon
+            </h2>
+          </div>
+        </div>
+
       </section>
 
       {/* Featured + Trending */}

@@ -15,6 +15,7 @@ import {
 import { useToast } from "hooks/use-toast";
 import Image from "next/image";
 import { authClient } from "lib/auth-client";
+import { Lock, Mail } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -85,7 +86,7 @@ const Login = () => {
         <div className="text-center">
           <Link
             href="/"
-            className="flex items-center justify-center space-x-2 mb-8"
+            className="flex items-center justify-center space-x-2 mb-2"
           >
             <div className="w-8 h-8 rounded-full flex items-center justify-center">
               <Image
@@ -96,23 +97,25 @@ const Login = () => {
                 className="w-full h-full object-contain"
               />
             </div>
-            <span className="font-bold text-xl text-primary">LookAroundPG</span>
+            <span className="font-bold text-2xl text-primary">LookAroundPG</span>
           </Link>
+          <p className="font-thin">Welcome back to your home away from home</p>
         </div>
 
         <Card className="animate-scaleIn">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold text-center">
-              Welcome back
+              Sign in to your account
             </CardTitle>
             <CardDescription className="text-center">
-              Enter your email and password to access your account
+              Enter your email and password to sign in
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <Label htmlFor="email">Email</Label>
+                <Mail className="absolute left-3 top-9 h-5 w-5 text-gray-400 pointer-events-none" />
                 <Input
                   id="email"
                   type="email"
@@ -120,10 +123,12 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  className="shadow-xl pl-12"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <Label htmlFor="password">Password</Label>
+                <Lock className="absolute left-3 top-9 h-5 w-5 text-gray-400 pointer-events-none" />
                 <Input
                   id="password"
                   type="password"
@@ -131,6 +136,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  className="shadow-xl pl-12"
                 />
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
@@ -144,6 +150,19 @@ const Login = () => {
                 {isLoading ? 'Signing in With Google...' : 'Sign in With Google'}
               </Button> */}
             </form>
+            <div className="flex items-center my-4">
+              <hr className="flex-grow border-t border-gray-300" />
+              <span className="mx-4 text-sm text-gray-600 whitespace-nowrap">Or Register With</span>
+              <hr className="flex-grow border-t border-gray-300" />
+            </div>
+            <div className="flex items-center justify-center my-4 gap-8">
+              <Link href="/signup">
+                <img src="google.png" alt="Google login button" height={32} width={32} />
+              </Link>
+              <Link href="/signup">
+                <img src="apple-logo.png" alt="Apple login button" height={32} width={32} />
+              </Link>
+            </div>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">

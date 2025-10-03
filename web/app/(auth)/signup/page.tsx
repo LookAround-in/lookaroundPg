@@ -15,6 +15,7 @@ import {
 import { useToast } from "hooks/use-toast";
 import Image from "next/image";
 import { authClient } from "lib/auth-client";
+import { Lock, Mail, Phone, User } from "lucide-react";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -89,7 +90,7 @@ const Signup = () => {
         <div className="text-center">
           <Link
             href="/"
-            className="flex items-center justify-center space-x-2 mb-8"
+            className="flex items-center justify-center space-x-2 mb-2"
           >
             <div className="w-8 h-8 rounded-full flex items-center justify-center">
               <Image
@@ -100,8 +101,9 @@ const Signup = () => {
                 className="w-full h-full object-contain"
               />
             </div>
-            <span className="font-bold text-xl text-primary">LookAroundPG</span>
+            <span className="font-bold text-2xl text-primary">LookAroundPG</span>
           </Link>
+          <p className="font-thin">Create your account to find your perfect stay</p>
         </div>
 
         <Card className="animate-scaleIn">
@@ -115,8 +117,9 @@ const Signup = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <Label htmlFor="name">Full Name</Label>
+                <User className="absolute left-3 top-9 h-5 w-5 text-gray-400 pointer-events-none" />
                 <Input
                   id="name"
                   type="text"
@@ -124,10 +127,12 @@ const Signup = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
+                  className="shadow-xl pl-12"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <Label htmlFor="email">Email</Label>
+                <Mail className="absolute left-3 top-9 h-5 w-5 text-gray-400 pointer-events-none" />
                 <Input
                   id="email"
                   type="email"
@@ -135,22 +140,26 @@ const Signup = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  className="shadow-xl pl-12"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <Label htmlFor="phone">Phone Number</Label>
+                <Phone className="absolute left-3 top-9 h-5 w-5 text-gray-400 pointer-events-none" />
                 <Input
                   id="phone"
                   type="tel"
                   placeholder="Enter your phone number"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                  className="shadow-xl pl-12"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <Label htmlFor="password" className="">
                   Password
                 </Label>
+                <Lock className="absolute left-3 top-9 h-5 w-5 text-gray-400 pointer-events-none" />
                 <Input
                   id="password"
                   type="password"
@@ -158,6 +167,7 @@ const Signup = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  className="shadow-xl pl-12"
                 />
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
