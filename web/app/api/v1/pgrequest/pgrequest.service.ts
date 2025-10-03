@@ -209,14 +209,11 @@ Please review this request in the admin dashboard and take appropriate action.
 
     async rejectPgRequest(pgrequestId: string) {
         try {
-            // console.log(pgrequestId + " is the id of the pg request to be rejected");
-
             const updatedPgRequest = await this.prismaClient.pgRequest.update({
                 where: { id: pgrequestId },
                 data: { status: "REJECTED" },
             });
 
-            // console.log("Updated PG Request:", updatedPgRequest);
 
             return updatedPgRequest;
         } catch (error) {
